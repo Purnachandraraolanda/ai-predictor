@@ -97,7 +97,7 @@ const APEAPCETPage = () => {
   ];
 
   const collegeTypes = [
-    { value: "", label: "All Types" },
+    { value: "all", label: "All Types" },
     { value: "College", label: "College" },
     { value: "University", label: "University" },
     { value: "Private", label: "Private University" }
