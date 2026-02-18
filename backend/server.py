@@ -302,6 +302,50 @@ async def predict_apeapcet(req: APEAPCETPredictionRequest):
         predictions=predictions[:500]
     )
 
+# ==================== COMEDK ====================
+@api_router.get("/comedk/metadata")
+async def get_comedk_metadata():
+    data = await db.comedk_metadata.find_one({}, {"_id": 0})
+    if not data: raise HTTPException(404, "Not found")
+    return data
+
+@api_router.post("/comedk/predict", response_model=PredictionResponse)
+async def predict_comedk(req: COMEDKPredictionRequest):
+    query = {}
+    if req.category: query["category"] = req.category
+    if req.gender: query["gender"] = req.gender
+    if req.district: query["district"] = req.district
+    if req.branch: query["branch"] = {"$regex": req.branch, "$options": "i"}
+    
+    cutoffs = await db.comedk_cutoffs.find(query, {"_id": 0}).to_list(10000)
+    
+    predictions = []
+    for c in cutoffs:
+        chance, prob = calculate_chance(req.rank, c.get('opening_rank', 0), c.get('closing_rank', 0))
+        predictions.append(CollegePrediction(
+            institute=c.get('college', ''),
+            institute_code=c.get('college_code', ''),
+            branch=c.get('branch', ''),
+            category=c.get('category', ''),
+            gender=c.get('gender', ''),
+            district=c.get('district', ''),
+            opening_rank=c.get('opening_rank', 0),
+            closing_rank=c.get('closing_rank', 0),
+            user_rank=req.rank,
+            chance=chance,
+            probability=max(5, min(95, prob)),
+        ))
+    
+    predictions.sort(key=lambda x: (-x.probability, x.closing_rank))
+    
+    return PredictionResponse(
+        total_colleges=len(predictions),
+        safe_count=len([p for p in predictions if p.chance == "SAFE"]),
+        good_count=len([p for p in predictions if p.chance == "GOOD"]),
+        reach_count=len([p for p in predictions if p.chance == "REACH"]),
+        predictions=predictions[:500]
+    )
+
 app.include_router(api_router)
 
 app.add_middleware(
