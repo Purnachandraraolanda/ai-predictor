@@ -110,6 +110,9 @@ const TGEAPCETPage = () => {
         (p.institute || "").toLowerCase().includes(q) || (p.branch || "").toLowerCase().includes(q)
       );
     }
+    if (selectedBranches.length > 0) {
+      filtered = filtered.filter(p => selectedBranches.includes(p.branch));
+    }
     return filtered;
   };
 
