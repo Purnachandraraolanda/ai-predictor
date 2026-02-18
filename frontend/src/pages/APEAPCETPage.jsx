@@ -8,13 +8,14 @@ import {
   Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
 } from "@/components/ui/select";
 import {
-  GraduationCap, Search, Loader2, CheckCircle, AlertCircle,
-  XCircle, Building, BookOpen, Database,
-  ArrowRight, Sparkles, MapPin, Filter
+  GraduationCap, Search, Loader2,
+  Building, BookOpen, Database,
+  ArrowRight, Sparkles, MapPin
 } from "lucide-react";
 import { toast } from "sonner";
 import axios from "axios";
 import ParticleBackground from "@/components/ParticleBackground";
+import { StateCollegeCard, ResultsHeader } from "@/components/CollegeCard";
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const API = `${BACKEND_URL}/api`;
@@ -33,46 +34,6 @@ const AnimatedCounter = ({ end, duration = 2000 }) => {
   }, [end, duration]);
   return <span>{count.toLocaleString()}</span>;
 };
-
-const ChanceBadge = ({ chance, probability }) => {
-  const config = {
-    SAFE: { bg: "bg-emerald-500/15", text: "text-emerald-400", border: "border-emerald-500/30", icon: CheckCircle, label: "Safe" },
-    GOOD: { bg: "bg-amber-500/15", text: "text-amber-400", border: "border-amber-500/30", icon: AlertCircle, label: "Good Chance" },
-    REACH: { bg: "bg-red-500/15", text: "text-red-400", border: "border-red-500/30", icon: XCircle, label: "Reach" }
-  };
-  const c = config[chance];
-  return (
-    <div className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full border text-xs font-semibold ${c.bg} ${c.text} ${c.border}`}>
-      <c.icon className="w-3.5 h-3.5" />
-      <span>{c.label}</span>
-      <span className="opacity-60">({probability}%)</span>
-    </div>
-  );
-};
-
-const CollegeCard = ({ prediction, index }) => (
-  <motion.div
-    initial={{ opacity: 0, y: 15 }}
-    animate={{ opacity: 1, y: 0 }}
-    transition={{ delay: Math.min(index * 0.03, 1) }}
-    className="p-5 rounded-xl bg-[#1a1f26] border border-zinc-800/50 hover:border-zinc-700 transition-all"
-    data-testid={`result-card-${index}`}
-  >
-    <div className="flex items-start justify-between mb-3">
-      <div className="flex items-center gap-3 flex-1 min-w-0">
-        <div className="w-11 h-11 rounded-xl bg-gradient-to-br from-violet-600 to-purple-600 flex items-center justify-center flex-shrink-0 shadow-lg">
-          <GraduationCap className="w-5 h-5 text-white" />
-        </div>
-        <div className="min-w-0 flex-1">
-          <h4 className="text-white font-semibold text-sm leading-tight">{prediction.institute || prediction.institute_code}</h4>
-          {prediction.institute_code && <span className="text-zinc-500 text-xs">{prediction.institute_code}</span>}
-        </div>
-      </div>
-      <ChanceBadge chance={prediction.chance} probability={prediction.probability} />
-    </div>
-
-    <div className="mb-3">
-      <p className="text-zinc-300 text-sm font-medium">{prediction.branch}</p>
     </div>
 
     <div className="flex items-center gap-4 text-xs flex-wrap">
