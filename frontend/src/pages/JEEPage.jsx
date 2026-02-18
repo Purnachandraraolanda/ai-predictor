@@ -293,8 +293,8 @@ const JEEPage = () => {
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
               <div>
                 <label className="text-zinc-400 text-xs font-medium uppercase tracking-wider mb-2 block">JEE Rank *</label>
-                <Input type="number" placeholder="Enter your rank" value={formData.rank}
-                  onChange={(e) => setFormData({ ...formData, rank: e.target.value })}
+                <Input type="number" min="1" placeholder="Enter your rank" value={formData.rank}
+                  onChange={(e) => setFormData({ ...formData, rank: e.target.value.replace(/^-/, '') })}
                   className="bg-[#0f1419] border-zinc-800 focus:border-blue-500 text-white placeholder:text-zinc-600 h-12 rounded-xl" data-testid="rank-input" />
               </div>
               <div>
