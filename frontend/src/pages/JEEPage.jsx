@@ -225,6 +225,15 @@ const JEEPage = () => {
     );
   };
 
+  const handleReset = () => {
+    setPredictions(null);
+    setActiveTab("all");
+    setSearchQuery("");
+    setSelectedBranches([]);
+    setFormData({ ...formData, rank: "" });
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
   const services = [
     { icon: TrendingUp, title: "Rank Analysis & Performance Review", desc: "JEE Main percentile & rank explanation, rank vs college prediction, category & quota based analysis" },
     { icon: BookOpen, title: "College & Branch Selection Guidance", desc: "IIT/NIT/IIIT/GFTI options, branch comparison, top colleges vs safe colleges planning, career-based selection" },
