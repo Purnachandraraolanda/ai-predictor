@@ -245,16 +245,21 @@ const JEEPage = () => {
   const quotaLabel = { AI: "All India", HS: "Home State", OS: "Other State" }[formData.quota] || formData.quota;
 
   return (
-    <div className="min-h-screen bg-[#0f1419] relative">
+    <div className="min-h-screen bg-[#131820] relative">
       <ParticleBackground color="59,130,246" particleCount={55} connectionDistance={120} speed={0.3} />
       {/* Header */}
-      <header className="border-b border-zinc-800/50 sticky top-0 z-50 bg-[#0f1419]/90 backdrop-blur-xl">
+      <header className="border-b border-[#2a3040] sticky top-0 z-50 bg-[#131820]/90 backdrop-blur-xl">
         <div className="container mx-auto px-4 md:px-6 max-w-6xl">
           <div className="flex items-center justify-between h-16">
-            <Link to="/" className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-blue-600 to-blue-800 flex items-center justify-center">
-                <GraduationCap className="w-5 h-5 text-white" />
-              </div>
+            <div className="flex items-center gap-4">
+              <Link to="/" className="flex items-center gap-2 text-zinc-400 hover:text-white transition-colors" data-testid="back-btn">
+                <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" /></svg>
+              </Link>
+              <Link to="/" className="flex items-center gap-3">
+                <motion.div className="w-10 h-10 rounded-lg bg-gradient-to-br from-blue-600 to-blue-800 flex items-center justify-center"
+                  whileHover={{ rotate: 10, scale: 1.1 }} transition={{ type: "spring", stiffness: 300 }}>
+                  <GraduationCap className="w-5 h-5 text-white" />
+                </motion.div>
               <div>
                 <span className="font-bold text-white text-lg">JEE Predictor</span>
                 <span className="text-amber-500 text-xs block leading-tight">by edu9 Career Guidance</span>
