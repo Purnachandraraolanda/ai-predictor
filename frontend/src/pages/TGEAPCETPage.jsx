@@ -289,28 +289,12 @@ const TGEAPCETPage = () => {
                 </Select>
               </div>
               <div>
-                <label className="text-zinc-400 text-xs font-medium uppercase tracking-wider mb-2 block">Branches (Optional)</label>
-                <Select value={formData.branch} onValueChange={(v) => setFormData({ ...formData, branch: v })}>
-                  <SelectTrigger className="bg-[#0f1419] border-zinc-800 text-white h-12 rounded-xl" data-testid="branch-select">
-                    <SelectValue placeholder="All Branches" />
-                  </SelectTrigger>
-                  <SelectContent className="bg-[#1a1f26] border-zinc-800 max-h-60">
-                    <SelectItem value="all" className="text-white focus:bg-zinc-800">All Branches</SelectItem>
-                    {metadata?.branches?.map(b => <SelectItem key={b} value={b} className="text-white focus:bg-zinc-800">{b}</SelectItem>)}
-                  </SelectContent>
-                </Select>
+                <MultiSelectCheckbox label="Branches (Optional)" options={metadata?.branches || []}
+                  selected={formData.branches} onChange={(v) => setFormData({ ...formData, branches: v })} testId="branch-select" />
               </div>
               <div>
-                <label className="text-zinc-400 text-xs font-medium uppercase tracking-wider mb-2 block">Districts (Optional)</label>
-                <Select value={formData.district} onValueChange={(v) => setFormData({ ...formData, district: v })}>
-                  <SelectTrigger className="bg-[#0f1419] border-zinc-800 text-white h-12 rounded-xl" data-testid="district-select">
-                    <SelectValue placeholder="All Districts" />
-                  </SelectTrigger>
-                  <SelectContent className="bg-[#1a1f26] border-zinc-800 max-h-60">
-                    <SelectItem value="all" className="text-white focus:bg-zinc-800">All Districts</SelectItem>
-                    {metadata?.districts?.map(d => <SelectItem key={d} value={d} className="text-white focus:bg-zinc-800">{d}</SelectItem>)}
-                  </SelectContent>
-                </Select>
+                <MultiSelectCheckbox label="Districts (Optional)" options={metadata?.districts || []}
+                  selected={formData.districts} onChange={(v) => setFormData({ ...formData, districts: v })} testId="district-select" />
               </div>
             </div>
 
