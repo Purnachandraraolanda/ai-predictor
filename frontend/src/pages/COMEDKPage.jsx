@@ -8,13 +8,14 @@ import {
   Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
 } from "@/components/ui/select";
 import {
-  GraduationCap, Search, Loader2, CheckCircle, AlertCircle,
-  XCircle, Building, BookOpen, Database,
-  ArrowRight, Sparkles, MapPin, Filter
+  GraduationCap, Search, Loader2,
+  Building, BookOpen, Database,
+  ArrowRight, Sparkles, MapPin
 } from "lucide-react";
 import { toast } from "sonner";
 import axios from "axios";
 import ParticleBackground from "@/components/ParticleBackground";
+import { StateCollegeCard, ResultsHeader } from "@/components/CollegeCard";
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const API = `${BACKEND_URL}/api`;
