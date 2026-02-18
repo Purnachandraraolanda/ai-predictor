@@ -199,7 +199,31 @@ const JEEPage = () => {
         (p.program || "").toLowerCase().includes(q)
       );
     }
+    if (selectedBranches.length > 0) {
+      filtered = filtered.filter(p => selectedBranches.includes(p.program));
+    }
     return filtered;
+  };
+
+  // Extract unique programs for branch filter
+  const allBranches = useMemo(() => {
+    if (!predictions?.predictions) return [];
+    return [...new Set(predictions.predictions.map(p => p.program).filter(Boolean))].sort();
+  }, [predictions]);
+
+  // Close dropdown on outside click
+  useEffect(() => {
+    const handleClick = (e) => {
+      if (branchDropdownRef.current && !branchDropdownRef.current.contains(e.target)) setBranchDropdownOpen(false);
+    };
+    document.addEventListener("mousedown", handleClick);
+    return () => document.removeEventListener("mousedown", handleClick);
+  }, []);
+
+  const toggleBranch = (branch) => {
+    setSelectedBranches(prev =>
+      prev.includes(branch) ? prev.filter(b => b !== branch) : [...prev, branch]
+    );
   };
 
   const services = [
