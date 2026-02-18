@@ -33,29 +33,12 @@ const AnimatedCounter = ({ end, duration = 2000 }) => {
     requestAnimationFrame(animate);
   }, [end, duration]);
   return <span>{count.toLocaleString()}</span>;
-};
-    </div>
-
-    <div className="flex items-center gap-4 text-xs flex-wrap">
-      {prediction.district && (
-        <span className="inline-flex items-center gap-1 px-2 py-1 rounded-lg bg-zinc-800 text-zinc-400">
-          <MapPin className="w-3 h-3" />{prediction.district}
-        </span>
-      )}
-      <div className="flex items-center gap-3 ml-auto">
-        <div><span className="text-zinc-500">Open: </span><span className="text-zinc-300 font-mono font-medium">{prediction.opening_rank?.toLocaleString()}</span></div>
-        <div className="w-px h-4 bg-zinc-700" />
-        <div><span className="text-zinc-500">Close: </span><span className="text-zinc-300 font-mono font-medium">{prediction.closing_rank?.toLocaleString()}</span></div>
-      </div>
-    </div>
-  </motion.div>
-);
-
 const APEAPCETPage = () => {
   const [loading, setLoading] = useState(false);
   const [metadata, setMetadata] = useState(null);
   const [predictions, setPredictions] = useState(null);
   const [activeTab, setActiveTab] = useState("all");
+  const [searchQuery, setSearchQuery] = useState("");
 
   const [formData, setFormData] = useState({
     rank: "", category: "", gender: "",
