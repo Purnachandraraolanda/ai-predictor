@@ -26,6 +26,14 @@ Build a Multi-Exam College Predictor Platform with exact format matching referen
 
 ## What's Been Implemented
 
+### Background Visuals (All Pages)
+- Animated particle/dot grid background with mesh network effect
+- Canvas-based particle system with floating dots and connecting lines
+- Mouse interaction: particles repel from cursor, draw connection lines to mouse
+- Pulsing opacity animation on each dot
+- Each page has accent-colored particles (Homepage: violet, JEE: blue, TGEAPCET: emerald, APEAPCET: violet, COMEDK: orange)
+- Component: `/app/frontend/src/components/ParticleBackground.jsx`
+
 ### Homepage (/)
 - Hero section with animated gradient text "Dream College"
 - Floating particles animation with Framer Motion
@@ -91,8 +99,9 @@ Build a Multi-Exam College Predictor Platform with exact format matching referen
 │   │   ├── APEAPCETPage.jsx   # APEAPCET predictor
 │   │   └── COMEDKPage.jsx     # Full COMEDK predictor
 │   ├── components/
-│   │   ├── Layout.jsx         # Shared Header/Footer
-│   │   └── ui/                # Shadcn UI components
+│   │   ├── Layout.jsx              # Shared Header/Footer
+│   │   ├── ParticleBackground.jsx  # Animated particle mesh background
+│   │   └── ui/                     # Shadcn UI components
 │   ├── App.js                 # Routes
 │   └── index.css              # Global styles, animations
 ```
