@@ -83,46 +83,123 @@ export const StateCollegeCard = ({ prediction, index, userRank, accentGradient =
   );
 };
 
-export const ResultsHeader = ({ predictions, formData, activeTab, setActiveTab, searchQuery, setSearchQuery, accentColor = "blue" }) => (
-  <div className="p-6 rounded-2xl bg-[#141922] border border-zinc-800/50 mb-6">
-    <div className="flex items-center justify-between mb-4">
-      <div>
-        <h2 className="text-2xl font-bold text-white mb-1">Prediction Results</h2>
-        <p className="text-zinc-400 text-sm">
-          Rank <span className={`text-${accentColor}-400 font-bold`}>{parseInt(formData.rank).toLocaleString()}</span>
-          {" "}&bull; {formData.category || formData.seat_type}
-          {formData.gender && <> &bull; {formData.gender === "M" ? "Male" : formData.gender === "F" ? "Female" : formData.gender}</>}
-        </p>
-      </div>
-    </div>
+export const ResultsHeader = ({ predictions, formData, activeTab, setActiveTab, searchQuery, setSearchQuery, selectedBranches, setSelectedBranches, accentColor = "blue" }) => {
+  const [branchDropdownOpen, setBranchDropdownOpen] = React.useState(false);
+  const dropdownRef = React.useRef(null);
 
-    <div className="flex items-center gap-6 border-b border-zinc-800/50 mb-5" data-testid="results-tabs">
-      {[
-        { key: "all", label: "All Results", count: predictions.total_colleges },
-        { key: "reach", label: "Reach", count: predictions.reach_count },
-        { key: "good", label: "Good Chance", count: predictions.good_count },
-        { key: "safe", label: "Safe", count: predictions.safe_count },
-      ].map(tab => (
-        <button key={tab.key} onClick={() => setActiveTab(tab.key)}
-          className={`pb-3 text-sm font-medium flex items-center gap-2 border-b-2 transition-all ${
-            activeTab === tab.key ? `border-${accentColor}-500 text-white` : "border-transparent text-zinc-500 hover:text-zinc-300"
-          }`} data-testid={`tab-${tab.key}`}>
-          {tab.label}
-          <span className={`text-xs px-2 py-0.5 rounded-full ${
-            activeTab === tab.key ? `bg-${accentColor}-600 text-white` : "bg-zinc-800 text-zinc-400"
-          }`}>{tab.count}</span>
-        </button>
-      ))}
-    </div>
+  // Extract unique branches from predictions
+  const allBranches = React.useMemo(() => {
+    if (!predictions?.predictions) return [];
+    const branches = [...new Set(predictions.predictions.map(p => p.branch || p.program).filter(Boolean))];
+    return branches.sort();
+  }, [predictions]);
 
-    <div className="flex items-center gap-3">
-      <div className="relative flex-1">
-        <svg className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg>
-        <input placeholder="Search college or branch..."
-          value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)}
-          className="w-full bg-[#0f1419] border border-zinc-800 text-white pl-10 h-11 rounded-xl placeholder:text-zinc-600 text-sm focus:outline-none focus:border-zinc-600"
-          data-testid="search-input" />
+  // Close dropdown on outside click
+  React.useEffect(() => {
+    const handleClick = (e) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(e.target)) setBranchDropdownOpen(false);
+    };
+    document.addEventListener("mousedown", handleClick);
+    return () => document.removeEventListener("mousedown", handleClick);
+  }, []);
+
+  const toggleBranch = (branch) => {
+    setSelectedBranches(prev =>
+      prev.includes(branch) ? prev.filter(b => b !== branch) : [...prev, branch]
+    );
+  };
+
+  return (
+    <div className="p-6 rounded-2xl bg-[#141922] border border-zinc-800/50 mb-6">
+      <div className="flex items-center justify-between mb-4">
+        <div>
+          <h2 className="text-2xl font-bold text-white mb-1">Prediction Results</h2>
+          <p className="text-zinc-400 text-sm">
+            Rank <span className={`text-${accentColor}-400 font-bold`}>{parseInt(formData.rank).toLocaleString()}</span>
+            {" "}&bull; {formData.category || formData.seat_type}
+            {formData.gender && <> &bull; {formData.gender === "M" ? "Male" : formData.gender === "F" ? "Female" : formData.gender}</>}
+          </p>
+        </div>
       </div>
+
+      <div className="flex items-center gap-6 border-b border-zinc-800/50 mb-5 overflow-x-auto" data-testid="results-tabs">
+        {[
+          { key: "all", label: "All Results", count: predictions.total_colleges },
+          { key: "reach", label: "Reach", count: predictions.reach_count },
+          { key: "good", label: "Good Chance", count: predictions.good_count },
+          { key: "safe", label: "Safe", count: predictions.safe_count },
+        ].map(tab => (
+          <button key={tab.key} onClick={() => setActiveTab(tab.key)}
+            className={`pb-3 text-sm font-medium flex items-center gap-2 border-b-2 transition-all whitespace-nowrap ${
+              activeTab === tab.key ? `border-${accentColor}-500 text-white` : "border-transparent text-zinc-500 hover:text-zinc-300"
+            }`} data-testid={`tab-${tab.key}`}>
+            {tab.label}
+            <span className={`text-xs px-2 py-0.5 rounded-full ${
+              activeTab === tab.key ? `bg-${accentColor}-600 text-white` : "bg-zinc-800 text-zinc-400"
+            }`}>{tab.count}</span>
+          </button>
+        ))}
+      </div>
+
+      <div className="flex items-center gap-3 flex-wrap">
+        {/* College Search */}
+        <div className="relative flex-1 min-w-[200px]">
+          <svg className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg>
+          <input placeholder="Search college or branch..."
+            value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)}
+            className="w-full bg-[#0f1419] border border-zinc-800 text-white pl-10 h-11 rounded-xl placeholder:text-zinc-600 text-sm focus:outline-none focus:border-zinc-600"
+            data-testid="search-input" />
+        </div>
+
+        {/* Branch Multi-Select */}
+        <div className="relative" ref={dropdownRef}>
+          <button onClick={() => setBranchDropdownOpen(!branchDropdownOpen)}
+            className="flex items-center gap-2 bg-[#0f1419] border border-zinc-800 text-white h-11 px-4 rounded-xl text-sm hover:border-zinc-600 transition-colors"
+            data-testid="branch-filter-btn">
+            <BookOpen className="w-4 h-4 text-zinc-500" />
+            <span className="whitespace-nowrap">
+              {selectedBranches.length === 0 ? "All Branches" : `${selectedBranches.length} Branch${selectedBranches.length > 1 ? "es" : ""}`}
+            </span>
+            <svg className={`w-4 h-4 text-zinc-500 transition-transform ${branchDropdownOpen ? "rotate-180" : ""}`} fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" /></svg>
+          </button>
+
+          {branchDropdownOpen && (
+            <div className="absolute top-full mt-2 right-0 w-80 max-h-72 overflow-y-auto bg-[#1a1f28] border border-zinc-700 rounded-xl shadow-2xl z-50" data-testid="branch-filter-dropdown">
+              <div className="sticky top-0 bg-[#1a1f28] p-2 border-b border-zinc-800">
+                <button onClick={() => setSelectedBranches([])}
+                  className="w-full text-left px-3 py-2 text-xs text-zinc-400 hover:text-white hover:bg-zinc-800 rounded-lg transition-colors">
+                  Clear All Filters
+                </button>
+              </div>
+              {allBranches.map(branch => (
+                <label key={branch}
+                  className="flex items-center gap-3 px-4 py-2.5 hover:bg-zinc-800/50 cursor-pointer transition-colors text-sm">
+                  <input type="checkbox" checked={selectedBranches.includes(branch)}
+                    onChange={() => toggleBranch(branch)}
+                    className="w-4 h-4 rounded border-zinc-600 bg-zinc-800 text-blue-500 focus:ring-0 focus:ring-offset-0 accent-blue-500" />
+                  <span className="text-zinc-300 truncate">{branch}</span>
+                </label>
+              ))}
+              {allBranches.length === 0 && (
+                <p className="px-4 py-3 text-zinc-500 text-sm">No branches found</p>
+              )}
+            </div>
+          )}
+        </div>
+      </div>
+
+      {selectedBranches.length > 0 && (
+        <div className="flex flex-wrap gap-2 mt-3">
+          {selectedBranches.map(b => (
+            <span key={b} className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-blue-600/15 text-blue-400 border border-blue-500/20 text-xs">
+              {b.length > 35 ? b.substring(0, 35) + "..." : b}
+              <button onClick={() => toggleBranch(b)} className="ml-1 hover:text-white">
+                <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg>
+              </button>
+            </span>
+          ))}
+        </div>
+      )}
     </div>
-  </div>
-);
+  );
+};
