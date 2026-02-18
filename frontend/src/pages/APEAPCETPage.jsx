@@ -41,6 +41,7 @@ const APEAPCETPage = () => {
   const [predictions, setPredictions] = useState(null);
   const [activeTab, setActiveTab] = useState("all");
   const [searchQuery, setSearchQuery] = useState("");
+  const [selectedBranches, setSelectedBranches] = useState([]);
 
   const [formData, setFormData] = useState({
     rank: "", category: "", gender: "",
