@@ -82,35 +82,28 @@ const TGEAPCETPage = () => {
   const [formData, setFormData] = useState({
     rank: "",
     category: "OC",
-    gender: "Male",
+    gender: "M",
     district: "all",
-    branch: "all",
-    special_quota: "general"
+    branch: "all"
   });
 
   const categories = [
     { value: "OC", label: "OC (Open Category)" },
-    { value: "BC-A", label: "BC-A" },
-    { value: "BC-B", label: "BC-B" },
-    { value: "BC-C", label: "BC-C" },
-    { value: "BC-D", label: "BC-D" },
-    { value: "BC-E", label: "BC-E" },
-    { value: "EWS", label: "EWS (Economically Weaker Section)" },
-    { value: "SC", label: "SC" },
-    { value: "ST", label: "ST" }
+    { value: "BC_A", label: "BC-A" },
+    { value: "BC_B", label: "BC-B" },
+    { value: "BC_C", label: "BC-C" },
+    { value: "BC_D", label: "BC-D" },
+    { value: "BC_E", label: "BC-E" },
+    { value: "SC_I", label: "SC-I" },
+    { value: "SC_II", label: "SC-II" },
+    { value: "SC_III", label: "SC-III" },
+    { value: "ST", label: "ST" },
+    { value: "EWS", label: "EWS" }
   ];
 
   const genders = [
-    { value: "Male", label: "Male" },
-    { value: "Female", label: "Female" }
-  ];
-
-  const specialQuotas = [
-    { value: "general", label: "General (No Special Quota)" },
-    { value: "PWD", label: "PWD (Persons with Disabilities)" },
-    { value: "CAP", label: "CAP (Children of Armed Personnel)" },
-    { value: "NCC", label: "NCC (National Cadet Corps)" },
-    { value: "Sports", label: "Sports Quota" }
+    { value: "M", label: "Male" },
+    { value: "F", label: "Female" }
   ];
 
   useEffect(() => {
@@ -140,8 +133,7 @@ const TGEAPCETPage = () => {
         category: formData.category,
         gender: formData.gender,
         district: formData.district === "all" ? null : formData.district,
-        branch: formData.branch === "all" ? null : formData.branch,
-        special_quota: formData.special_quota === "general" ? null : formData.special_quota
+        branch: formData.branch === "all" ? null : formData.branch
       });
 
       setPredictions(response.data);
@@ -164,7 +156,7 @@ const TGEAPCETPage = () => {
     return filtered;
   };
 
-  const stats = metadata?.stats || { university_count: 13, college_count: 161, branch_count: 24, total_records: 32685 };
+  const stats = metadata?.stats || { university_count: 22, college_count: 179, branch_count: 50, total_records: 13744 };
 
   return (
     <div className="min-h-screen bg-[#0f1419]">
@@ -188,36 +180,37 @@ const TGEAPCETPage = () => {
       {/* Hero Section */}
       <section className="pt-20 pb-12 relative">
         <div className="absolute inset-0 overflow-hidden pointer-events-none">
-          <div className="absolute top-20 left-10 w-1 h-1 bg-emerald-500/50 rounded-full animate-pulse" />
-          <div className="absolute top-40 left-20 w-1.5 h-1.5 bg-violet-500/50 rounded-full animate-pulse" style={{animationDelay: '0.5s'}} />
-          <div className="absolute top-32 right-20 w-1 h-1 bg-rose-500/50 rounded-full animate-pulse" style={{animationDelay: '1s'}} />
+          <div className="absolute top-20 left-[10%] w-1 h-1 bg-emerald-500/50 rounded-full animate-pulse" />
+          <div className="absolute top-40 left-[15%] w-1.5 h-1.5 bg-violet-500/50 rounded-full animate-pulse" style={{animationDelay: '0.5s'}} />
+          <div className="absolute top-32 right-[15%] w-1 h-1 bg-rose-500/50 rounded-full animate-pulse" style={{animationDelay: '1s'}} />
+          <div className="absolute top-60 right-[20%] w-1 h-1 bg-cyan-500/50 rounded-full animate-pulse" style={{animationDelay: '1.5s'}} />
         </div>
 
         <div className="container mx-auto px-4 md:px-6 max-w-6xl relative">
           <div className="text-center mb-12">
-            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-violet-500/10 border border-violet-500/20 mb-6">
-              <Sparkles className="w-4 h-4 text-violet-400" />
-              <span className="text-violet-400 text-sm font-medium">Official TGEAPCET 2025 Data</span>
+            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-rose-500/10 border border-rose-500/20 mb-6">
+              <Sparkles className="w-4 h-4 text-rose-400" />
+              <span className="text-rose-400 text-sm font-medium">Official TGEAPCET 2025 Data</span>
             </div>
             
             <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-4 tracking-tight">
-              <span className="bg-gradient-to-r from-emerald-400 to-cyan-400 bg-clip-text text-transparent">TGEAPCET College</span>
+              <span className="bg-gradient-to-r from-emerald-400 via-cyan-400 to-violet-400 bg-clip-text text-transparent">TGEAPCET College</span>
               <br />
               <span className="text-white">Predictor</span>
             </h1>
             
             <p className="text-zinc-400 text-lg max-w-xl mx-auto">
-              Discover your perfect college match from <span className="text-white font-semibold">{stats.college_count + stats.university_count}</span> top institutes across Telangana with <span className="text-white font-semibold">{stats.branch_count}</span> branches
+              Discover your perfect college match from <span className="text-white font-semibold">{stats.college_count}</span> top institutes across Telangana with <span className="text-white font-semibold">{stats.branch_count}</span> branches
             </p>
           </div>
 
-          {/* Stats Cards */}
+          {/* Stats Cards - Exact match to reference */}
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 max-w-4xl mx-auto mb-8">
             <div className="p-6 rounded-2xl bg-[#1a1f26] border border-zinc-800/50 text-center">
               <div className="w-12 h-12 mx-auto mb-3 rounded-xl bg-violet-500/20 flex items-center justify-center">
                 <Building className="w-6 h-6 text-violet-400" />
               </div>
-              <div className="text-3xl font-bold text-white mb-1"><AnimatedCounter end={stats.university_count} /></div>
+              <div className="text-3xl font-bold text-white mb-1"><AnimatedCounter end={22} /></div>
               <div className="text-zinc-500 text-sm">Universities</div>
             </div>
             <div className="p-6 rounded-2xl bg-[#1a1f26] border border-zinc-800/50 text-center">
@@ -236,7 +229,7 @@ const TGEAPCETPage = () => {
             </div>
             <div className="p-6 rounded-2xl bg-[#1a1f26] border border-zinc-800/50 text-center">
               <div className="w-12 h-12 mx-auto mb-3 rounded-xl bg-rose-500/20 flex items-center justify-center">
-                <Database className="w-6 h-6 text-rose-400" />
+                <Users className="w-6 h-6 text-rose-400" />
               </div>
               <div className="text-3xl font-bold text-white mb-1"><AnimatedCounter end={stats.total_records} /></div>
               <div className="text-zinc-500 text-sm">Cutoff Records</div>
@@ -316,23 +309,7 @@ const TGEAPCETPage = () => {
 
               <div>
                 <label className="text-zinc-400 text-xs font-medium uppercase tracking-wider mb-2 block">
-                  Special Quota (Optional)
-                </label>
-                <Select value={formData.special_quota} onValueChange={(v) => setFormData({ ...formData, special_quota: v })}>
-                  <SelectTrigger className="bg-[#0f1419] border-zinc-800 text-white h-12 rounded-xl" data-testid="quota-select">
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent className="bg-[#1a1f26] border-zinc-800">
-                    {specialQuotas.map((q) => (
-                      <SelectItem key={q.value} value={q.value} className="text-white focus:bg-zinc-800">{q.label}</SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-
-              <div>
-                <label className="text-zinc-400 text-xs font-medium uppercase tracking-wider mb-2 block">
-                  Branches (Optional)
+                  Branch (Optional)
                 </label>
                 <Select value={formData.branch} onValueChange={(v) => setFormData({ ...formData, branch: v })}>
                   <SelectTrigger className="bg-[#0f1419] border-zinc-800 text-white h-12 rounded-xl" data-testid="branch-select">
@@ -341,7 +318,7 @@ const TGEAPCETPage = () => {
                   <SelectContent className="bg-[#1a1f26] border-zinc-800 max-h-60">
                     <SelectItem value="all" className="text-white focus:bg-zinc-800">All Branches</SelectItem>
                     {metadata?.branches?.map((b) => (
-                      <SelectItem key={b} value={b} className="text-white focus:bg-zinc-800 text-xs">{b}</SelectItem>
+                      <SelectItem key={b} value={b} className="text-white focus:bg-zinc-800">{b}</SelectItem>
                     ))}
                   </SelectContent>
                 </Select>
@@ -349,7 +326,7 @@ const TGEAPCETPage = () => {
 
               <div>
                 <label className="text-zinc-400 text-xs font-medium uppercase tracking-wider mb-2 block">
-                  Districts (Optional)
+                  District (Optional)
                 </label>
                 <Select value={formData.district} onValueChange={(v) => setFormData({ ...formData, district: v })}>
                   <SelectTrigger className="bg-[#0f1419] border-zinc-800 text-white h-12 rounded-xl" data-testid="district-select">
@@ -374,7 +351,7 @@ const TGEAPCETPage = () => {
               {loading ? (
                 <><Loader2 className="mr-2 h-5 w-5 animate-spin" />Predicting...</>
               ) : (
-                <><Search className="mr-2 h-5 w-5" />Predict My Colleges</>
+                <><Sparkles className="mr-2 h-5 w-5" />Predict My Colleges<ArrowRight className="ml-2 h-4 w-4" /></>
               )}
             </Button>
           </motion.div>
@@ -407,7 +384,7 @@ const TGEAPCETPage = () => {
 
               <Tabs value={activeTab} onValueChange={setActiveTab}>
                 <TabsList className="w-full max-w-md mx-auto bg-[#1a1f26] border border-zinc-800/50 p-1 mb-6 rounded-xl">
-                  <TabsTrigger value="all" className="flex-1 rounded-lg data-[state=active]:bg-zinc-700">All</TabsTrigger>
+                  <TabsTrigger value="all" className="flex-1 rounded-lg data-[state=active]:bg-zinc-700">All ({predictions.total_colleges})</TabsTrigger>
                   <TabsTrigger value="safe" className="flex-1 rounded-lg data-[state=active]:bg-emerald-600/20 data-[state=active]:text-emerald-400">Safe</TabsTrigger>
                   <TabsTrigger value="good" className="flex-1 rounded-lg data-[state=active]:bg-amber-600/20 data-[state=active]:text-amber-400">Good</TabsTrigger>
                   <TabsTrigger value="reach" className="flex-1 rounded-lg data-[state=active]:bg-red-600/20 data-[state=active]:text-red-400">Reach</TabsTrigger>
@@ -440,19 +417,24 @@ const TGEAPCETPage = () => {
                                 </div>
                               </div>
                             </TableCell>
-                            <TableCell className="text-zinc-400 text-sm max-w-[200px] truncate">{p.branch}</TableCell>
+                            <TableCell className="text-zinc-400 text-sm">{p.branch}</TableCell>
                             <TableCell className="text-center">
                               <span className="inline-flex items-center gap-1 text-xs text-zinc-400">
                                 <MapPin className="w-3 h-3" />{p.district}
                               </span>
                             </TableCell>
-                            <TableCell className="text-right text-zinc-300 font-mono text-sm">{p.opening_rank.toLocaleString()}</TableCell>
-                            <TableCell className="text-right text-zinc-300 font-mono text-sm">{p.closing_rank.toLocaleString()}</TableCell>
+                            <TableCell className="text-right text-zinc-300 font-mono text-sm">{p.opening_rank?.toLocaleString()}</TableCell>
+                            <TableCell className="text-right text-zinc-300 font-mono text-sm">{p.closing_rank?.toLocaleString()}</TableCell>
                             <TableCell className="text-center"><ProbabilityBadge chance={p.chance} probability={p.probability} /></TableCell>
                           </TableRow>
                         ))}
                       </TableBody>
                     </Table>
+                    {getFilteredPredictions().length > 100 && (
+                      <div className="p-4 text-center text-zinc-500 text-sm border-t border-zinc-800/50">
+                        Showing top 100 results out of {getFilteredPredictions().length}
+                      </div>
+                    )}
                   </div>
                 </TabsContent>
               </Tabs>
@@ -468,9 +450,9 @@ const TGEAPCETPage = () => {
             <h2 className="text-2xl font-bold text-white text-center mb-8">How It Works</h2>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-4xl mx-auto mb-16">
               {[
-                { step: "01", title: "Enter Details", desc: "Input your TGEAPCET rank, category, and gender to get started" },
-                { step: "02", title: "Smart Analysis", desc: `We compare your rank with ${stats.total_records.toLocaleString()} official cutoff records` },
-                { step: "03", title: "Get Results", desc: "Receive personalized college recommendations with admission chances" }
+                { step: "01", title: "Enter Details", desc: "Input your TGEAPCET rank, category, and gender" },
+                { step: "02", title: "Smart Analysis", desc: `We compare with ${stats.total_records.toLocaleString()} cutoff records` },
+                { step: "03", title: "Get Results", desc: "See Safe, Good Chance & Reach colleges" }
               ].map((item) => (
                 <div key={item.step} className="p-6 rounded-2xl bg-[#1a1f26] border border-zinc-800/50 text-center">
                   <div className="text-emerald-500 text-4xl font-bold mb-3">{item.step}</div>
@@ -482,7 +464,7 @@ const TGEAPCETPage = () => {
 
             <div className="text-center p-10 rounded-3xl bg-gradient-to-br from-[#1a1f26] to-[#0f1419] border border-zinc-800/50">
               <h3 className="text-2xl font-bold text-white mb-3">Ready to Find Your Dream College?</h3>
-              <p className="text-zinc-400 mb-6">Join thousands of students who have used our predictor to make informed decisions</p>
+              <p className="text-zinc-400 mb-6">Join thousands of students who found their perfect match</p>
               <Button className="bg-gradient-to-r from-emerald-500 to-cyan-500 text-white font-semibold px-8 py-3 rounded-xl">
                 Start Prediction Now <ArrowRight className="ml-2 h-4 w-4" />
               </Button>
