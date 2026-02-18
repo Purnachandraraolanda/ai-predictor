@@ -1,12 +1,12 @@
 # Edu9 Career Guidance – AI College Predictor
 
 ## Problem Statement
-Build a Multi-Exam College Predictor Platform with support for JEE Main, TGEAPCET, APEAPCET, and COMEDK entrance exams. Dark theme, animated statistics, golden CTAs, and real APEAPCET cutoff data.
+Build a Multi-Exam College Predictor Platform with exact format matching reference sites for JEE, TGEAPCET, APEAPCET, and COMEDK entrance exams. Dark theme, animated statistics, Safe/Good/Reach classification.
 
 ## Architecture
 - **Frontend**: React + Tailwind CSS + Shadcn/UI + Framer Motion
 - **Backend**: FastAPI (Python)
-- **Database**: MongoDB (43,806 APEAPCET cutoff records)
+- **Database**: MongoDB
 - **Routing**: React Router with 5 routes
 
 ## User Personas
@@ -16,46 +16,60 @@ Build a Multi-Exam College Predictor Platform with support for JEE Main, TGEAPCE
 
 ## Core Requirements (Static)
 1. Homepage with hero, animated stats, predictor cards
-2. JEE/TGEAPCET pages with iframe embeds
-3. APEAPCET predictor with form and results
-4. COMEDK coming soon page
-5. Dark theme only, responsive design
+2. JEE predictor with exact format (23 IITs, 32 NITs, 26 IIITs, 47 GFTIs)
+3. TGEAPCET predictor for Telangana colleges
+4. APEAPCET predictor with real 43,806 cutoff records
+5. COMEDK coming soon page
+6. Dark theme (#0f1419 background), responsive design
 
 ## What's Been Implemented (2026-02-18)
-- ✅ Homepage with hero section, animated counters (50K+ students, 500+ colleges, 98% accuracy)
-- ✅ 4 Predictor cards with unique accent colors (Blue, Green, Purple, Orange)
-- ✅ How It Works and Services sections
-- ✅ JEE page with iframe embed (rank-matcher.preview.emergentagent.com)
-- ✅ TGEAPCET page with iframe embed (future-campus-13.preview.emergentagent.com)
-- ✅ APEAPCET predictor with full form (Rank, Category, Gender, College Type, District, Branch)
-- ✅ APEAPCET prediction API with Safe/Good/Reach classification
-- ✅ Results table with tabs for filtering by chance
-- ✅ COMEDK coming soon page with email notification
-- ✅ Header/Footer navigation
-- ✅ Golden CTA buttons
-- ✅ 43,806 real APEAPCET cutoff records loaded
+### JEE Main Predictor (/jee)
+- ✅ Exact format matching rank-matcher.preview.emergentagent.com
+- ✅ 12,122 real cutoff records from uploaded files (IITs, NITs, IIITs, GFTIs)
+- ✅ Form: Rank, Category (OPEN/EWS/OBC-NCL/SC/ST), Gender, Institute Type toggles, Quota
+- ✅ Stats: 23 IITs, 32 NITs, 26 IIITs, 47 GFTIs, 12,122 Cutoff Records, 253 Programs
+- ✅ Results table with Safe/Good/Reach tabs
+
+### TGEAPCET Predictor (/tgeapcet)
+- ✅ Exact format matching future-campus-13.preview.emergentagent.com  
+- ✅ 8,100 mock cutoff records (sample data)
+- ✅ Form: Rank, Category, Gender, Special Quota, Branch, District
+- ✅ Stats: 13 Universities, 30 Colleges, 24 Branches
+
+### APEAPCET Predictor (/apeapcet)
+- ✅ 43,806 real cutoff records from uploaded Excel file
+- ✅ 254 colleges, 70 branches, 14 districts
+- ✅ Form: Rank, Category, Gender, College Type, District, Branch
+
+### COMEDK Predictor (/comedk)
+- ✅ Coming soon page with email notification
+- ✅ Links to other predictors
+
+### Homepage (/)
+- ✅ Hero section with animated stats
+- ✅ 4 Predictor cards with accent colors
+- ✅ How It Works, Services sections
 
 ## API Endpoints
-- GET /api/predictors - List all predictors
-- GET /api/apeapcet/metadata - Colleges, branches, districts, categories
-- POST /api/apeapcet/predict - College prediction
+- GET /api/jee/metadata
+- POST /api/jee/predict
+- GET /api/tgeapcet/metadata
+- POST /api/tgeapcet/predict
+- GET /api/apeapcet/metadata
+- POST /api/apeapcet/predict
 
 ## Prioritized Backlog
-### P0 (Critical)
-- None remaining
-
 ### P1 (High)
-- Add more filter options (opening rank range)
+- Add real TGEAPCET data when user provides file
+- Pagination for large result sets
 - Export results to PDF/Excel
-- Save favorite colleges
 
 ### P2 (Medium)
 - User accounts and saved predictions
-- COMEDK predictor implementation
-- Comparison feature between colleges
+- COMEDK predictor implementation with real data
+- College comparison feature
 
 ## Next Tasks
-1. Add pagination for results (currently limited to 100)
-2. Implement college comparison feature
-3. Add filter by fee range
-4. Add counselling timeline/dates information
+1. User to provide TGEAPCET cutoff data file
+2. Implement result export functionality
+3. Add college detail pages
