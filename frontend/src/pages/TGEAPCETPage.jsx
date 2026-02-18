@@ -4,36 +4,13 @@ import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
-import { 
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
-import { 
-  GraduationCap, 
-  Search, 
-  Loader2, 
-  CheckCircle, 
-  AlertCircle,
-  XCircle,
-  Building,
-  BookOpen,
-  Users,
-  Database,
-  ArrowRight,
-  Sparkles,
-  MapPin
+  Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
+} from "@/components/ui/select";
+import {
+  GraduationCap, Search, Loader2, CheckCircle, AlertCircle,
+  XCircle, Building, BookOpen, Users, Database,
+  ArrowRight, Sparkles, MapPin, Filter, Shield
 } from "lucide-react";
 import { toast } from "sonner";
 import axios from "axios";
@@ -56,20 +33,74 @@ const AnimatedCounter = ({ end, duration = 2000 }) => {
   return <span>{count.toLocaleString()}</span>;
 };
 
-const ProbabilityBadge = ({ chance, probability }) => {
-  const styles = {
-    SAFE: "bg-emerald-500/20 text-emerald-400 border-emerald-500/30",
-    GOOD: "bg-amber-500/20 text-amber-400 border-amber-500/30",
-    REACH: "bg-red-500/20 text-red-400 border-red-500/30"
+const ChanceBadge = ({ chance, probability }) => {
+  const config = {
+    SAFE: { bg: "bg-emerald-500/15", text: "text-emerald-400", border: "border-emerald-500/30", icon: CheckCircle, label: "Safe" },
+    GOOD: { bg: "bg-amber-500/15", text: "text-amber-400", border: "border-amber-500/30", icon: AlertCircle, label: "Good Chance" },
+    REACH: { bg: "bg-red-500/15", text: "text-red-400", border: "border-red-500/30", icon: XCircle, label: "Reach" }
   };
-  const icons = { SAFE: CheckCircle, GOOD: AlertCircle, REACH: XCircle };
-  const Icon = icons[chance];
+  const c = config[chance];
   return (
-    <div className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full border text-xs font-medium ${styles[chance]}`}>
-      <Icon className="w-3.5 h-3.5" />
-      <span>{chance}</span>
-      <span className="opacity-70">({probability}%)</span>
+    <div className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full border text-xs font-semibold ${c.bg} ${c.text} ${c.border}`}>
+      <c.icon className="w-3.5 h-3.5" />
+      <span>{c.label}</span>
+      <span className="opacity-60">({probability}%)</span>
     </div>
+  );
+};
+
+const CollegeCard = ({ prediction, index, accentColor = "emerald" }) => {
+  const colorMap = {
+    emerald: { gradient: "from-emerald-600 to-teal-600", badge: "bg-emerald-600/15 text-emerald-400 border-emerald-500/30" },
+  };
+  const colors = colorMap[accentColor] || colorMap.emerald;
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 15 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ delay: Math.min(index * 0.03, 1) }}
+      className="p-5 rounded-xl bg-[#1a1f26] border border-zinc-800/50 hover:border-zinc-700 transition-all"
+      data-testid={`result-card-${index}`}
+    >
+      <div className="flex items-start justify-between mb-3">
+        <div className="flex items-center gap-3 flex-1 min-w-0">
+          <div className={`w-11 h-11 rounded-xl bg-gradient-to-br ${colors.gradient} flex items-center justify-center flex-shrink-0 shadow-lg`}>
+            <GraduationCap className="w-5 h-5 text-white" />
+          </div>
+          <div className="min-w-0 flex-1">
+            <h4 className="text-white font-semibold text-sm leading-tight">{prediction.institute}</h4>
+            {prediction.institute_code && (
+              <span className="text-zinc-500 text-xs">{prediction.institute_code}</span>
+            )}
+          </div>
+        </div>
+        <ChanceBadge chance={prediction.chance} probability={prediction.probability} />
+      </div>
+
+      <div className="mb-3">
+        <p className="text-zinc-300 text-sm font-medium">{prediction.branch}</p>
+      </div>
+
+      <div className="flex items-center gap-4 text-xs flex-wrap">
+        {prediction.district && (
+          <span className="inline-flex items-center gap-1 px-2 py-1 rounded-lg bg-zinc-800 text-zinc-400">
+            <MapPin className="w-3 h-3" />{prediction.district}
+          </span>
+        )}
+        <div className="flex items-center gap-3 ml-auto">
+          <div>
+            <span className="text-zinc-500">Open: </span>
+            <span className="text-zinc-300 font-mono font-medium">{prediction.opening_rank?.toLocaleString()}</span>
+          </div>
+          <div className="w-px h-4 bg-zinc-700" />
+          <div>
+            <span className="text-zinc-500">Close: </span>
+            <span className="text-zinc-300 font-mono font-medium">{prediction.closing_rank?.toLocaleString()}</span>
+          </div>
+        </div>
+      </div>
+    </motion.div>
   );
 };
 
@@ -78,69 +109,56 @@ const TGEAPCETPage = () => {
   const [metadata, setMetadata] = useState(null);
   const [predictions, setPredictions] = useState(null);
   const [activeTab, setActiveTab] = useState("all");
-  
+
   const [formData, setFormData] = useState({
-    rank: "",
-    category: "OC",
-    gender: "M",
-    district: "all",
-    branch: "all"
+    rank: "", category: "", gender: "",
+    special_quota: "General", district: "all", branch: "all"
   });
 
   const categories = [
+    { value: "BC_A", label: "BC-A" }, { value: "BC_B", label: "BC-B" },
+    { value: "BC_C", label: "BC-C" }, { value: "BC_D", label: "BC-D" },
+    { value: "BC_E", label: "BC-E" }, { value: "EWS", label: "EWS (Economically Weaker Section)" },
     { value: "OC", label: "OC (Open Category)" },
-    { value: "BC_A", label: "BC-A" },
-    { value: "BC_B", label: "BC-B" },
-    { value: "BC_C", label: "BC-C" },
-    { value: "BC_D", label: "BC-D" },
-    { value: "BC_E", label: "BC-E" },
-    { value: "SC_I", label: "SC-I" },
-    { value: "SC_II", label: "SC-II" },
-    { value: "SC_III", label: "SC-III" },
-    { value: "ST", label: "ST" },
-    { value: "EWS", label: "EWS" }
+    { value: "SC_I", label: "SC-I" }, { value: "SC_II", label: "SC-II" },
+    { value: "SC_III", label: "SC-III" }, { value: "ST", label: "ST" }
   ];
 
   const genders = [
-    { value: "M", label: "Male" },
-    { value: "F", label: "Female" }
+    { value: "M", label: "Male" }, { value: "F", label: "Female" }
+  ];
+
+  const specialQuotas = [
+    { value: "General", label: "General (No Special Quota)" },
+    { value: "PWD", label: "PWD (Persons with Disabilities)" },
+    { value: "CAP", label: "CAP (Children of Armed Personnel)" },
+    { value: "NCC", label: "NCC (National Cadet Corps)" },
+    { value: "Sports", label: "Sports Quota" }
   ];
 
   useEffect(() => {
-    const fetchMetadata = async () => {
-      try {
-        const response = await axios.get(`${API}/tgeapcet/metadata`);
-        setMetadata(response.data);
-      } catch (error) {
-        console.error("Failed to fetch metadata:", error);
-      }
-    };
-    fetchMetadata();
+    axios.get(`${API}/tgeapcet/metadata`).then(r => setMetadata(r.data)).catch(console.error);
   }, []);
 
   const handlePredict = async () => {
-    if (!formData.rank) {
-      toast.error("Please enter your TGEAPCET rank");
-      return;
-    }
+    if (!formData.rank) return toast.error("Please enter your TGEAPCET rank");
+    if (!formData.category) return toast.error("Please select a category");
+    if (!formData.gender) return toast.error("Please select a gender");
 
     setLoading(true);
     setPredictions(null);
-
     try {
       const response = await axios.post(`${API}/tgeapcet/predict`, {
-        rank: parseInt(formData.rank),
-        category: formData.category,
+        rank: parseInt(formData.rank), category: formData.category,
         gender: formData.gender,
+        special_quota: formData.special_quota === "General" ? null : formData.special_quota,
         district: formData.district === "all" ? null : formData.district,
         branch: formData.branch === "all" ? null : formData.branch
       });
-
       setPredictions(response.data);
       setActiveTab("all");
       toast.success(`Found ${response.data.total_colleges} college matches!`);
     } catch (error) {
-      console.error("Prediction failed:", error);
       toast.error("Failed to get predictions. Please try again.");
     } finally {
       setLoading(false);
@@ -149,210 +167,191 @@ const TGEAPCETPage = () => {
 
   const getFilteredPredictions = () => {
     if (!predictions) return [];
-    let filtered = predictions.predictions;
-    if (activeTab === "safe") filtered = filtered.filter(p => p.chance === "SAFE");
-    else if (activeTab === "good") filtered = filtered.filter(p => p.chance === "GOOD");
-    else if (activeTab === "reach") filtered = filtered.filter(p => p.chance === "REACH");
-    return filtered;
+    if (activeTab === "safe") return predictions.predictions.filter(p => p.chance === "SAFE");
+    if (activeTab === "good") return predictions.predictions.filter(p => p.chance === "GOOD");
+    if (activeTab === "reach") return predictions.predictions.filter(p => p.chance === "REACH");
+    return predictions.predictions;
   };
 
-  const stats = metadata?.stats || { university_count: 22, college_count: 179, branch_count: 50, total_records: 13744 };
+  const stats = metadata?.stats || { university_count: 13, college_count: 161, branch_count: 24, total_records: 32685 };
+  const filtered = getFilteredPredictions();
 
   return (
     <div className="min-h-screen bg-[#0f1419]">
       {/* Header */}
-      <header className="border-b border-zinc-800/50">
+      <header className="border-b border-zinc-800/50 sticky top-0 z-50 bg-[#0f1419]/90 backdrop-blur-xl">
         <div className="container mx-auto px-4 md:px-6 max-w-6xl">
           <div className="flex items-center justify-between h-16">
             <Link to="/" className="flex items-center gap-3">
               <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-emerald-600 to-emerald-800 flex items-center justify-center">
                 <GraduationCap className="w-5 h-5 text-white" />
               </div>
-              <span className="font-bold text-white text-lg">Edu9 Career Guidance</span>
+              <div>
+                <span className="font-bold text-white text-lg">TGEAPCET Predictor</span>
+                <span className="text-emerald-400 text-xs block leading-tight">by edu9 Career Guidance</span>
+              </div>
             </Link>
-            <Badge className="bg-transparent border border-rose-500/50 text-rose-400 px-4 py-1.5 rounded-full">
-              TGEAPCET 2026
+            <Badge className="bg-transparent border border-emerald-500/50 text-emerald-400 px-4 py-1.5 rounded-full">
+              <Sparkles className="w-3.5 h-3.5 mr-1.5" />
+              Official TGEAPCET 2025 Data
             </Badge>
           </div>
         </div>
       </header>
 
       {/* Hero Section */}
-      <section className="pt-20 pb-12 relative">
+      <section className="pt-16 pb-8 relative">
         <div className="absolute inset-0 overflow-hidden pointer-events-none">
-          <div className="absolute top-20 left-[10%] w-1 h-1 bg-emerald-500/50 rounded-full animate-pulse" />
-          <div className="absolute top-40 left-[15%] w-1.5 h-1.5 bg-violet-500/50 rounded-full animate-pulse" style={{animationDelay: '0.5s'}} />
-          <div className="absolute top-32 right-[15%] w-1 h-1 bg-rose-500/50 rounded-full animate-pulse" style={{animationDelay: '1s'}} />
-          <div className="absolute top-60 right-[20%] w-1 h-1 bg-cyan-500/50 rounded-full animate-pulse" style={{animationDelay: '1.5s'}} />
+          {[
+            { t: 20, l: 10, s: 4, c: "bg-emerald-500/40", d: 0 },
+            { t: 40, l: 15, s: 6, c: "bg-violet-500/40", d: 0.5 },
+            { t: 32, l: 85, s: 4, c: "bg-rose-500/40", d: 1 },
+            { t: 60, l: 80, s: 4, c: "bg-cyan-500/40", d: 1.5 },
+          ].map((p, i) => (
+            <motion.div key={i} className={`absolute rounded-full ${p.c}`}
+              style={{ top: `${p.t}%`, left: `${p.l}%`, width: p.s, height: p.s }}
+              animate={{ y: [-10, 10, -10], opacity: [0.3, 0.7, 0.3] }}
+              transition={{ duration: 3, repeat: Infinity, delay: p.d }} />
+          ))}
         </div>
 
         <div className="container mx-auto px-4 md:px-6 max-w-6xl relative">
-          <div className="text-center mb-12">
-            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-rose-500/10 border border-rose-500/20 mb-6">
-              <Sparkles className="w-4 h-4 text-rose-400" />
-              <span className="text-rose-400 text-sm font-medium">Official TGEAPCET 2025 Data</span>
+          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="text-center mb-10">
+            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-emerald-500/10 border border-emerald-500/20 mb-6">
+              <Sparkles className="w-4 h-4 text-emerald-400" />
+              <span className="text-emerald-400 text-sm font-medium">Official TGEAPCET 2025 Data</span>
             </div>
-            
+
             <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-4 tracking-tight">
               <span className="bg-gradient-to-r from-emerald-400 via-cyan-400 to-violet-400 bg-clip-text text-transparent">TGEAPCET College</span>
-              <br />
-              <span className="text-white">Predictor</span>
+              <br /><span className="text-white">Predictor</span>
             </h1>
-            
-            <p className="text-zinc-400 text-lg max-w-xl mx-auto">
-              Discover your perfect college match from <span className="text-white font-semibold">{stats.college_count}</span> top institutes across Telangana with <span className="text-white font-semibold">{stats.branch_count}</span> branches
-            </p>
-          </div>
 
-          {/* Stats Cards - Exact match to reference */}
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 max-w-4xl mx-auto mb-8">
-            <div className="p-6 rounded-2xl bg-[#1a1f26] border border-zinc-800/50 text-center">
-              <div className="w-12 h-12 mx-auto mb-3 rounded-xl bg-violet-500/20 flex items-center justify-center">
-                <Building className="w-6 h-6 text-violet-400" />
-              </div>
-              <div className="text-3xl font-bold text-white mb-1"><AnimatedCounter end={22} /></div>
-              <div className="text-zinc-500 text-sm">Universities</div>
-            </div>
-            <div className="p-6 rounded-2xl bg-[#1a1f26] border border-zinc-800/50 text-center">
-              <div className="w-12 h-12 mx-auto mb-3 rounded-xl bg-emerald-500/20 flex items-center justify-center">
-                <GraduationCap className="w-6 h-6 text-emerald-400" />
-              </div>
-              <div className="text-3xl font-bold text-white mb-1"><AnimatedCounter end={stats.college_count} /></div>
-              <div className="text-zinc-500 text-sm">Engineering Colleges</div>
-            </div>
-            <div className="p-6 rounded-2xl bg-[#1a1f26] border border-zinc-800/50 text-center">
-              <div className="w-12 h-12 mx-auto mb-3 rounded-xl bg-blue-500/20 flex items-center justify-center">
-                <BookOpen className="w-6 h-6 text-blue-400" />
-              </div>
-              <div className="text-3xl font-bold text-white mb-1"><AnimatedCounter end={stats.branch_count} /></div>
-              <div className="text-zinc-500 text-sm">Branches</div>
-            </div>
-            <div className="p-6 rounded-2xl bg-[#1a1f26] border border-zinc-800/50 text-center">
-              <div className="w-12 h-12 mx-auto mb-3 rounded-xl bg-rose-500/20 flex items-center justify-center">
-                <Users className="w-6 h-6 text-rose-400" />
-              </div>
-              <div className="text-3xl font-bold text-white mb-1"><AnimatedCounter end={stats.total_records} /></div>
-              <div className="text-zinc-500 text-sm">Cutoff Records</div>
-            </div>
-          </div>
+            <p className="text-zinc-400 text-lg max-w-xl mx-auto">
+              Discover your perfect college match from <span className="text-white font-semibold">{stats.college_count + (stats.university_count || 13)}</span> top institutes across Telangana with <span className="text-white font-semibold">{stats.branch_count}</span> branches
+            </p>
+          </motion.div>
+
+          {/* Stats Cards */}
+          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }}
+            className="grid grid-cols-2 md:grid-cols-4 gap-4 max-w-4xl mx-auto mb-8">
+            {[
+              { icon: Building, count: stats.university_count || 13, label: "Universities", color: "bg-violet-500/20", iconColor: "text-violet-400" },
+              { icon: GraduationCap, count: stats.college_count || 161, label: "Engineering Colleges", color: "bg-emerald-500/20", iconColor: "text-emerald-400" },
+              { icon: BookOpen, count: stats.branch_count || 24, label: "Branches", color: "bg-blue-500/20", iconColor: "text-blue-400" },
+              { icon: Users, count: stats.total_records || 32685, label: "Cutoff Records", color: "bg-rose-500/20", iconColor: "text-rose-400" },
+            ].map((s, i) => (
+              <motion.div key={s.label} initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }}
+                transition={{ delay: 0.3 + i * 0.1 }}
+                className="p-6 rounded-2xl bg-[#1a1f26] border border-zinc-800/50 text-center hover:border-zinc-700 transition-all group">
+                <div className={`w-12 h-12 mx-auto mb-3 rounded-xl ${s.color} flex items-center justify-center group-hover:scale-110 transition-transform`}>
+                  <s.icon className={`w-6 h-6 ${s.iconColor}`} />
+                </div>
+                <div className="text-3xl font-bold text-white mb-1"><AnimatedCounter end={s.count} /></div>
+                <div className="text-zinc-500 text-sm">{s.label}</div>
+              </motion.div>
+            ))}
+          </motion.div>
 
           {/* Mini Stats */}
-          <div className="flex items-center justify-center gap-6 text-sm mb-16">
-            <div className="flex items-center gap-2">
-              <div className="w-2 h-2 rounded-full bg-emerald-500" />
-              <span className="text-zinc-400">100% Free</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <div className="w-2 h-2 rounded-full bg-blue-500" />
-              <span className="text-zinc-400">Real Data</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <div className="w-2 h-2 rounded-full bg-violet-500" />
-              <span className="text-zinc-400">Instant Results</span>
-            </div>
+          <div className="flex items-center justify-center gap-6 text-sm mb-12">
+            {[
+              { color: "bg-emerald-500", label: "100% Free" },
+              { color: "bg-blue-500", label: "Real Data" },
+              { color: "bg-violet-500", label: "Instant Results" },
+            ].map(s => (
+              <div key={s.label} className="flex items-center gap-2">
+                <div className={`w-2 h-2 rounded-full ${s.color} animate-pulse`} />
+                <span className="text-zinc-400">{s.label}</span>
+              </div>
+            ))}
           </div>
 
           {/* Form */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="max-w-4xl mx-auto p-8 rounded-3xl bg-[#1a1f26] border border-zinc-800/50"
-          >
-            <h2 className="text-xl font-semibold text-white mb-6 text-center">Enter Your Details</h2>
+          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.4 }}
+            className="max-w-4xl mx-auto p-8 rounded-3xl bg-[#1a1f26] border border-zinc-800/50">
+            <div className="flex items-center gap-3 mb-6">
+              <div className="w-10 h-10 rounded-xl bg-emerald-600/20 flex items-center justify-center">
+                <Search className="w-5 h-5 text-emerald-400" />
+              </div>
+              <div>
+                <h2 className="text-white font-semibold text-lg">Enter Your Details</h2>
+                <p className="text-zinc-500 text-sm">Get personalized college predictions instantly</p>
+              </div>
+            </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
               <div>
-                <label className="text-zinc-400 text-xs font-medium uppercase tracking-wider mb-2 block">
-                  TGEAPCET Rank *
-                </label>
-                <Input
-                  type="number"
-                  placeholder="Enter your rank"
-                  value={formData.rank}
+                <label className="text-zinc-400 text-xs font-medium uppercase tracking-wider mb-2 block">TGEAPCET Rank *</label>
+                <Input type="number" placeholder="Enter your rank" value={formData.rank}
                   onChange={(e) => setFormData({ ...formData, rank: e.target.value })}
-                  className="bg-[#0f1419] border-zinc-800 text-white h-12 rounded-xl"
-                  data-testid="rank-input"
-                />
+                  className="bg-[#0f1419] border-zinc-800 focus:border-emerald-500 text-white h-12 rounded-xl placeholder:text-zinc-600"
+                  data-testid="rank-input" />
               </div>
-
               <div>
-                <label className="text-zinc-400 text-xs font-medium uppercase tracking-wider mb-2 block">
-                  Category *
-                </label>
+                <label className="text-zinc-400 text-xs font-medium uppercase tracking-wider mb-2 block">Category *</label>
                 <Select value={formData.category} onValueChange={(v) => setFormData({ ...formData, category: v })}>
                   <SelectTrigger className="bg-[#0f1419] border-zinc-800 text-white h-12 rounded-xl" data-testid="category-select">
-                    <SelectValue />
+                    <SelectValue placeholder="Select category" />
                   </SelectTrigger>
-                  <SelectContent className="bg-[#1a1f26] border-zinc-800">
-                    {categories.map((c) => (
-                      <SelectItem key={c.value} value={c.value} className="text-white focus:bg-zinc-800">{c.label}</SelectItem>
-                    ))}
+                  <SelectContent className="bg-[#1a1f26] border-zinc-800 max-h-60">
+                    {categories.map(c => <SelectItem key={c.value} value={c.value} className="text-white focus:bg-zinc-800">{c.label}</SelectItem>)}
                   </SelectContent>
                 </Select>
               </div>
-
               <div>
-                <label className="text-zinc-400 text-xs font-medium uppercase tracking-wider mb-2 block">
-                  Gender *
-                </label>
+                <label className="text-zinc-400 text-xs font-medium uppercase tracking-wider mb-2 block">Gender *</label>
                 <Select value={formData.gender} onValueChange={(v) => setFormData({ ...formData, gender: v })}>
                   <SelectTrigger className="bg-[#0f1419] border-zinc-800 text-white h-12 rounded-xl" data-testid="gender-select">
-                    <SelectValue />
+                    <SelectValue placeholder="Select gender" />
                   </SelectTrigger>
                   <SelectContent className="bg-[#1a1f26] border-zinc-800">
-                    {genders.map((g) => (
-                      <SelectItem key={g.value} value={g.value} className="text-white focus:bg-zinc-800">{g.label}</SelectItem>
-                    ))}
+                    {genders.map(g => <SelectItem key={g.value} value={g.value} className="text-white focus:bg-zinc-800">{g.label}</SelectItem>)}
                   </SelectContent>
                 </Select>
               </div>
-
               <div>
-                <label className="text-zinc-400 text-xs font-medium uppercase tracking-wider mb-2 block">
-                  Branch (Optional)
-                </label>
+                <label className="text-zinc-400 text-xs font-medium uppercase tracking-wider mb-2 block">Special Quota (Optional)</label>
+                <Select value={formData.special_quota} onValueChange={(v) => setFormData({ ...formData, special_quota: v })}>
+                  <SelectTrigger className="bg-[#0f1419] border-zinc-800 text-white h-12 rounded-xl" data-testid="special-quota-select">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent className="bg-[#1a1f26] border-zinc-800">
+                    {specialQuotas.map(q => <SelectItem key={q.value} value={q.value} className="text-white focus:bg-zinc-800">{q.label}</SelectItem>)}
+                  </SelectContent>
+                </Select>
+              </div>
+              <div>
+                <label className="text-zinc-400 text-xs font-medium uppercase tracking-wider mb-2 block">Branches (Optional)</label>
                 <Select value={formData.branch} onValueChange={(v) => setFormData({ ...formData, branch: v })}>
                   <SelectTrigger className="bg-[#0f1419] border-zinc-800 text-white h-12 rounded-xl" data-testid="branch-select">
                     <SelectValue placeholder="All Branches" />
                   </SelectTrigger>
                   <SelectContent className="bg-[#1a1f26] border-zinc-800 max-h-60">
                     <SelectItem value="all" className="text-white focus:bg-zinc-800">All Branches</SelectItem>
-                    {metadata?.branches?.map((b) => (
-                      <SelectItem key={b} value={b} className="text-white focus:bg-zinc-800">{b}</SelectItem>
-                    ))}
+                    {metadata?.branches?.map(b => <SelectItem key={b} value={b} className="text-white focus:bg-zinc-800">{b}</SelectItem>)}
                   </SelectContent>
                 </Select>
               </div>
-
               <div>
-                <label className="text-zinc-400 text-xs font-medium uppercase tracking-wider mb-2 block">
-                  District (Optional)
-                </label>
+                <label className="text-zinc-400 text-xs font-medium uppercase tracking-wider mb-2 block">Districts (Optional)</label>
                 <Select value={formData.district} onValueChange={(v) => setFormData({ ...formData, district: v })}>
                   <SelectTrigger className="bg-[#0f1419] border-zinc-800 text-white h-12 rounded-xl" data-testid="district-select">
                     <SelectValue placeholder="All Districts" />
                   </SelectTrigger>
                   <SelectContent className="bg-[#1a1f26] border-zinc-800 max-h-60">
                     <SelectItem value="all" className="text-white focus:bg-zinc-800">All Districts</SelectItem>
-                    {metadata?.districts?.map((d) => (
-                      <SelectItem key={d} value={d} className="text-white focus:bg-zinc-800">{d}</SelectItem>
-                    ))}
+                    {metadata?.districts?.map(d => <SelectItem key={d} value={d} className="text-white focus:bg-zinc-800">{d}</SelectItem>)}
                   </SelectContent>
                 </Select>
               </div>
             </div>
 
-            <Button
-              onClick={handlePredict}
-              disabled={loading || !formData.rank}
-              className="w-full h-14 rounded-xl bg-gradient-to-r from-emerald-500 to-cyan-500 hover:from-emerald-600 hover:to-cyan-600 text-white font-semibold text-base"
-              data-testid="predict-button"
-            >
-              {loading ? (
-                <><Loader2 className="mr-2 h-5 w-5 animate-spin" />Predicting...</>
-              ) : (
-                <><Sparkles className="mr-2 h-5 w-5" />Predict My Colleges<ArrowRight className="ml-2 h-4 w-4" /></>
-              )}
+            <Button onClick={handlePredict} disabled={loading || !formData.rank}
+              className="w-full h-14 rounded-xl bg-gradient-to-r from-emerald-500 to-cyan-500 hover:from-emerald-600 hover:to-cyan-600 text-white font-semibold text-base shadow-lg shadow-emerald-500/20"
+              data-testid="predict-button">
+              {loading ? <><Loader2 className="mr-2 h-5 w-5 animate-spin" />Predicting...</>
+                : <><Sparkles className="mr-2 h-5 w-5" />Predict My Colleges<ArrowRight className="ml-2 h-4 w-4" /></>}
             </Button>
           </motion.div>
         </div>
@@ -364,80 +363,54 @@ const TGEAPCETPage = () => {
           <motion.section initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="py-12">
             <div className="container mx-auto px-4 md:px-6 max-w-6xl">
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
-                <div className="p-5 rounded-2xl bg-[#1a1f26] border border-zinc-800/50">
-                  <div className="text-3xl font-bold text-white">{predictions.total_colleges}</div>
-                  <div className="text-zinc-500 text-sm">Total Matches</div>
-                </div>
-                <div className="p-5 rounded-2xl bg-emerald-500/10 border border-emerald-500/20">
-                  <div className="text-3xl font-bold text-emerald-400">{predictions.safe_count}</div>
-                  <div className="text-emerald-400/70 text-sm">Safe</div>
-                </div>
-                <div className="p-5 rounded-2xl bg-amber-500/10 border border-amber-500/20">
-                  <div className="text-3xl font-bold text-amber-400">{predictions.good_count}</div>
-                  <div className="text-amber-400/70 text-sm">Good Chance</div>
-                </div>
-                <div className="p-5 rounded-2xl bg-red-500/10 border border-red-500/20">
-                  <div className="text-3xl font-bold text-red-400">{predictions.reach_count}</div>
-                  <div className="text-red-400/70 text-sm">Reach</div>
-                </div>
+                {[
+                  { count: predictions.total_colleges, label: "Total Matches", bg: "bg-[#1a1f26]", border: "border-zinc-800/50", text: "text-white" },
+                  { count: predictions.safe_count, label: "Safe", bg: "bg-emerald-500/10", border: "border-emerald-500/20", text: "text-emerald-400" },
+                  { count: predictions.good_count, label: "Good Chance", bg: "bg-amber-500/10", border: "border-amber-500/20", text: "text-amber-400" },
+                  { count: predictions.reach_count, label: "Reach", bg: "bg-red-500/10", border: "border-red-500/20", text: "text-red-400" },
+                ].map((s, i) => (
+                  <motion.div key={s.label} initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }}
+                    transition={{ delay: i * 0.1 }} className={`p-5 rounded-2xl ${s.bg} border ${s.border}`}>
+                    <div className={`text-3xl font-bold ${s.text}`}>{s.count}</div>
+                    <div className={`${s.text} text-sm opacity-70`}>{s.label}</div>
+                  </motion.div>
+                ))}
               </div>
 
-              <Tabs value={activeTab} onValueChange={setActiveTab}>
-                <TabsList className="w-full max-w-md mx-auto bg-[#1a1f26] border border-zinc-800/50 p-1 mb-6 rounded-xl">
-                  <TabsTrigger value="all" className="flex-1 rounded-lg data-[state=active]:bg-zinc-700">All ({predictions.total_colleges})</TabsTrigger>
-                  <TabsTrigger value="safe" className="flex-1 rounded-lg data-[state=active]:bg-emerald-600/20 data-[state=active]:text-emerald-400">Safe</TabsTrigger>
-                  <TabsTrigger value="good" className="flex-1 rounded-lg data-[state=active]:bg-amber-600/20 data-[state=active]:text-amber-400">Good</TabsTrigger>
-                  <TabsTrigger value="reach" className="flex-1 rounded-lg data-[state=active]:bg-red-600/20 data-[state=active]:text-red-400">Reach</TabsTrigger>
-                </TabsList>
+              {/* Filter Tabs */}
+              <div className="flex items-center gap-2 mb-6 flex-wrap" data-testid="results-tabs">
+                <Filter className="w-4 h-4 text-zinc-500 mr-1" />
+                {[
+                  { key: "all", label: `All (${predictions.total_colleges})`, active: "bg-zinc-700 text-white" },
+                  { key: "safe", label: `Safe (${predictions.safe_count})`, active: "bg-emerald-600/20 text-emerald-400 border-emerald-500/30" },
+                  { key: "good", label: `Good Chance (${predictions.good_count})`, active: "bg-amber-600/20 text-amber-400 border-amber-500/30" },
+                  { key: "reach", label: `Reach (${predictions.reach_count})`, active: "bg-red-600/20 text-red-400 border-red-500/30" },
+                ].map(tab => (
+                  <button key={tab.key} onClick={() => setActiveTab(tab.key)}
+                    className={`px-4 py-2 rounded-xl text-sm font-medium border transition-all ${
+                      activeTab === tab.key ? tab.active : "bg-[#1a1f26] text-zinc-400 border-zinc-800 hover:border-zinc-700"
+                    }`} data-testid={`tab-${tab.key}`}
+                  >{tab.label}</button>
+                ))}
+              </div>
 
-                <TabsContent value={activeTab}>
-                  <div className="rounded-2xl border border-zinc-800/50 overflow-hidden bg-[#1a1f26]">
-                    <Table>
-                      <TableHeader>
-                        <TableRow className="bg-[#0f1419] border-zinc-800/50">
-                          <TableHead className="text-zinc-400">Institute</TableHead>
-                          <TableHead className="text-zinc-400">Branch</TableHead>
-                          <TableHead className="text-zinc-400 text-center">District</TableHead>
-                          <TableHead className="text-zinc-400 text-right">Opening</TableHead>
-                          <TableHead className="text-zinc-400 text-right">Closing</TableHead>
-                          <TableHead className="text-zinc-400 text-center">Chance</TableHead>
-                        </TableRow>
-                      </TableHeader>
-                      <TableBody>
-                        {getFilteredPredictions().slice(0, 100).map((p, i) => (
-                          <TableRow key={i} className="border-zinc-800/50 hover:bg-[#0f1419]/50">
-                            <TableCell>
-                              <div className="flex items-center gap-3">
-                                <div className="w-10 h-10 rounded-lg bg-emerald-600/20 flex items-center justify-center">
-                                  <GraduationCap className="w-5 h-5 text-emerald-400" />
-                                </div>
-                                <div>
-                                  <div className="text-white text-sm font-medium">{p.institute}</div>
-                                  <div className="text-zinc-500 text-xs">{p.institute_code}</div>
-                                </div>
-                              </div>
-                            </TableCell>
-                            <TableCell className="text-zinc-400 text-sm">{p.branch}</TableCell>
-                            <TableCell className="text-center">
-                              <span className="inline-flex items-center gap-1 text-xs text-zinc-400">
-                                <MapPin className="w-3 h-3" />{p.district}
-                              </span>
-                            </TableCell>
-                            <TableCell className="text-right text-zinc-300 font-mono text-sm">{p.opening_rank?.toLocaleString()}</TableCell>
-                            <TableCell className="text-right text-zinc-300 font-mono text-sm">{p.closing_rank?.toLocaleString()}</TableCell>
-                            <TableCell className="text-center"><ProbabilityBadge chance={p.chance} probability={p.probability} /></TableCell>
-                          </TableRow>
-                        ))}
-                      </TableBody>
-                    </Table>
-                    {getFilteredPredictions().length > 100 && (
-                      <div className="p-4 text-center text-zinc-500 text-sm border-t border-zinc-800/50">
-                        Showing top 100 results out of {getFilteredPredictions().length}
-                      </div>
-                    )}
-                  </div>
-                </TabsContent>
-              </Tabs>
+              <div className="space-y-3">
+                {filtered.slice(0, 100).map((p, i) => (
+                  <CollegeCard key={`${p.institute}-${p.branch}-${i}`} prediction={p} index={i} />
+                ))}
+              </div>
+              {filtered.length > 100 && (
+                <div className="mt-4 p-4 text-center text-zinc-500 text-sm rounded-xl bg-[#1a1f26] border border-zinc-800/50">
+                  Showing top 100 results out of {filtered.length}
+                </div>
+              )}
+              {filtered.length === 0 && (
+                <div className="p-12 text-center text-zinc-500 rounded-xl bg-[#1a1f26] border border-zinc-800/50">
+                  <Search className="w-12 h-12 mx-auto mb-4 opacity-50" />
+                  <p className="text-lg font-medium">No colleges found for this filter</p>
+                  <p className="text-sm mt-1">Try selecting a different filter tab</p>
+                </div>
+              )}
             </div>
           </motion.section>
         )}
@@ -447,25 +420,30 @@ const TGEAPCETPage = () => {
       {!predictions && (
         <section className="py-16">
           <div className="container mx-auto px-4 md:px-6 max-w-6xl">
-            <h2 className="text-2xl font-bold text-white text-center mb-8">How It Works</h2>
+            <div className="text-center mb-8">
+              <h2 className="text-2xl font-bold text-white">How It Works</h2>
+            </div>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-4xl mx-auto mb-16">
               {[
-                { step: "01", title: "Enter Details", desc: "Input your TGEAPCET rank, category, and gender" },
-                { step: "02", title: "Smart Analysis", desc: `We compare with ${stats.total_records.toLocaleString()} cutoff records` },
-                { step: "03", title: "Get Results", desc: "See Safe, Good Chance & Reach colleges" }
-              ].map((item) => (
-                <div key={item.step} className="p-6 rounded-2xl bg-[#1a1f26] border border-zinc-800/50 text-center">
+                { step: "01", title: "Enter Details", desc: "Input your TGEAPCET rank, category, and gender to get started" },
+                { step: "02", title: "Smart Analysis", desc: `We compare your rank with ${(stats.total_records || 32685).toLocaleString()} official cutoff records` },
+                { step: "03", title: "Get Results", desc: "Receive personalized college recommendations with admission chances" }
+              ].map((item, i) => (
+                <motion.div key={item.step} initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }} transition={{ delay: i * 0.15 }}
+                  className="p-6 rounded-2xl bg-[#1a1f26] border border-zinc-800/50 text-center hover:border-zinc-700 transition-all">
                   <div className="text-emerald-500 text-4xl font-bold mb-3">{item.step}</div>
                   <h3 className="text-white font-semibold text-lg mb-2">{item.title}</h3>
                   <p className="text-zinc-500 text-sm">{item.desc}</p>
-                </div>
+                </motion.div>
               ))}
             </div>
 
             <div className="text-center p-10 rounded-3xl bg-gradient-to-br from-[#1a1f26] to-[#0f1419] border border-zinc-800/50">
               <h3 className="text-2xl font-bold text-white mb-3">Ready to Find Your Dream College?</h3>
-              <p className="text-zinc-400 mb-6">Join thousands of students who found their perfect match</p>
-              <Button className="bg-gradient-to-r from-emerald-500 to-cyan-500 text-white font-semibold px-8 py-3 rounded-xl">
+              <p className="text-zinc-400 mb-6">Join thousands of students who have used our predictor to make informed decisions about their future</p>
+              <Button onClick={() => document.querySelector('[data-testid="rank-input"]')?.focus()}
+                className="bg-gradient-to-r from-emerald-500 to-cyan-500 text-white font-semibold px-8 py-3 rounded-xl shadow-lg shadow-emerald-500/20">
                 Start Prediction Now <ArrowRight className="ml-2 h-4 w-4" />
               </Button>
             </div>
@@ -475,7 +453,7 @@ const TGEAPCETPage = () => {
 
       <footer className="py-6 border-t border-zinc-800/50">
         <div className="container mx-auto px-4 text-center">
-          <p className="text-zinc-500 text-sm">© 2025 Edu9 Career Guidance. All rights reserved.</p>
+          <p className="text-zinc-500 text-sm">&copy; 2025 Edu9 Career Guidance. All rights reserved.</p>
         </div>
       </footer>
     </div>
