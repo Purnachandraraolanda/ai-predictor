@@ -45,7 +45,7 @@ const APEAPCETPage = () => {
 
   const [formData, setFormData] = useState({
     rank: "", category: "", gender: "",
-    college_type: "all", district: "all", branch: "all"
+    college_type: "all", districts: [], branches: []
   });
 
   const categories = [
