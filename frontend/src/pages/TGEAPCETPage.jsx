@@ -178,7 +178,8 @@ const TGEAPCETPage = () => {
   const filtered = getFilteredPredictions();
 
   return (
-    <div className="min-h-screen bg-[#0f1419]">
+    <div className="min-h-screen bg-[#0f1419] relative">
+      <ParticleBackground color="16,185,129" particleCount={55} connectionDistance={120} speed={0.3} />
       {/* Header */}
       <header className="border-b border-zinc-800/50 sticky top-0 z-50 bg-[#0f1419]/90 backdrop-blur-xl">
         <div className="container mx-auto px-4 md:px-6 max-w-6xl">
