@@ -1,0 +1,218 @@
+{
+  "institutes": [
+    {
+      "code": "CBIT",
+      "name": "Chaitanya Bharathi Institute of Technology",
+      "district": "Hyderabad"
+    },
+    {
+      "code": "VNRVJIET",
+      "name": "VNR Vignana Jyothi Institute of Engineering and Technology",
+      "district": "Hyderabad"
+    },
+    {
+      "code": "MJCET",
+      "name": "Muffakham Jah College of Engineering and Technology",
+      "district": "Hyderabad"
+    },
+    {
+      "code": "GRIET",
+      "name": "Gokaraju Rangaraju Institute of Engineering and Technology",
+      "district": "Hyderabad"
+    },
+    {
+      "code": "CVSR",
+      "name": "CVR College of Engineering",
+      "district": "Hyderabad"
+    },
+    {
+      "code": "BVRIT",
+      "name": "BV Raju Institute of Technology",
+      "district": "Narsapur"
+    },
+    {
+      "code": "MGIT",
+      "name": "Mahatma Gandhi Institute of Technology",
+      "district": "Hyderabad"
+    },
+    {
+      "code": "SNIST",
+      "name": "Sreenidhi Institute of Science and Technology",
+      "district": "Hyderabad"
+    },
+    {
+      "code": "MREC",
+      "name": "Malla Reddy Engineering College",
+      "district": "Hyderabad"
+    },
+    {
+      "code": "KMIT",
+      "name": "Keshav Memorial Institute of Technology",
+      "district": "Hyderabad"
+    },
+    {
+      "code": "NGIT",
+      "name": "Neil Gogte Institute of Technology",
+      "district": "Hyderabad"
+    },
+    {
+      "code": "VBIT",
+      "name": "Vignana Bharathi Institute of Technology",
+      "district": "Hyderabad"
+    },
+    {
+      "code": "VASAVI",
+      "name": "Vasavi College of Engineering",
+      "district": "Hyderabad"
+    },
+    {
+      "code": "VARDHAMAN",
+      "name": "Vardhaman College of Engineering",
+      "district": "Hyderabad"
+    },
+    {
+      "code": "SRIT",
+      "name": "Sri Indu College of Engineering & Technology",
+      "district": "Hyderabad"
+    },
+    {
+      "code": "MRITS",
+      "name": "Malla Reddy Institute of Technology and Science",
+      "district": "Hyderabad"
+    },
+    {
+      "code": "ACEM",
+      "name": "Anurag College of Engineering",
+      "district": "Medchal"
+    },
+    {
+      "code": "MVSR",
+      "name": "MVSR Engineering College",
+      "district": "Hyderabad"
+    },
+    {
+      "code": "JBIET",
+      "name": "JB Institute of Engineering and Technology",
+      "district": "Hyderabad"
+    },
+    {
+      "code": "MRCET",
+      "name": "Malla Reddy College of Engineering and Technology",
+      "district": "Hyderabad"
+    },
+    {
+      "code": "PVPSIT",
+      "name": "Prasad V. Potluri Siddhartha Institute of Technology",
+      "district": "Vijayawada"
+    },
+    {
+      "code": "CMRIT",
+      "name": "CMR Institute of Technology",
+      "district": "Hyderabad"
+    },
+    {
+      "code": "KITSW",
+      "name": "Kakatiya Institute of Technology and Science",
+      "district": "Warangal"
+    },
+    {
+      "code": "VJIT",
+      "name": "Vidya Jyothi Institute of Technology",
+      "district": "Hyderabad"
+    },
+    {
+      "code": "GCET",
+      "name": "Geethanjali College of Engineering and Technology",
+      "district": "Hyderabad"
+    },
+    {
+      "code": "HITS",
+      "name": "Holy Mary Institute of Technology and Science",
+      "district": "Hyderabad"
+    },
+    {
+      "code": "KHIT",
+      "name": "KG Reddy College of Engineering and Technology",
+      "district": "Hyderabad"
+    },
+    {
+      "code": "TKRCET",
+      "name": "TKR College of Engineering and Technology",
+      "district": "Hyderabad"
+    },
+    {
+      "code": "MLRIT",
+      "name": "MLR Institute of Technology",
+      "district": "Hyderabad"
+    },
+    {
+      "code": "SIETK",
+      "name": "Sree Vidyanikethan Engineering College",
+      "district": "Tirupati"
+    }
+  ],
+  "branches": [
+    "CSE - Computer Science and Engineering",
+    "ECE - Electronics and Communication Engineering",
+    "EEE - Electrical and Electronics Engineering",
+    "MECH - Mechanical Engineering",
+    "CIVIL - Civil Engineering",
+    "IT - Information Technology",
+    "CSE-AI - Computer Science (Artificial Intelligence)",
+    "CSE-DS - Computer Science (Data Science)",
+    "CSE-ML - Computer Science (Machine Learning)",
+    "AIDS - Artificial Intelligence and Data Science",
+    "AIML - Artificial Intelligence and Machine Learning",
+    "CSE-CS - Computer Science (Cyber Security)",
+    "CSE-IOT - Computer Science (Internet of Things)",
+    "CHEM - Chemical Engineering",
+    "BIOTECH - Biotechnology",
+    "MINING - Mining Engineering",
+    "PETRO - Petroleum Engineering",
+    "FOOD - Food Technology",
+    "AGRI - Agricultural Engineering",
+    "AUTO - Automobile Engineering",
+    "AERO - Aeronautical Engineering",
+    "MARINE - Marine Engineering",
+    "PRINT - Printing Technology",
+    "TEXTILE - Textile Technology"
+  ],
+  "categories": [
+    "OC",
+    "BC-A",
+    "BC-B",
+    "BC-C",
+    "BC-D",
+    "BC-E",
+    "SC",
+    "ST",
+    "EWS"
+  ],
+  "genders": [
+    "Male",
+    "Female"
+  ],
+  "districts": [
+    "Hyderabad",
+    "Rangareddy",
+    "Medchal",
+    "Sangareddy",
+    "Warangal Urban",
+    "Warangal Rural",
+    "Karimnagar",
+    "Nizamabad",
+    "Khammam",
+    "Nalgonda",
+    "Mahabubnagar",
+    "Adilabad",
+    "Medak",
+    "Siddipet",
+    "Mancherial"
+  ],
+  "stats": {
+    "university_count": 13,
+    "college_count": 30,
+    "branch_count": 24,
+    "total_records": 8100
+  }
+}
