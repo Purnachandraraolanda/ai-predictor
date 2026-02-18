@@ -99,10 +99,17 @@ const TGEAPCETPage = () => {
 
   const getFilteredPredictions = () => {
     if (!predictions) return [];
-    if (activeTab === "safe") return predictions.predictions.filter(p => p.chance === "SAFE");
-    if (activeTab === "good") return predictions.predictions.filter(p => p.chance === "GOOD");
-    if (activeTab === "reach") return predictions.predictions.filter(p => p.chance === "REACH");
-    return predictions.predictions;
+    let filtered = predictions.predictions;
+    if (activeTab === "safe") filtered = filtered.filter(p => p.chance === "SAFE");
+    else if (activeTab === "good") filtered = filtered.filter(p => p.chance === "GOOD");
+    else if (activeTab === "reach") filtered = filtered.filter(p => p.chance === "REACH");
+    if (searchQuery.trim()) {
+      const q = searchQuery.toLowerCase();
+      filtered = filtered.filter(p =>
+        (p.institute || "").toLowerCase().includes(q) || (p.branch || "").toLowerCase().includes(q)
+      );
+    }
+    return filtered;
   };
 
   const stats = metadata?.stats || { university_count: 13, college_count: 161, branch_count: 24, total_records: 32685 };
