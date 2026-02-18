@@ -208,7 +208,7 @@ class Edu9APITester:
             "apeapcet/predict",
             200,
             data=test_data,
-            description="Test prediction with rank=50000, category=OC, gender=M"
+            description="Test APEAPCET prediction with rank=50000, category=OC, gender=M (43806 records)"
         )
         
         if success:
@@ -219,7 +219,7 @@ class Edu9APITester:
             
             predictions = response.get('predictions', [])
             if predictions:
-                print(f"   First prediction: {predictions[0].get('college_name', 'N/A')} - {predictions[0].get('chance', 'N/A')}")
+                print(f"   First prediction: {predictions[0].get('institute', 'N/A')} - {predictions[0].get('chance', 'N/A')}")
                 
         return success, response
 
