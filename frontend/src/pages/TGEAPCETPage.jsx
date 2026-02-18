@@ -40,6 +40,7 @@ const TGEAPCETPage = () => {
   const [metadata, setMetadata] = useState(null);
   const [predictions, setPredictions] = useState(null);
   const [activeTab, setActiveTab] = useState("all");
+  const [searchQuery, setSearchQuery] = useState("");
 
   const [formData, setFormData] = useState({
     rank: "", category: "", gender: "",
