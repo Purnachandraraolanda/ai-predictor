@@ -134,8 +134,11 @@ const JEEPage = () => {
   });
 
   const seatTypes = [
-    { value: "OPEN", label: "General" }, { value: "EWS", label: "EWS" },
-    { value: "OBC-NCL", label: "OBC-NCL" }, { value: "SC", label: "SC" }, { value: "ST", label: "ST" }
+    { value: "OPEN", label: "General" }, { value: "OPEN (PwD)", label: "General (PwD)" },
+    { value: "OBC-NCL", label: "OBC-NCL" }, { value: "OBC-NCL (PwD)", label: "OBC-NCL (PwD)" },
+    { value: "SC", label: "SC" }, { value: "SC (PwD)", label: "SC (PwD)" },
+    { value: "ST", label: "ST" }, { value: "ST (PwD)", label: "ST (PwD)" },
+    { value: "EWS", label: "EWS" }, { value: "EWS (PwD)", label: "EWS (PwD)" }
   ];
   const genders = [
     { value: "Gender-Neutral", label: "Gender-Neutral" },
