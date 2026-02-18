@@ -33,6 +33,8 @@ const AnimatedCounter = ({ end, duration = 2000 }) => {
     requestAnimationFrame(animate);
   }, [end, duration]);
   return <span>{count.toLocaleString()}</span>;
+};
+
 const APEAPCETPage = () => {
   const [loading, setLoading] = useState(false);
   const [metadata, setMetadata] = useState(null);
