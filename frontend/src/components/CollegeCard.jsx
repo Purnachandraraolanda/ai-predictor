@@ -1,3 +1,4 @@
+import React from "react";
 import { motion } from "framer-motion";
 import { GraduationCap, BookOpen, MapPin } from "lucide-react";
 
