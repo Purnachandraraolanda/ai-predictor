@@ -127,6 +127,9 @@ const JEEPage = () => {
   const [predictions, setPredictions] = useState(null);
   const [activeTab, setActiveTab] = useState("all");
   const [searchQuery, setSearchQuery] = useState("");
+  const [selectedBranches, setSelectedBranches] = useState([]);
+  const [branchDropdownOpen, setBranchDropdownOpen] = useState(false);
+  const branchDropdownRef = useRef(null);
 
   const [formData, setFormData] = useState({
     rank: "", seat_type: "OPEN", gender: "Gender-Neutral",
