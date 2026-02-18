@@ -75,29 +75,32 @@ class PredictionResponse(BaseModel):
     predictions: List[CollegePrediction]
 
 def calculate_chance(user_rank, opening_rank, closing_rank):
-    if closing_rank == 0:
+    if closing_rank == 0 or opening_rank == 0:
         return "REACH", 5
     
     if user_rank <= opening_rank:
+        # User rank is better than the best admitted rank - very safe
         return "SAFE", 95
     elif user_rank <= closing_rank:
+        # User rank falls between opening and closing - good chance of admission
         range_size = closing_rank - opening_rank
-        position = user_rank - opening_rank
         if range_size > 0:
-            ratio = position / range_size
-            if ratio < 0.5:
-                return "SAFE", int(90 - (ratio * 20))
-            else:
-                return "GOOD", int(75 - ((ratio - 0.5) * 30))
-        return "SAFE", 85
-    elif user_rank <= closing_rank * 1.15:
-        prob = int(50 - ((user_rank - closing_rank) / (closing_rank * 0.15)) * 20)
-        return "GOOD", max(30, prob)
-    elif user_rank <= closing_rank * 1.3:
-        prob = int(30 - ((user_rank - closing_rank * 1.15) / (closing_rank * 0.15)) * 15)
-        return "REACH", max(15, prob)
+            position_ratio = (user_rank - opening_rank) / range_size
+            # Closer to opening = higher probability
+            prob = int(85 - (position_ratio * 25))
+        else:
+            prob = 75
+        return "GOOD", max(55, prob)
     else:
-        return "REACH", max(5, int(15 - ((user_rank - closing_rank * 1.3) / closing_rank) * 10))
+        # User rank is worse than the closing rank - reach
+        overshoot = (user_rank - closing_rank) / closing_rank
+        if overshoot < 0.1:
+            prob = 35
+        elif overshoot < 0.25:
+            prob = 20
+        else:
+            prob = 10
+        return "REACH", prob
 
 @app.on_event("startup")
 async def load_data():
