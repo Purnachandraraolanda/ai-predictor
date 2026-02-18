@@ -82,22 +82,95 @@ class Edu9APITester:
             description="Check if API server is responding"
         )
 
-    def test_predictors_list(self):
-        """Test getting the list of predictors"""
+    def test_jee_metadata(self):
+        """Test JEE metadata endpoint"""
         success, response = self.run_test(
-            "Get Predictors",
-            "GET", 
-            "predictors",
+            "JEE Metadata",
+            "GET",
+            "jee/metadata", 
             200,
-            description="Get list of available predictors (JEE, TGEAPCET, APEAPCET, COMEDK)"
+            description="Get JEE stats (23 IITs, 32 NITs, 26 IIITs, 47 GFTIs)"
         )
         
-        if success and 'predictors' in response:
-            predictors = response['predictors']
-            print(f"   Found {len(predictors)} predictors:")
-            for p in predictors:
-                print(f"     - {p['id']}: {p['name']} ({p['status']})")
+        if success and 'stats' in response:
+            stats = response['stats']
+            print(f"   IIT Count: {stats.get('iit_count', 0)}")
+            print(f"   NIT Count: {stats.get('nit_count', 0)}")
+            print(f"   IIIT Count: {stats.get('iiit_count', 0)}")
+            print(f"   GFTI Count: {stats.get('gfti_count', 0)}")
+            print(f"   Total Records: {stats.get('total_records', 0)}")
+                
+        return success, response
+
+    def test_jee_prediction(self):
+        """Test JEE prediction endpoint"""
+        test_data = {
+            "rank": 10000,
+            "seat_type": "OPEN",
+            "gender": "Gender-Neutral",
+            "institute_types": ["IIT", "NIT"],
+            "quota": "AI"
+        }
         
+        success, response = self.run_test(
+            "JEE Prediction",
+            "POST",
+            "jee/predict",
+            200,
+            data=test_data,
+            description="Test JEE prediction with rank=10000, seat_type=OPEN, gender=Gender-Neutral"
+        )
+        
+        if success:
+            print(f"   Total colleges: {response.get('total_colleges', 0)}")
+            print(f"   Safe: {response.get('safe_count', 0)}")
+            print(f"   Good: {response.get('good_count', 0)}")
+            print(f"   Reach: {response.get('reach_count', 0)}")
+            
+        return success, response
+
+    def test_tgeapcet_metadata(self):
+        """Test TGEAPCET metadata endpoint"""
+        success, response = self.run_test(
+            "TGEAPCET Metadata",
+            "GET",
+            "tgeapcet/metadata", 
+            200,
+            description="Get TGEAPCET colleges, branches, districts data"
+        )
+        
+        if success and 'stats' in response:
+            stats = response['stats']
+            print(f"   University Count: {stats.get('university_count', 0)}")
+            print(f"   College Count: {stats.get('college_count', 0)}")
+            print(f"   Branch Count: {stats.get('branch_count', 0)}")
+            print(f"   Total Records: {stats.get('total_records', 0)}")
+                
+        return success, response
+
+    def test_tgeapcet_prediction(self):
+        """Test TGEAPCET prediction endpoint"""
+        test_data = {
+            "rank": 15000,
+            "category": "OC",
+            "gender": "Male"
+        }
+        
+        success, response = self.run_test(
+            "TGEAPCET Prediction",
+            "POST",
+            "tgeapcet/predict",
+            200,
+            data=test_data,
+            description="Test TGEAPCET prediction with rank=15000, category=OC, gender=Male"
+        )
+        
+        if success:
+            print(f"   Total colleges: {response.get('total_colleges', 0)}")
+            print(f"   Safe: {response.get('safe_count', 0)}")
+            print(f"   Good: {response.get('good_count', 0)}")
+            print(f"   Reach: {response.get('reach_count', 0)}")
+            
         return success, response
 
     def test_apeapcet_metadata(self):
