@@ -11,7 +11,7 @@ import {
   GraduationCap, Search, Loader2, CheckCircle, AlertCircle,
   XCircle, Trophy, Award, Zap, Circle, TrendingUp, BookOpen,
   Users, Target, FileText, Video, UserCheck, ClipboardCheck,
-  ArrowRight, Sparkles, Filter
+  ArrowRight, Sparkles, Filter, LayoutList, LayoutGrid
 } from "lucide-react";
 import { toast } from "sonner";
 import axios from "axios";
@@ -35,76 +35,85 @@ const AnimatedCounter = ({ end, duration = 2000 }) => {
   return <span>{count.toLocaleString()}</span>;
 };
 
-const ChanceBadge = ({ chance, probability }) => {
+const ChanceBadge = ({ chance }) => {
   const config = {
-    SAFE: { bg: "bg-emerald-500/15", text: "text-emerald-400", border: "border-emerald-500/30", icon: CheckCircle, label: "Safe" },
-    GOOD: { bg: "bg-amber-500/15", text: "text-amber-400", border: "border-amber-500/30", icon: AlertCircle, label: "Good Chance" },
-    REACH: { bg: "bg-red-500/15", text: "text-red-400", border: "border-red-500/30", icon: XCircle, label: "Reach" }
+    SAFE: { bg: "bg-emerald-500", label: "SAFE" },
+    GOOD: { bg: "bg-amber-500", label: "GOOD CHANCE" },
+    REACH: { bg: "bg-orange-500", label: "REACH" }
   };
   const c = config[chance];
   return (
-    <div className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full border text-xs font-semibold ${c.bg} ${c.text} ${c.border}`}>
-      <c.icon className="w-3.5 h-3.5" />
-      <span>{c.label}</span>
-      <span className="opacity-60">({probability}%)</span>
-    </div>
+    <span className={`${c.bg} text-white text-xs font-bold px-3 py-1.5 rounded-lg`} data-testid={`chance-badge-${chance.toLowerCase()}`}>
+      {c.label}
+    </span>
   );
 };
 
-const CollegeCard = ({ prediction, index }) => {
-  const typeColors = {
-    IIT: "from-blue-600 to-blue-700",
-    NIT: "from-emerald-600 to-emerald-700",
-    IIIT: "from-violet-600 to-violet-700",
-    GFTI: "from-orange-600 to-orange-700"
+const CollegeCard = ({ prediction, index, userRank }) => {
+  const borderColors = {
+    SAFE: "border-l-emerald-500",
+    GOOD: "border-l-amber-500",
+    REACH: "border-l-orange-500"
   };
-  const typeBgColors = {
-    IIT: "bg-blue-600/15 text-blue-400 border-blue-500/30",
-    NIT: "bg-emerald-600/15 text-emerald-400 border-emerald-500/30",
-    IIIT: "bg-violet-600/15 text-violet-400 border-violet-500/30",
-    GFTI: "bg-orange-600/15 text-orange-400 border-orange-500/30"
+  const typeColors = {
+    IIT: "bg-blue-600",
+    NIT: "bg-emerald-600",
+    IIIT: "bg-violet-600",
+    GFTI: "bg-orange-600"
   };
 
   return (
     <motion.div
       initial={{ opacity: 0, y: 15 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ delay: Math.min(index * 0.03, 1) }}
-      className="p-5 rounded-xl bg-[#1a1f26] border border-zinc-800/50 hover:border-zinc-700 transition-all group"
+      transition={{ delay: Math.min(index * 0.03, 0.9) }}
+      className={`rounded-xl bg-[#141922] border border-zinc-800/50 overflow-hidden border-l-4 ${borderColors[prediction.chance]}`}
       data-testid={`result-card-${index}`}
     >
-      <div className="flex items-start justify-between mb-3">
-        <div className="flex items-center gap-3 flex-1 min-w-0">
-          <div className={`w-11 h-11 rounded-xl bg-gradient-to-br ${typeColors[prediction.institute_type] || typeColors.GFTI} flex items-center justify-center flex-shrink-0 shadow-lg`}>
-            <span className="text-white text-xs font-bold">{prediction.institute_type}</span>
+      {/* Top Section: Institute + Chance Badge */}
+      <div className="p-5 pb-3">
+        <div className="flex items-start justify-between">
+          <div className="flex items-center gap-3">
+            <div className="w-12 h-12 rounded-xl bg-white/10 flex items-center justify-center flex-shrink-0">
+              <GraduationCap className="w-6 h-6 text-white/80" />
+            </div>
+            <div>
+              {prediction.institute_type && (
+                <span className={`${typeColors[prediction.institute_type] || 'bg-zinc-600'} text-white text-[10px] font-bold px-1.5 py-0.5 rounded inline-block mb-1`}>
+                  {prediction.institute_type}
+                </span>
+              )}
+              <h4 className="text-white font-semibold text-sm leading-tight">{prediction.institute}</h4>
+            </div>
           </div>
-          <div className="min-w-0 flex-1">
-            <h4 className="text-white font-semibold text-sm leading-tight truncate">{prediction.institute}</h4>
-            <span className={`inline-flex items-center text-xs px-2 py-0.5 mt-1 rounded border ${typeBgColors[prediction.institute_type] || typeBgColors.GFTI}`}>
-              {prediction.institute_type}
-            </span>
-          </div>
+          <ChanceBadge chance={prediction.chance} />
         </div>
-        <ChanceBadge chance={prediction.chance} probability={prediction.probability} />
       </div>
 
-      <div className="mb-3">
-        <p className="text-zinc-300 text-sm font-medium leading-snug">{prediction.program}</p>
+      {/* Branch */}
+      <div className="px-5 pb-3">
+        <div className="flex items-center gap-2 px-4 py-2.5 rounded-lg bg-[#1a1f28] border border-zinc-800/40">
+          <BookOpen className="w-4 h-4 text-zinc-500 flex-shrink-0" />
+          <span className="text-zinc-300 text-sm">{prediction.program || prediction.branch}</span>
+        </div>
       </div>
 
-      <div className="flex items-center gap-4 text-xs">
-        {prediction.quota && (
-          <span className="px-2 py-1 rounded-lg bg-zinc-800 text-zinc-400">{prediction.quota}</span>
-        )}
-        <div className="flex items-center gap-3 ml-auto">
-          <div>
-            <span className="text-zinc-500">Open: </span>
-            <span className="text-zinc-300 font-mono font-medium">{prediction.opening_rank?.toLocaleString()}</span>
+      {/* Rank Boxes */}
+      <div className="px-5 pb-5">
+        <div className="grid grid-cols-3 gap-2">
+          <div className="bg-[#1a1f28] rounded-lg p-3 text-center border border-zinc-800/40">
+            <div className="text-zinc-500 text-[10px] font-medium uppercase tracking-wider mb-1">Opening</div>
+            <div className="text-white font-bold text-base font-mono">{Math.max(0, prediction.opening_rank).toLocaleString()}</div>
+            <div className="text-zinc-600 text-[10px]">Round 1</div>
           </div>
-          <div className="w-px h-4 bg-zinc-700" />
-          <div>
-            <span className="text-zinc-500">Close: </span>
-            <span className="text-zinc-300 font-mono font-medium">{prediction.closing_rank?.toLocaleString()}</span>
+          <div className="bg-[#1a1f28] rounded-lg p-3 text-center border border-zinc-800/40">
+            <div className="text-zinc-500 text-[10px] font-medium uppercase tracking-wider mb-1">Closing</div>
+            <div className="text-white font-bold text-base font-mono">{Math.max(0, prediction.closing_rank).toLocaleString()}</div>
+            <div className="text-zinc-600 text-[10px]">Round 6</div>
+          </div>
+          <div className="bg-gradient-to-br from-violet-900/60 to-blue-900/60 rounded-lg p-3 text-center border border-violet-500/20">
+            <div className="text-violet-300 text-[10px] font-medium uppercase tracking-wider mb-1">Your Rank</div>
+            <div className="text-violet-200 font-bold text-base font-mono">{Math.max(0, userRank).toLocaleString()}</div>
           </div>
         </div>
       </div>
@@ -117,6 +126,7 @@ const JEEPage = () => {
   const [metadata, setMetadata] = useState(null);
   const [predictions, setPredictions] = useState(null);
   const [activeTab, setActiveTab] = useState("all");
+  const [searchQuery, setSearchQuery] = useState("");
 
   const [formData, setFormData] = useState({
     rank: "", seat_type: "OPEN", gender: "Gender-Neutral",
@@ -161,6 +171,7 @@ const JEEPage = () => {
       });
       setPredictions(response.data);
       setActiveTab("all");
+      setSearchQuery("");
       toast.success(`Found ${response.data.total_colleges} college matches!`);
     } catch (error) {
       toast.error("Failed to get predictions. Please try again.");
@@ -171,10 +182,18 @@ const JEEPage = () => {
 
   const getFilteredPredictions = () => {
     if (!predictions) return [];
-    if (activeTab === "safe") return predictions.predictions.filter(p => p.chance === "SAFE");
-    if (activeTab === "good") return predictions.predictions.filter(p => p.chance === "GOOD");
-    if (activeTab === "reach") return predictions.predictions.filter(p => p.chance === "REACH");
-    return predictions.predictions;
+    let filtered = predictions.predictions;
+    if (activeTab === "safe") filtered = filtered.filter(p => p.chance === "SAFE");
+    else if (activeTab === "good") filtered = filtered.filter(p => p.chance === "GOOD");
+    else if (activeTab === "reach") filtered = filtered.filter(p => p.chance === "REACH");
+    if (searchQuery.trim()) {
+      const q = searchQuery.toLowerCase();
+      filtered = filtered.filter(p =>
+        (p.institute || "").toLowerCase().includes(q) ||
+        (p.program || "").toLowerCase().includes(q)
+      );
+    }
+    return filtered;
   };
 
   const services = [
@@ -194,8 +213,8 @@ const JEEPage = () => {
   const gftiCount = metadata?.stats?.gfti_count || 47;
   const totalRecords = metadata?.stats?.total_records || 12122;
   const totalPrograms = metadata?.stats?.total_programs || 253;
-
   const filtered = getFilteredPredictions();
+  const quotaLabel = { AI: "All India", HS: "Home State", OS: "Other State" }[formData.quota] || formData.quota;
 
   return (
     <div className="min-h-screen bg-[#0f1419] relative">
@@ -223,60 +242,32 @@ const JEEPage = () => {
 
       {/* Hero Section */}
       <section className="pt-16 pb-8 relative">
-        <div className="absolute inset-0 overflow-hidden pointer-events-none">
-          {[
-            { t: 20, l: 10, s: 4, c: "bg-blue-500/40", d: 0 },
-            { t: 40, l: 20, s: 6, c: "bg-amber-500/40", d: 0.5 },
-            { t: 32, l: 80, s: 4, c: "bg-emerald-500/40", d: 1 },
-            { t: 60, l: 60, s: 6, c: "bg-purple-500/40", d: 1.5 },
-          ].map((p, i) => (
-            <motion.div
-              key={i}
-              className={`absolute rounded-full ${p.c}`}
-              style={{ top: `${p.t}%`, left: `${p.l}%`, width: p.s, height: p.s }}
-              animate={{ y: [-10, 10, -10], opacity: [0.3, 0.7, 0.3] }}
-              transition={{ duration: 3, repeat: Infinity, delay: p.d }}
-            />
-          ))}
-        </div>
-
-        <div className="container mx-auto px-4 md:px-6 max-w-6xl relative">
+        <div className="container mx-auto px-4 md:px-6 max-w-6xl relative z-10">
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="text-center mb-10">
             <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-amber-500/10 border border-amber-500/20 mb-6">
               <Sparkles className="w-4 h-4 text-amber-400" />
               <span className="text-amber-400 text-sm font-medium">Official JoSAA 2025 Data</span>
             </div>
-
             <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-4 tracking-tight">
-              JEE Main College<br />
-              <span className="text-amber-400">Predictor</span>
+              JEE Main College<br /><span className="text-amber-400">Predictor</span>
             </h1>
-
             <p className="text-zinc-400 text-lg max-w-xl mx-auto">
               Discover your perfect college match from <span className="text-white font-semibold">{iitCount + nitCount + iiitCount + gftiCount} top institutes</span> (IITs, NITs, IIITs & GFTIs)
             </p>
           </motion.div>
 
-          {/* Stats Cards */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.2 }}
-            className="grid grid-cols-2 md:grid-cols-4 gap-4 max-w-3xl mx-auto mb-8"
-          >
+          {/* Stats */}
+          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }}
+            className="grid grid-cols-2 md:grid-cols-4 gap-4 max-w-3xl mx-auto mb-8">
             {[
               { icon: Trophy, count: iitCount, label: "IITs", color: "bg-blue-600" },
               { icon: Award, count: nitCount, label: "NITs", color: "bg-amber-500" },
               { icon: Zap, count: iiitCount, label: "IIITs", color: "bg-emerald-500" },
               { icon: Circle, count: gftiCount, label: "GFTIs", color: "bg-orange-500" },
             ].map((s, i) => (
-              <motion.div
-                key={s.label}
-                initial={{ opacity: 0, scale: 0.9 }}
-                animate={{ opacity: 1, scale: 1 }}
+              <motion.div key={s.label} initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }}
                 transition={{ delay: 0.3 + i * 0.1 }}
-                className="p-6 rounded-2xl bg-[#1a1f26] border border-zinc-800/50 text-center hover:border-zinc-700 transition-all group"
-              >
+                className="p-6 rounded-2xl bg-[#1a1f26] border border-zinc-800/50 text-center group hover:border-zinc-700 transition-all">
                 <div className={`w-12 h-12 mx-auto mb-3 rounded-xl ${s.color} flex items-center justify-center group-hover:scale-110 transition-transform`}>
                   <s.icon className="w-6 h-6 text-white" />
                 </div>
@@ -286,54 +277,30 @@ const JEEPage = () => {
             ))}
           </motion.div>
 
-          {/* Mini Stats Row */}
           <div className="flex items-center justify-center gap-8 text-sm mb-12">
-            <div className="flex items-center gap-2">
-              <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-              <span className="text-emerald-400 font-semibold">{totalRecords.toLocaleString()}</span>
-              <span className="text-zinc-500">Cutoff Records</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <div className="w-2 h-2 rounded-full bg-blue-500 animate-pulse" />
-              <span className="text-blue-400 font-semibold">{totalPrograms}</span>
-              <span className="text-zinc-500">Programs</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <div className="w-2 h-2 rounded-full bg-rose-500 animate-pulse" />
-              <span className="text-rose-400 font-semibold">100%</span>
-              <span className="text-zinc-500">Free</span>
-            </div>
+            <div className="flex items-center gap-2"><div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" /><span className="text-emerald-400 font-semibold">{totalRecords.toLocaleString()}</span><span className="text-zinc-500">Cutoff Records</span></div>
+            <div className="flex items-center gap-2"><div className="w-2 h-2 rounded-full bg-blue-500 animate-pulse" /><span className="text-blue-400 font-semibold">{totalPrograms}</span><span className="text-zinc-500">Programs</span></div>
+            <div className="flex items-center gap-2"><div className="w-2 h-2 rounded-full bg-rose-500 animate-pulse" /><span className="text-rose-400 font-semibold">100%</span><span className="text-zinc-500">Free</span></div>
           </div>
 
-          {/* Form Section */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.4 }}
-            className="max-w-4xl mx-auto p-8 rounded-3xl bg-[#1a1f26] border border-zinc-800/50"
-          >
+          {/* Form */}
+          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.4 }}
+            className="max-w-4xl mx-auto p-8 rounded-3xl bg-[#1a1f26] border border-zinc-800/50">
             <div className="flex items-center gap-3 mb-6">
-              <div className="w-10 h-10 rounded-xl bg-blue-600/20 flex items-center justify-center">
-                <Search className="w-5 h-5 text-blue-400" />
-              </div>
-              <div>
-                <h2 className="text-white font-semibold text-lg">Enter Your Details</h2>
-                <p className="text-zinc-500 text-sm">Get personalized college predictions instantly</p>
-              </div>
+              <div className="w-10 h-10 rounded-xl bg-blue-600/20 flex items-center justify-center"><Search className="w-5 h-5 text-blue-400" /></div>
+              <div><h2 className="text-white font-semibold text-lg">Enter Your Details</h2><p className="text-zinc-500 text-sm">Get personalized college predictions instantly</p></div>
             </div>
-
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
               <div>
                 <label className="text-zinc-400 text-xs font-medium uppercase tracking-wider mb-2 block">JEE Rank *</label>
                 <Input type="number" placeholder="Enter your rank" value={formData.rank}
                   onChange={(e) => setFormData({ ...formData, rank: e.target.value })}
-                  className="bg-[#0f1419] border-zinc-800 focus:border-blue-500 text-white placeholder:text-zinc-600 h-12 rounded-xl"
-                  data-testid="rank-input" />
+                  className="bg-[#0f1419] border-zinc-800 focus:border-blue-500 text-white placeholder:text-zinc-600 h-12 rounded-xl" data-testid="rank-input" />
               </div>
               <div>
                 <label className="text-zinc-400 text-xs font-medium uppercase tracking-wider mb-2 block">Category *</label>
                 <Select value={formData.seat_type} onValueChange={(v) => setFormData({ ...formData, seat_type: v })}>
-                  <SelectTrigger className="bg-[#0f1419] border-zinc-800 focus:border-blue-500 text-white h-12 rounded-xl" data-testid="category-select"><SelectValue /></SelectTrigger>
+                  <SelectTrigger className="bg-[#0f1419] border-zinc-800 text-white h-12 rounded-xl" data-testid="category-select"><SelectValue /></SelectTrigger>
                   <SelectContent className="bg-[#1a1f26] border-zinc-800">
                     {seatTypes.map(t => <SelectItem key={t.value} value={t.value} className="text-white focus:bg-zinc-800">{t.label}</SelectItem>)}
                   </SelectContent>
@@ -342,14 +309,13 @@ const JEEPage = () => {
               <div>
                 <label className="text-zinc-400 text-xs font-medium uppercase tracking-wider mb-2 block">Gender *</label>
                 <Select value={formData.gender} onValueChange={(v) => setFormData({ ...formData, gender: v })}>
-                  <SelectTrigger className="bg-[#0f1419] border-zinc-800 focus:border-blue-500 text-white h-12 rounded-xl" data-testid="gender-select"><SelectValue /></SelectTrigger>
+                  <SelectTrigger className="bg-[#0f1419] border-zinc-800 text-white h-12 rounded-xl" data-testid="gender-select"><SelectValue /></SelectTrigger>
                   <SelectContent className="bg-[#1a1f26] border-zinc-800">
                     {genders.map(g => <SelectItem key={g.value} value={g.value} className="text-white focus:bg-zinc-800">{g.label}</SelectItem>)}
                   </SelectContent>
                 </Select>
               </div>
             </div>
-
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6 items-end">
               <div>
                 <label className="text-zinc-400 text-xs font-medium uppercase tracking-wider mb-2 block">Institute Type *</label>
@@ -363,25 +329,22 @@ const JEEPage = () => {
                     <button key={type.value} onClick={() => handleInstituteTypeToggle(type.value)}
                       className={`px-4 py-2.5 rounded-xl text-sm font-medium transition-all ${
                         formData.institute_types.includes(type.value)
-                          ? `${type.color} text-white shadow-lg`
-                          : 'bg-[#0f1419] text-zinc-500 border border-zinc-800 hover:border-zinc-700'
-                      }`}
-                      data-testid={`institute-type-${type.value.toLowerCase()}`}
-                    >{type.value}</button>
+                          ? `${type.color} text-white shadow-lg` : 'bg-[#0f1419] text-zinc-500 border border-zinc-800 hover:border-zinc-700'
+                      }`} data-testid={`institute-type-${type.value.toLowerCase()}`}>{type.value}</button>
                   ))}
                 </div>
               </div>
               <div>
                 <label className="text-zinc-400 text-xs font-medium uppercase tracking-wider mb-2 block">Quota *</label>
                 <Select value={formData.quota} onValueChange={(v) => setFormData({ ...formData, quota: v })}>
-                  <SelectTrigger className="bg-[#0f1419] border-zinc-800 focus:border-blue-500 text-white h-12 rounded-xl" data-testid="quota-select"><SelectValue /></SelectTrigger>
+                  <SelectTrigger className="bg-[#0f1419] border-zinc-800 text-white h-12 rounded-xl" data-testid="quota-select"><SelectValue /></SelectTrigger>
                   <SelectContent className="bg-[#1a1f26] border-zinc-800">
                     {quotas.map(q => <SelectItem key={q.value} value={q.value} className="text-white focus:bg-zinc-800">{q.label}</SelectItem>)}
                   </SelectContent>
                 </Select>
               </div>
               <Button onClick={handlePredict} disabled={loading || !formData.rank || formData.institute_types.length === 0}
-                className="h-12 rounded-xl bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white font-semibold text-base disabled:opacity-50 shadow-lg shadow-amber-500/20"
+                className="h-12 rounded-xl bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white font-semibold text-base shadow-lg shadow-amber-500/20"
                 data-testid="predict-button">
                 {loading ? <><Loader2 className="mr-2 h-5 w-5 animate-spin" />Predicting...</>
                   : <><Sparkles className="mr-2 h-5 w-5" />Predict My Colleges<ArrowRight className="ml-2 h-4 w-4" /></>}
@@ -395,57 +358,73 @@ const JEEPage = () => {
       <AnimatePresence mode="wait">
         {predictions && (
           <motion.section initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} className="py-12">
-            <div className="container mx-auto px-4 md:px-6 max-w-6xl">
-              {/* Summary Stats */}
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
-                {[
-                  { count: predictions.total_colleges, label: "Total Matches", bg: "bg-[#1a1f26]", border: "border-zinc-800/50", text: "text-white" },
-                  { count: predictions.safe_count, label: "Safe", bg: "bg-emerald-500/10", border: "border-emerald-500/20", text: "text-emerald-400" },
-                  { count: predictions.good_count, label: "Good Chance", bg: "bg-amber-500/10", border: "border-amber-500/20", text: "text-amber-400" },
-                  { count: predictions.reach_count, label: "Reach", bg: "bg-red-500/10", border: "border-red-500/20", text: "text-red-400" },
-                ].map((s, i) => (
-                  <motion.div key={s.label} initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }}
-                    transition={{ delay: i * 0.1 }} className={`p-5 rounded-2xl ${s.bg} border ${s.border}`}>
-                    <div className={`text-3xl font-bold ${s.text}`}>{s.count}</div>
-                    <div className={`${s.text} text-sm opacity-70`}>{s.label}</div>
-                  </motion.div>
-                ))}
+            <div className="container mx-auto px-4 md:px-6 max-w-6xl relative z-10">
+              {/* Results Header */}
+              <div className="p-6 rounded-2xl bg-[#141922] border border-zinc-800/50 mb-6">
+                <div className="flex items-center justify-between mb-4">
+                  <div>
+                    <h2 className="text-2xl font-bold text-white mb-1">Prediction Results</h2>
+                    <p className="text-zinc-400 text-sm">
+                      Rank <span className="text-blue-400 font-bold">{parseInt(formData.rank).toLocaleString()}</span>
+                      {" "}&bull; {formData.seat_type} &bull; {quotaLabel} &bull; {formData.gender}
+                    </p>
+                  </div>
+                </div>
+
+                {/* Filter Tabs */}
+                <div className="flex items-center gap-6 border-b border-zinc-800/50 mb-5" data-testid="results-tabs">
+                  {[
+                    { key: "all", label: "All Results", count: predictions.total_colleges },
+                    { key: "reach", label: "Reach", count: predictions.reach_count },
+                    { key: "good", label: "Good Chance", count: predictions.good_count },
+                    { key: "safe", label: "Safe", count: predictions.safe_count },
+                  ].map(tab => (
+                    <button key={tab.key} onClick={() => setActiveTab(tab.key)}
+                      className={`pb-3 text-sm font-medium flex items-center gap-2 border-b-2 transition-all ${
+                        activeTab === tab.key ? "border-blue-500 text-white" : "border-transparent text-zinc-500 hover:text-zinc-300"
+                      }`} data-testid={`tab-${tab.key}`}>
+                      {tab.label}
+                      <span className={`text-xs px-2 py-0.5 rounded-full ${
+                        activeTab === tab.key ? "bg-blue-600 text-white" : "bg-zinc-800 text-zinc-400"
+                      }`}>{tab.count}</span>
+                    </button>
+                  ))}
+                </div>
+
+                {/* Search & Filter Bar */}
+                <div className="flex items-center gap-3">
+                  <div className="relative flex-1">
+                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-500" />
+                    <Input placeholder="Search college or branch..."
+                      value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)}
+                      className="bg-[#0f1419] border-zinc-800 text-white pl-10 h-11 rounded-xl placeholder:text-zinc-600"
+                      data-testid="search-input" />
+                  </div>
+                </div>
               </div>
 
-              {/* Filter Tabs */}
-              <div className="flex items-center gap-2 mb-6 flex-wrap" data-testid="results-tabs">
-                <Filter className="w-4 h-4 text-zinc-500 mr-1" />
-                {[
-                  { key: "all", label: `All (${predictions.total_colleges})`, active: "bg-zinc-700 text-white" },
-                  { key: "safe", label: `Safe (${predictions.safe_count})`, active: "bg-emerald-600/20 text-emerald-400 border-emerald-500/30" },
-                  { key: "good", label: `Good Chance (${predictions.good_count})`, active: "bg-amber-600/20 text-amber-400 border-amber-500/30" },
-                  { key: "reach", label: `Reach (${predictions.reach_count})`, active: "bg-red-600/20 text-red-400 border-red-500/30" },
-                ].map(tab => (
-                  <button key={tab.key} onClick={() => setActiveTab(tab.key)}
-                    className={`px-4 py-2 rounded-xl text-sm font-medium border transition-all ${
-                      activeTab === tab.key ? tab.active : "bg-[#1a1f26] text-zinc-400 border-zinc-800 hover:border-zinc-700"
-                    }`}
-                    data-testid={`tab-${tab.key}`}
-                  >{tab.label}</button>
-                ))}
-              </div>
+              {/* Results Count */}
+              <p className="text-zinc-500 text-sm mb-4">
+                Showing <span className="text-white font-semibold">{Math.min(filtered.length, 100)}</span> of {filtered.length} colleges
+              </p>
 
-              {/* College Cards Grid */}
-              <div className="space-y-3">
+              {/* College Cards */}
+              <div className="space-y-4">
                 {filtered.slice(0, 100).map((prediction, index) => (
-                  <CollegeCard key={`${prediction.institute}-${prediction.program}-${index}`} prediction={prediction} index={index} />
+                  <CollegeCard key={`${prediction.institute}-${prediction.program}-${index}`}
+                    prediction={prediction} index={index} userRank={parseInt(formData.rank)} />
                 ))}
               </div>
               {filtered.length > 100 && (
-                <div className="mt-4 p-4 text-center text-zinc-500 text-sm rounded-xl bg-[#1a1f26] border border-zinc-800/50">
+                <div className="mt-4 p-4 text-center text-zinc-500 text-sm rounded-xl bg-[#141922] border border-zinc-800/50">
                   Showing top 100 results out of {filtered.length}
                 </div>
               )}
               {filtered.length === 0 && (
-                <div className="p-12 text-center text-zinc-500 rounded-xl bg-[#1a1f26] border border-zinc-800/50">
+                <div className="p-12 text-center text-zinc-500 rounded-xl bg-[#141922] border border-zinc-800/50">
                   <Search className="w-12 h-12 mx-auto mb-4 opacity-50" />
-                  <p className="text-lg font-medium">No colleges found for this filter</p>
-                  <p className="text-sm mt-1">Try selecting a different filter tab</p>
+                  <p className="text-lg font-medium">No colleges found</p>
+                  <p className="text-sm mt-1">Try changing filters or search query</p>
                 </div>
               )}
             </div>
@@ -453,10 +432,10 @@ const JEEPage = () => {
         )}
       </AnimatePresence>
 
-      {/* How It Works Section */}
+      {/* How It Works */}
       {!predictions && (
         <section className="py-16">
-          <div className="container mx-auto px-4 md:px-6 max-w-6xl">
+          <div className="container mx-auto px-4 md:px-6 max-w-6xl relative z-10">
             <div className="text-center mb-8">
               <p className="text-zinc-500 text-sm mb-2">How It Works</p>
               <h2 className="text-2xl font-bold text-white">Get Your Predictions in 3 Steps</h2>
@@ -476,12 +455,11 @@ const JEEPage = () => {
                 </motion.div>
               ))}
             </div>
-
             <div className="text-center p-10 rounded-3xl bg-gradient-to-br from-[#1a1f26] to-[#0f1419] border border-zinc-800/50">
               <h3 className="text-2xl font-bold text-white mb-3">Ready to Find Your Dream College?</h3>
               <p className="text-zinc-400 mb-6">Join thousands of students who found their perfect match</p>
               <Button onClick={() => document.querySelector('[data-testid="rank-input"]')?.focus()}
-                className="bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white font-semibold px-8 py-3 rounded-xl shadow-lg shadow-amber-500/20">
+                className="bg-gradient-to-r from-amber-500 to-orange-500 text-white font-semibold px-8 py-3 rounded-xl shadow-lg">
                 Start Prediction Now<ArrowRight className="ml-2 h-4 w-4" />
               </Button>
             </div>
@@ -489,13 +467,13 @@ const JEEPage = () => {
         </section>
       )}
 
-      {/* Services Section */}
-      <section className="py-16 bg-[#0a0d11]">
-        <div className="container mx-auto px-4 md:px-6 max-w-6xl">
+      {/* Services */}
+      <section className="py-16 bg-[#0a0d11]/80">
+        <div className="container mx-auto px-4 md:px-6 max-w-6xl relative z-10">
           <div className="text-center mb-10">
             <p className="text-zinc-500 text-sm mb-2">Our Services</p>
             <h2 className="text-2xl font-bold text-white mb-2">Edu9 Career Guidance Services</h2>
-            <p className="text-zinc-400">Comprehensive guidance for JEE Main aspirants at every step of their journey</p>
+            <p className="text-zinc-400">Comprehensive guidance for JEE Main aspirants</p>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
             {services.map((service, index) => (
@@ -509,14 +487,14 @@ const JEEPage = () => {
             ))}
           </div>
           <div className="text-center mt-10">
-            <Button className="bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white font-semibold px-6 py-3 rounded-xl shadow-lg shadow-amber-500/20">
+            <Button className="bg-gradient-to-r from-amber-500 to-orange-500 text-white font-semibold px-6 py-3 rounded-xl shadow-lg">
               Book Your Counselling Session<ArrowRight className="ml-2 h-4 w-4" />
             </Button>
           </div>
         </div>
       </section>
 
-      <footer className="py-6 border-t border-zinc-800/50">
+      <footer className="py-6 border-t border-zinc-800/50 relative z-10">
         <div className="container mx-auto px-4 text-center">
           <p className="text-zinc-500 text-sm">&copy; 2025 Edu9 Career Guidance. All rights reserved.</p>
         </div>
