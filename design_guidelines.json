@@ -1,0 +1,176 @@
+{
+  "identity": {
+    "name": "Edu9 Career Guidance – AI College Predictor",
+    "tone": "Professional, Aspirant-Focused, High-Performance, Trustworthy",
+    "aesthetic": "Dark Mode, Neon Accents, Gold Premium Trimmings, Glassmorphism",
+    "target_audience": "Indian Engineering Aspirants (17-21 years)"
+  },
+  "typography": {
+    "font_family": {
+      "headings": "Outfit, sans-serif",
+      "body": "Inter, sans-serif",
+      "mono": "JetBrains Mono, monospace"
+    },
+    "scale": {
+      "h1": "text-5xl md:text-7xl font-bold tracking-tight",
+      "h2": "text-3xl md:text-5xl font-semibold tracking-tight",
+      "h3": "text-2xl md:text-3xl font-medium",
+      "body": "text-base md:text-lg leading-relaxed text-zinc-400",
+      "caption": "text-sm text-zinc-500 uppercase tracking-widest"
+    },
+    "imports": [
+      "@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap');"
+    ]
+  },
+  "colors": {
+    "theme": "dark",
+    "background": {
+      "base": "bg-zinc-950",
+      "surface": "bg-zinc-900",
+      "card": "bg-zinc-900/50 backdrop-blur-md border border-zinc-800"
+    },
+    "text": {
+      "primary": "text-zinc-50",
+      "secondary": "text-zinc-400",
+      "muted": "text-zinc-600"
+    },
+    "accents": {
+      "jee": {
+        "color": "#2563eb",
+        "class": "text-blue-600",
+        "bg": "bg-blue-600",
+        "border": "border-blue-600/20",
+        "glow": "shadow-[0_0_20px_rgba(37,99,235,0.3)]"
+      },
+      "tgeapcet": {
+        "color": "#059669",
+        "class": "text-emerald-600",
+        "bg": "bg-emerald-600",
+        "border": "border-emerald-600/20",
+        "glow": "shadow-[0_0_20px_rgba(5,150,105,0.3)]"
+      },
+      "apeapcet": {
+        "color": "#7c3aed",
+        "class": "text-violet-600",
+        "bg": "bg-violet-600",
+        "border": "border-violet-600/20",
+        "glow": "shadow-[0_0_20px_rgba(124,58,237,0.3)]"
+      },
+      "comedk": {
+        "color": "#ea580c",
+        "class": "text-orange-600",
+        "bg": "bg-orange-600",
+        "border": "border-orange-600/20",
+        "glow": "shadow-[0_0_20px_rgba(234,88,12,0.3)]"
+      }
+    },
+    "gold_premium": {
+      "gradient": "bg-gradient-to-r from-[#D4AF37] via-[#F7DC6F] to-[#D4AF37]",
+      "text": "text-zinc-950",
+      "hover": "hover:shadow-[0_0_20px_rgba(212,175,55,0.4)] transition-all duration-300 transform hover:-translate-y-1"
+    }
+  },
+  "layout": {
+    "container": "container mx-auto px-4 md:px-6 max-w-7xl",
+    "spacing": {
+      "section": "py-24 md:py-32",
+      "element": "space-y-8"
+    },
+    "grid": {
+      "bento": "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6",
+      "dashboard": "grid grid-cols-1 lg:grid-cols-12 gap-6"
+    }
+  },
+  "components": {
+    "buttons": {
+      "primary": "bg-zinc-50 text-zinc-950 hover:bg-zinc-200 rounded-full px-8 py-3 font-medium transition-all",
+      "gold": "bg-gradient-to-r from-[#D4AF37] via-[#F7DC6F] to-[#D4AF37] bg-[length:200%_auto] hover:bg-[position:right_center] text-black font-bold rounded-lg px-8 py-4 shadow-lg hover:shadow-[#D4AF37]/40 transition-all duration-500",
+      "outline": "border border-zinc-700 hover:border-zinc-500 text-zinc-300 hover:text-white rounded-lg px-6 py-2 transition-all"
+    },
+    "cards": {
+      "predictor": "group relative overflow-hidden rounded-2xl border border-zinc-800 bg-zinc-900/50 p-6 hover:border-zinc-700 transition-all duration-300 hover:shadow-2xl hover:shadow-zinc-900/50",
+      "stat": "flex flex-col items-center justify-center p-8 rounded-2xl bg-zinc-900/30 border border-zinc-800/50 backdrop-blur-sm"
+    },
+    "inputs": {
+      "base": "bg-zinc-950 border-zinc-800 focus:border-zinc-600 focus:ring-1 focus:ring-zinc-600 rounded-lg text-zinc-100 placeholder:text-zinc-600"
+    },
+    "badges": {
+      "safe": "bg-emerald-500/10 text-emerald-500 border border-emerald-500/20 px-2 py-0.5 rounded text-xs font-medium uppercase tracking-wider",
+      "good": "bg-blue-500/10 text-blue-500 border border-blue-500/20 px-2 py-0.5 rounded text-xs font-medium uppercase tracking-wider",
+      "reach": "bg-amber-500/10 text-amber-500 border border-amber-500/20 px-2 py-0.5 rounded text-xs font-medium uppercase tracking-wider"
+    }
+  },
+  "assets": {
+    "images": {
+      "hero_bg": "https://images.unsplash.com/photo-1762279388956-1c098163a2a8?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjA3MDB8MHwxfHNlYXJjaHw0fHxhYnN0cmFjdCUyMGRhdGElMjB2aXN1YWxpemF0aW9uJTIwdGVjaG5vbG9neSUyMGRhcmslMjBiYWNrZ3JvdW5kJTIwZ2xvd2luZ3xlbnwwfHx8fDE3NzE0MTU5ODR8MA&ixlib=rb-4.1.0&q=85",
+      "student_studying": "https://images.pexels.com/photos/4384147/pexels-photo-4384147.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
+      "campus_night": "https://images.pexels.com/photos/28539469/pexels-photo-28539469.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
+      "graduation": "https://images.pexels.com/photos/9829478/pexels-photo-9829478.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
+      "abstract_lines": "https://images.unsplash.com/photo-1762279388988-3f8abcc7dca2?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjA3MDB8MHwxfHNlYXJjaHwxfHxhYnN0cmFjdCUyMGRhdGElMjB2aXN1YWxpemF0aW9uJTIwdGVjaG5vbG9neSUyMGRhcmslMjBiYWNrZ3JvdW5kJTIwZ2xvd2luZ3xlbnwwfHx8fDE3NzE0MTU5ODR8MA&ixlib=rb-4.1.0&q=85"
+    },
+    "icons": "Use Lucide React icons. Recommended: GraduationCap, Calculator, TrendingUp, Users, Award, BookOpen, Search, ArrowRight, CheckCircle, AlertCircle, XCircle."
+  },
+  "page_specifics": {
+    "home": {
+      "structure": [
+        "Hero Section (H1 + Subtext + Gold CTA + Abstract Visual)",
+        "Stats Section (Animated Counters)",
+        "Predictors Grid (Cards for JEE, TGEAPCET, APEAPCET, COMEDK)",
+        "How It Works (Step by Step with Icons)",
+        "Services (Grid of features)",
+        "Footer (Simple links)"
+      ]
+    },
+    "apeapcet_predictor": {
+      "layout": "Split Layout or Top-Filter Layout",
+      "form_fields": ["Rank", "Category (OC, BC-A, etc.)", "Gender", "College Type", "District", "Branch Preference"],
+      "results_table": {
+        "columns": ["College Code", "College Name", "Branch", "Closing Rank", "Tuition Fee", "Probability Badge"],
+        "tabs": ["All Colleges", "Safe (High Chance)", "Good (Moderate)", "Reach (Low Chance)"]
+      }
+    },
+    "iframes": {
+      "instruction": "Use full-width, calc(100vh - header_height) height iframes. Ensure seamless integration. Add a loading skeleton before iframe loads.",
+      "jee_url": "https://example.com/jee-predictor",
+      "tgeapcet_url": "https://example.com/tgeapcet-predictor"
+    }
+  },
+  "animations": {
+    "library": "framer-motion",
+    "presets": {
+      "fade_up": {
+        "initial": { "opacity": 0, "y": 20 },
+        "animate": { "opacity": 1, "y": 0 },
+        "transition": { "duration": 0.5 }
+      },
+      "stagger_container": {
+        "hidden": { "opacity": 0 },
+        "show": {
+          "opacity": 1,
+          "transition": {
+            "staggerChildren": 0.1
+          }
+        }
+      }
+    }
+  },
+  "instructions_to_main_agent": [
+    "1. SETUP: Ensure Tailwind is configured for dark mode 'class'. Add 'Outfit' and 'Inter' fonts to index.html or import in CSS.",
+    "2. THEME: Force dark mode. Do not create a toggle. The entire app is dark.",
+    "3. COMPONENTS: Use Shadcn/UI for complex interactives (Select, Tabs, Dialog, Table). Customize them to match the Zinc-950 theme (remove white backgrounds, set borders to zinc-800).",
+    "4. GOLD BUTTON: Implement the 'gold' button class exactly as defined in the colors section.",
+    "5. IFRAMES: Create a reusable 'PredictorFrame' component that takes a URL and title. It should handle loading states gracefully.",
+    "6. ANIMATION: Use Framer Motion for entrance animations on the Homepage and Results table rows.",
+    "7. DATA: Mock the prediction logic for APEAPCET since no backend is provided. Create a realistic dummy JSON dataset of colleges.",
+    "8. ACCESSIBILITY: Ensure gold text on dark background is readable. Use specific gold shades provided.",
+    "9. TESTING: Add data-testid to all form inputs and the 'Predict' button."
+  ],
+  "UNIVERSAL_GUIDELINES": [
+    "Don't make generic centered layouts.",
+    "Use glass-morphism effects with backdrop filters.",
+    "Every interaction needs micro-animations.",
+    "Use 2-3x more spacing than feels comfortable.",
+    "Use 'sonner' for toasts.",
+    "Components MUST use named exports."
+  ]
+}
