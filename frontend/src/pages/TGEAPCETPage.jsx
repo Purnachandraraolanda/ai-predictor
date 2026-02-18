@@ -301,54 +301,30 @@ const TGEAPCETPage = () => {
       <AnimatePresence mode="wait">
         {predictions && (
           <motion.section initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="py-12">
-            <div className="container mx-auto px-4 md:px-6 max-w-6xl">
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
-                {[
-                  { count: predictions.total_colleges, label: "Total Matches", bg: "bg-[#1a1f26]", border: "border-zinc-800/50", text: "text-white" },
-                  { count: predictions.safe_count, label: "Safe", bg: "bg-emerald-500/10", border: "border-emerald-500/20", text: "text-emerald-400" },
-                  { count: predictions.good_count, label: "Good Chance", bg: "bg-amber-500/10", border: "border-amber-500/20", text: "text-amber-400" },
-                  { count: predictions.reach_count, label: "Reach", bg: "bg-red-500/10", border: "border-red-500/20", text: "text-red-400" },
-                ].map((s, i) => (
-                  <motion.div key={s.label} initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }}
-                    transition={{ delay: i * 0.1 }} className={`p-5 rounded-2xl ${s.bg} border ${s.border}`}>
-                    <div className={`text-3xl font-bold ${s.text}`}>{s.count}</div>
-                    <div className={`${s.text} text-sm opacity-70`}>{s.label}</div>
-                  </motion.div>
-                ))}
-              </div>
+            <div className="container mx-auto px-4 md:px-6 max-w-6xl relative z-10">
+              <ResultsHeader predictions={predictions} formData={formData}
+                activeTab={activeTab} setActiveTab={setActiveTab}
+                searchQuery={searchQuery} setSearchQuery={setSearchQuery} accentColor="emerald" />
 
-              {/* Filter Tabs */}
-              <div className="flex items-center gap-2 mb-6 flex-wrap" data-testid="results-tabs">
-                <Filter className="w-4 h-4 text-zinc-500 mr-1" />
-                {[
-                  { key: "all", label: `All (${predictions.total_colleges})`, active: "bg-zinc-700 text-white" },
-                  { key: "safe", label: `Safe (${predictions.safe_count})`, active: "bg-emerald-600/20 text-emerald-400 border-emerald-500/30" },
-                  { key: "good", label: `Good Chance (${predictions.good_count})`, active: "bg-amber-600/20 text-amber-400 border-amber-500/30" },
-                  { key: "reach", label: `Reach (${predictions.reach_count})`, active: "bg-red-600/20 text-red-400 border-red-500/30" },
-                ].map(tab => (
-                  <button key={tab.key} onClick={() => setActiveTab(tab.key)}
-                    className={`px-4 py-2 rounded-xl text-sm font-medium border transition-all ${
-                      activeTab === tab.key ? tab.active : "bg-[#1a1f26] text-zinc-400 border-zinc-800 hover:border-zinc-700"
-                    }`} data-testid={`tab-${tab.key}`}
-                  >{tab.label}</button>
-                ))}
-              </div>
+              <p className="text-zinc-500 text-sm mb-4">
+                Showing <span className="text-white font-semibold">{Math.min(filtered.length, 100)}</span> of {filtered.length} colleges
+              </p>
 
-              <div className="space-y-3">
+              <div className="space-y-4">
                 {filtered.slice(0, 100).map((p, i) => (
-                  <CollegeCard key={`${p.institute}-${p.branch}-${i}`} prediction={p} index={i} />
+                  <StateCollegeCard key={`${p.institute}-${p.branch}-${i}`} prediction={p} index={i} userRank={parseInt(formData.rank)} />
                 ))}
               </div>
               {filtered.length > 100 && (
-                <div className="mt-4 p-4 text-center text-zinc-500 text-sm rounded-xl bg-[#1a1f26] border border-zinc-800/50">
+                <div className="mt-4 p-4 text-center text-zinc-500 text-sm rounded-xl bg-[#141922] border border-zinc-800/50">
                   Showing top 100 results out of {filtered.length}
                 </div>
               )}
               {filtered.length === 0 && (
-                <div className="p-12 text-center text-zinc-500 rounded-xl bg-[#1a1f26] border border-zinc-800/50">
+                <div className="p-12 text-center text-zinc-500 rounded-xl bg-[#141922] border border-zinc-800/50">
                   <Search className="w-12 h-12 mx-auto mb-4 opacity-50" />
-                  <p className="text-lg font-medium">No colleges found for this filter</p>
-                  <p className="text-sm mt-1">Try selecting a different filter tab</p>
+                  <p className="text-lg font-medium">No colleges found</p>
+                  <p className="text-sm mt-1">Try changing filters or search query</p>
                 </div>
               )}
             </div>
