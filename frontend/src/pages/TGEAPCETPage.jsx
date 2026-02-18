@@ -85,17 +85,35 @@ const TGEAPCETPage = () => {
         rank: parseInt(formData.rank), category: formData.category,
         gender: formData.gender,
         special_quota: formData.special_quota === "General" ? null : formData.special_quota,
-        district: formData.district === "all" ? null : formData.district,
-        branch: formData.branch === "all" ? null : formData.branch
+        district: null, branch: null
       });
-      setPredictions(response.data);
+      // Client-side filter by selected districts/branches
+      let results = response.data;
+      if (formData.districts.length > 0 || formData.branches.length > 0) {
+        let filtered = results.predictions;
+        if (formData.districts.length > 0) filtered = filtered.filter(p => formData.districts.includes(p.district));
+        if (formData.branches.length > 0) filtered = filtered.filter(p => formData.branches.includes(p.branch));
+        results = { ...results, predictions: filtered, total_colleges: filtered.length,
+          safe_count: filtered.filter(p => p.chance === "SAFE").length,
+          good_count: filtered.filter(p => p.chance === "GOOD").length,
+          reach_count: filtered.filter(p => p.chance === "REACH").length };
+      }
+      setPredictions(results);
       setActiveTab("all");
-      toast.success(`Found ${response.data.total_colleges} college matches!`);
+      setSearchQuery("");
+      setSelectedBranches([]);
+      toast.success(`Found ${results.total_colleges} college matches!`);
     } catch (error) {
       toast.error("Failed to get predictions. Please try again.");
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleReset = () => {
+    setPredictions(null); setActiveTab("all"); setSearchQuery(""); setSelectedBranches([]);
+    setFormData({ rank: "", category: "", gender: "", special_quota: "General", districts: [], branches: [] });
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   const getFilteredPredictions = () => {
