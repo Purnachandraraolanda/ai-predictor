@@ -422,15 +422,61 @@ const JEEPage = () => {
                 </div>
 
                 {/* Search & Filter Bar */}
-                <div className="flex items-center gap-3">
-                  <div className="relative flex-1">
+                <div className="flex items-center gap-3 flex-wrap">
+                  <div className="relative flex-1 min-w-[200px]">
                     <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-500" />
                     <Input placeholder="Search college or branch..."
                       value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)}
                       className="bg-[#0f1419] border-zinc-800 text-white pl-10 h-11 rounded-xl placeholder:text-zinc-600"
                       data-testid="search-input" />
                   </div>
+
+                  {/* Branch Multi-Select */}
+                  <div className="relative" ref={branchDropdownRef}>
+                    <button onClick={() => setBranchDropdownOpen(!branchDropdownOpen)}
+                      className="flex items-center gap-2 bg-[#0f1419] border border-zinc-800 text-white h-11 px-4 rounded-xl text-sm hover:border-zinc-600 transition-colors"
+                      data-testid="branch-filter-btn">
+                      <BookOpen className="w-4 h-4 text-zinc-500" />
+                      <span className="whitespace-nowrap">
+                        {selectedBranches.length === 0 ? "All Branches" : `${selectedBranches.length} Branch${selectedBranches.length > 1 ? "es" : ""}`}
+                      </span>
+                      <svg className={`w-4 h-4 text-zinc-500 transition-transform ${branchDropdownOpen ? "rotate-180" : ""}`} fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" /></svg>
+                    </button>
+
+                    {branchDropdownOpen && (
+                      <div className="absolute top-full mt-2 right-0 w-96 max-h-72 overflow-y-auto bg-[#1a1f28] border border-zinc-700 rounded-xl shadow-2xl z-50" data-testid="branch-filter-dropdown">
+                        <div className="sticky top-0 bg-[#1a1f28] p-2 border-b border-zinc-800">
+                          <button onClick={() => setSelectedBranches([])}
+                            className="w-full text-left px-3 py-2 text-xs text-zinc-400 hover:text-white hover:bg-zinc-800 rounded-lg transition-colors">
+                            Clear All Filters
+                          </button>
+                        </div>
+                        {allBranches.map(branch => (
+                          <label key={branch}
+                            className="flex items-center gap-3 px-4 py-2.5 hover:bg-zinc-800/50 cursor-pointer transition-colors text-sm">
+                            <input type="checkbox" checked={selectedBranches.includes(branch)}
+                              onChange={() => toggleBranch(branch)}
+                              className="w-4 h-4 rounded border-zinc-600 bg-zinc-800 accent-blue-500" />
+                            <span className="text-zinc-300 truncate">{branch}</span>
+                          </label>
+                        ))}
+                      </div>
+                    )}
+                  </div>
                 </div>
+
+                {selectedBranches.length > 0 && (
+                  <div className="flex flex-wrap gap-2 mt-3">
+                    {selectedBranches.map(b => (
+                      <span key={b} className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-blue-600/15 text-blue-400 border border-blue-500/20 text-xs">
+                        {b.length > 40 ? b.substring(0, 40) + "..." : b}
+                        <button onClick={() => toggleBranch(b)} className="ml-1 hover:text-white">
+                          <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg>
+                        </button>
+                      </span>
+                    ))}
+                  </div>
+                )}
               </div>
 
               {/* Results Count */}
