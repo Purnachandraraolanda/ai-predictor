@@ -281,7 +281,8 @@ const COMEDKPage = () => {
               <ResultsHeader predictions={predictions} formData={formData}
                 activeTab={activeTab} setActiveTab={setActiveTab}
                 searchQuery={searchQuery} setSearchQuery={setSearchQuery}
-                selectedBranches={selectedBranches} setSelectedBranches={setSelectedBranches} accentColor="orange" />
+                selectedBranches={selectedBranches} setSelectedBranches={setSelectedBranches}
+                onReset={handleReset} accentColor="orange" />
 
               <p className="text-zinc-500 text-sm mb-4">
                 Showing <span className="text-white font-semibold">{Math.min(filtered.length, 100)}</span> of {filtered.length} colleges
