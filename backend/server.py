@@ -5,10 +5,8 @@ from motor.motor_asyncio import AsyncIOMotorClient
 import os
 import logging
 from pathlib import Path
-from pydantic import BaseModel, Field, ConfigDict
+from pydantic import BaseModel, Field
 from typing import List, Optional
-import uuid
-from datetime import datetime, timezone
 import json
 
 ROOT_DIR = Path(__file__).parent
@@ -26,13 +24,20 @@ app = FastAPI()
 api_router = APIRouter(prefix="/api")
 
 # Define Models
-class PredictionRequest(BaseModel):
+class APEAPCETPredictionRequest(BaseModel):
     rank: int
     category: str
     gender: str
     college_type: Optional[str] = None
     district: Optional[str] = None
     branch: Optional[str] = None
+
+class JEEPredictionRequest(BaseModel):
+    rank: int
+    seat_type: str  # OPEN, EWS, OBC-NCL, SC, ST
+    gender: str  # Gender-Neutral, Female-only
+    institute_types: Optional[List[str]] = None  # IIT, NIT, IIIT, GFTI
+    quota: Optional[str] = None  # AI, HS, OS, etc
 
 class CollegePrediction(BaseModel):
     college_code: str
@@ -41,10 +46,23 @@ class CollegePrediction(BaseModel):
     opening_rank: int
     closing_rank: int
     user_rank: int
-    chance: str  # SAFE, GOOD, REACH
+    chance: str
     probability: int
     district: Optional[str] = None
     institute_type: Optional[str] = None
+
+class JEECollegePrediction(BaseModel):
+    institute: str
+    program: str
+    quota: str
+    seat_type: str
+    gender: str
+    opening_rank: int
+    closing_rank: int
+    user_rank: int
+    chance: str
+    probability: int
+    institute_type: str
 
 class PredictionResponse(BaseModel):
     total_colleges: int
@@ -52,6 +70,13 @@ class PredictionResponse(BaseModel):
     good_count: int
     reach_count: int
     predictions: List[CollegePrediction]
+
+class JEEPredictionResponse(BaseModel):
+    total_colleges: int
+    safe_count: int
+    good_count: int
+    reach_count: int
+    predictions: List[JEECollegePrediction]
 
 class MetadataResponse(BaseModel):
     colleges: List[dict]
@@ -61,8 +86,10 @@ class MetadataResponse(BaseModel):
 
 # Load cutoff data on startup
 @app.on_event("startup")
-async def load_apeapcet_data():
-    """Load APEAPCET cutoff data into MongoDB if not exists"""
+async def load_data():
+    """Load all cutoff data into MongoDB"""
+    
+    # Load APEAPCET data
     count = await db.apeapcet_cutoffs.count_documents({})
     if count == 0:
         cutoff_file = ROOT_DIR / 'apeapcet_cutoffs.json'
@@ -73,7 +100,7 @@ async def load_apeapcet_data():
                 await db.apeapcet_cutoffs.insert_many(cutoffs)
                 logging.info(f"Loaded {len(cutoffs)} APEAPCET cutoff records")
     
-    # Load metadata
+    # Load APEAPCET metadata
     meta_count = await db.apeapcet_metadata.count_documents({})
     if meta_count == 0:
         meta_file = ROOT_DIR / 'apeapcet_metadata.json'
@@ -82,6 +109,27 @@ async def load_apeapcet_data():
                 metadata = json.load(f)
             await db.apeapcet_metadata.insert_one(metadata)
             logging.info("Loaded APEAPCET metadata")
+    
+    # Load JEE data
+    jee_count = await db.jee_cutoffs.count_documents({})
+    if jee_count == 0:
+        jee_file = ROOT_DIR / 'jee_cutoffs.json'
+        if jee_file.exists():
+            with open(jee_file, 'r') as f:
+                jee_cutoffs = json.load(f)
+            if jee_cutoffs:
+                await db.jee_cutoffs.insert_many(jee_cutoffs)
+                logging.info(f"Loaded {len(jee_cutoffs)} JEE cutoff records")
+    
+    # Load JEE metadata
+    jee_meta_count = await db.jee_metadata.count_documents({})
+    if jee_meta_count == 0:
+        jee_meta_file = ROOT_DIR / 'jee_metadata.json'
+        if jee_meta_file.exists():
+            with open(jee_meta_file, 'r') as f:
+                jee_metadata = json.load(f)
+            await db.jee_metadata.insert_one(jee_metadata)
+            logging.info("Loaded JEE metadata")
 
 # API Routes
 @api_router.get("/")
@@ -128,45 +176,39 @@ async def get_predictors():
         ]
     }
 
-@api_router.get("/apeapcet/metadata", response_model=MetadataResponse)
-async def get_apeapcet_metadata():
-    """Get APEAPCET metadata (colleges, branches, districts, categories)"""
-    metadata = await db.apeapcet_metadata.find_one({}, {"_id": 0})
+# ==================== JEE ENDPOINTS ====================
+
+@api_router.get("/jee/metadata")
+async def get_jee_metadata():
+    """Get JEE metadata"""
+    metadata = await db.jee_metadata.find_one({}, {"_id": 0})
     if not metadata:
         raise HTTPException(status_code=404, detail="Metadata not found")
     return metadata
 
-@api_router.post("/apeapcet/predict", response_model=PredictionResponse)
-async def predict_apeapcet_colleges(request: PredictionRequest):
-    """Predict colleges based on APEAPCET rank"""
+@api_router.post("/jee/predict", response_model=JEEPredictionResponse)
+async def predict_jee_colleges(request: JEEPredictionRequest):
+    """Predict JEE colleges based on rank"""
     
-    # Build query
     query = {}
     
-    # Filter by category if provided
-    if request.category:
-        # Match categories that start with the selected caste
-        query["category"] = {"$regex": f"^{request.category}", "$options": "i"}
+    # Filter by seat type (category)
+    if request.seat_type:
+        query["seat_type"] = request.seat_type
     
     # Filter by gender
     if request.gender:
-        gender_code = "M" if request.gender.upper() in ["M", "MALE"] else "F"
-        query["gender"] = gender_code
+        query["gender"] = request.gender
     
-    # Filter by district
-    if request.district:
-        query["district"] = request.district
+    # Filter by institute types
+    if request.institute_types and len(request.institute_types) > 0:
+        query["institute_type"] = {"$in": request.institute_types}
     
-    # Filter by college type
-    if request.college_type:
-        query["institute_type"] = {"$regex": request.college_type, "$options": "i"}
+    # Filter by quota
+    if request.quota and request.quota != "all":
+        query["quota"] = request.quota
     
-    # Filter by branch
-    if request.branch:
-        query["branch"] = {"$regex": request.branch, "$options": "i"}
-    
-    # Get cutoffs
-    cutoffs = await db.apeapcet_cutoffs.find(query, {"_id": 0}).to_list(5000)
+    cutoffs = await db.jee_cutoffs.find(query, {"_id": 0}).to_list(15000)
     
     predictions = []
     for cutoff in cutoffs:
@@ -174,12 +216,14 @@ async def predict_apeapcet_colleges(request: PredictionRequest):
         closing_rank = cutoff.get('closing_rank', 0)
         opening_rank = cutoff.get('opening_rank', 0)
         
+        if closing_rank == 0:
+            continue
+        
         # Calculate chance and probability
         if user_rank <= opening_rank:
             chance = "SAFE"
             probability = 95
         elif user_rank <= closing_rank:
-            # Between opening and closing
             range_size = closing_rank - opening_rank
             position = user_rank - opening_rank
             if range_size > 0:
@@ -193,10 +237,106 @@ async def predict_apeapcet_colleges(request: PredictionRequest):
             else:
                 chance = "SAFE"
                 probability = 85
-        elif user_rank <= closing_rank * 1.2:  # Within 20% of closing rank
+        elif user_rank <= closing_rank * 1.15:
+            chance = "GOOD"
+            probability = int(50 - ((user_rank - closing_rank) / (closing_rank * 0.15)) * 20)
+        elif user_rank <= closing_rank * 1.3:
+            chance = "REACH"
+            probability = int(30 - ((user_rank - closing_rank * 1.15) / (closing_rank * 0.15)) * 15)
+        else:
+            chance = "REACH"
+            probability = max(5, int(15 - ((user_rank - closing_rank * 1.3) / closing_rank) * 10))
+        
+        predictions.append(JEECollegePrediction(
+            institute=cutoff.get('institute', ''),
+            program=cutoff.get('program', ''),
+            quota=cutoff.get('quota', ''),
+            seat_type=cutoff.get('seat_type', ''),
+            gender=cutoff.get('gender', ''),
+            opening_rank=opening_rank,
+            closing_rank=closing_rank,
+            user_rank=user_rank,
+            chance=chance,
+            probability=max(5, min(95, probability)),
+            institute_type=cutoff.get('institute_type', '')
+        ))
+    
+    # Sort by probability descending
+    predictions.sort(key=lambda x: (-x.probability, x.closing_rank))
+    
+    safe_count = len([p for p in predictions if p.chance == "SAFE"])
+    good_count = len([p for p in predictions if p.chance == "GOOD"])
+    reach_count = len([p for p in predictions if p.chance == "REACH"])
+    
+    return JEEPredictionResponse(
+        total_colleges=len(predictions),
+        safe_count=safe_count,
+        good_count=good_count,
+        reach_count=reach_count,
+        predictions=predictions[:500]
+    )
+
+# ==================== APEAPCET ENDPOINTS ====================
+
+@api_router.get("/apeapcet/metadata", response_model=MetadataResponse)
+async def get_apeapcet_metadata():
+    """Get APEAPCET metadata"""
+    metadata = await db.apeapcet_metadata.find_one({}, {"_id": 0})
+    if not metadata:
+        raise HTTPException(status_code=404, detail="Metadata not found")
+    return metadata
+
+@api_router.post("/apeapcet/predict", response_model=PredictionResponse)
+async def predict_apeapcet_colleges(request: APEAPCETPredictionRequest):
+    """Predict colleges based on APEAPCET rank"""
+    
+    query = {}
+    
+    if request.category:
+        query["category"] = {"$regex": f"^{request.category}", "$options": "i"}
+    
+    if request.gender:
+        gender_code = "M" if request.gender.upper() in ["M", "MALE"] else "F"
+        query["gender"] = gender_code
+    
+    if request.district:
+        query["district"] = request.district
+    
+    if request.college_type:
+        query["institute_type"] = {"$regex": request.college_type, "$options": "i"}
+    
+    if request.branch:
+        query["branch"] = {"$regex": request.branch, "$options": "i"}
+    
+    cutoffs = await db.apeapcet_cutoffs.find(query, {"_id": 0}).to_list(5000)
+    
+    predictions = []
+    for cutoff in cutoffs:
+        user_rank = request.rank
+        closing_rank = cutoff.get('closing_rank', 0)
+        opening_rank = cutoff.get('opening_rank', 0)
+        
+        if user_rank <= opening_rank:
+            chance = "SAFE"
+            probability = 95
+        elif user_rank <= closing_rank:
+            range_size = closing_rank - opening_rank
+            position = user_rank - opening_rank
+            if range_size > 0:
+                ratio = position / range_size
+                if ratio < 0.5:
+                    chance = "SAFE"
+                    probability = int(90 - (ratio * 20))
+                else:
+                    chance = "GOOD"
+                    probability = int(75 - ((ratio - 0.5) * 30))
+            else:
+                chance = "SAFE"
+                probability = 85
+        elif user_rank <= closing_rank * 1.2:
             chance = "GOOD"
             probability = int(50 - ((user_rank - closing_rank) / (closing_rank * 0.2)) * 20)
-        elif user_rank <= closing_rank * 1.5:  # Within 50% of closing rank
+        elif user_rank <= closing_rank * 1.5:
             chance = "REACH"
             probability = int(30 - ((user_rank - closing_rank * 1.2) / (closing_rank * 0.3)) * 15)
         else:
@@ -216,10 +356,8 @@ async def predict_apeapcet_colleges(request: PredictionRequest):
             institute_type=cutoff.get('institute_type')
         ))
     
-    # Sort by probability descending
     predictions.sort(key=lambda x: (-x.probability, x.closing_rank))
     
-    # Count by chance
     safe_count = len([p for p in predictions if p.chance == "SAFE"])
     good_count = len([p for p in predictions if p.chance == "GOOD"])
     reach_count = len([p for p in predictions if p.chance == "REACH"])
@@ -229,7 +367,7 @@ async def predict_apeapcet_colleges(request: PredictionRequest):
         safe_count=safe_count,
         good_count=good_count,
         reach_count=reach_count,
-        predictions=predictions[:500]  # Limit to top 500
+        predictions=predictions[:500]
     )
 
 # Include the router
@@ -243,7 +381,6 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Configure logging
 logging.basicConfig(
     level=logging.INFO,
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
