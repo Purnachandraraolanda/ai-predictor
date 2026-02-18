@@ -153,11 +153,12 @@ const TGEAPCETPage = () => {
                   whileHover={{ rotate: 10, scale: 1.1 }} transition={{ type: "spring", stiffness: 300 }}>
                   <GraduationCap className="w-5 h-5 text-white" />
                 </motion.div>
-              <div>
-                <span className="font-bold text-white text-lg">TGEAPCET Predictor</span>
-                <span className="text-emerald-400 text-xs block leading-tight">by edu9 Career Guidance</span>
-              </div>
-            </Link>
+                <div>
+                  <span className="font-bold text-white text-lg">TGEAPCET Predictor</span>
+                  <span className="text-emerald-400 text-xs block leading-tight">by edu9 Career Guidance</span>
+                </div>
+              </Link>
+            </div>
             <Badge className="bg-transparent border border-emerald-500/50 text-emerald-400 px-4 py-1.5 rounded-full">
               <Sparkles className="w-3.5 h-3.5 mr-1.5" />
               Official TGEAPCET 2025 Data
