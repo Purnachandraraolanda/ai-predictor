@@ -176,6 +176,7 @@ const JEEPage = () => {
       setPredictions(response.data);
       setActiveTab("all");
       setSearchQuery("");
+      setSelectedBranches([]);
       toast.success(`Found ${response.data.total_colleges} college matches!`);
     } catch (error) {
       toast.error("Failed to get predictions. Please try again.");
