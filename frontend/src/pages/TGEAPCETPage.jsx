@@ -45,7 +45,7 @@ const TGEAPCETPage = () => {
 
   const [formData, setFormData] = useState({
     rank: "", category: "", gender: "",
-    special_quota: "General", district: "all", branch: "all"
+    special_quota: "General", districts: [], branches: []
   });
 
   const categories = [
