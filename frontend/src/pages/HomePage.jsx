@@ -182,7 +182,8 @@ const HomePage = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-[#0a0d12]">
+    <div className="min-h-screen bg-[#0a0d12] relative">
+      <ParticleBackground color="139,92,246" particleCount={70} connectionDistance={130} speed={0.3} />
       <Header />
 
       {/* Hero Section */}
