@@ -45,7 +45,7 @@ const COMEDKPage = () => {
 
   const [formData, setFormData] = useState({
     rank: "", category: "", gender: "",
-    district: "all", branch: "all"
+    districts: [], branches: []
   });
 
   const categories = [
