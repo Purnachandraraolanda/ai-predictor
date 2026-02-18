@@ -1,0 +1,95 @@
+import { useState } from "react";
+import { motion } from "framer-motion";
+import { Header, Footer } from "@/components/Layout";
+import { Badge } from "@/components/ui/badge";
+import { GraduationCap, ExternalLink } from "lucide-react";
+
+const TGEAPCETPage = () => {
+  const [loading, setLoading] = useState(true);
+
+  return (
+    <div className="min-h-screen bg-zinc-950 flex flex-col">
+      <Header />
+      
+      {/* Hero Section */}
+      <section className="pt-24 pb-4 md:pt-28 md:pb-6 border-b border-zinc-800">
+        <div className="container mx-auto px-4 md:px-6 max-w-7xl">
+          <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+            <div className="flex items-center gap-4">
+              <div className="w-14 h-14 rounded-xl bg-emerald-600 flex items-center justify-center glow-green">
+                <GraduationCap className="w-8 h-8 text-white" />
+              </div>
+              <div>
+                <h1 className="text-2xl md:text-3xl font-bold text-zinc-50 font-['Outfit']" data-testid="page-title">
+                  TGEAPCET College Predictor
+                </h1>
+                <p className="text-zinc-400 text-sm">Telangana Engineering Colleges</p>
+              </div>
+            </div>
+            <div className="flex items-center gap-3">
+              <Badge className="bg-emerald-600/20 text-emerald-300 border-emerald-500/30 px-4 py-1.5" data-testid="official-badge">
+                Official TSCHE 2025 Data
+              </Badge>
+              <a 
+                href="https://future-campus-13.preview.emergentagent.com/" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="flex items-center gap-1 text-zinc-400 hover:text-zinc-200 text-sm transition-colors"
+              >
+                <ExternalLink className="w-4 h-4" />
+                Open in new tab
+              </a>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Stats Bar */}
+      <div className="border-b border-zinc-800 bg-zinc-900/30">
+        <div className="container mx-auto px-4 md:px-6 max-w-7xl py-3">
+          <div className="flex flex-wrap items-center justify-center gap-6 text-sm">
+            <span className="text-zinc-400">
+              <span className="text-emerald-400 font-semibold">200+</span> Engineering Colleges
+            </span>
+            <span className="text-zinc-400">
+              <span className="text-emerald-400 font-semibold">33</span> Districts
+            </span>
+            <span className="text-zinc-400">
+              <span className="text-emerald-400 font-semibold">TS EAMCET</span> Counselling
+            </span>
+          </div>
+        </div>
+      </div>
+
+      {/* Iframe Section */}
+      <section className="flex-1 relative">
+        {loading && (
+          <motion.div
+            initial={{ opacity: 1 }}
+            animate={{ opacity: loading ? 1 : 0 }}
+            className="absolute inset-0 flex flex-col items-center justify-center bg-zinc-950 z-10"
+            data-testid="loading-state"
+          >
+            <div className="relative">
+              <div className="w-16 h-16 rounded-full border-4 border-zinc-800 border-t-emerald-600 animate-spin" />
+              <GraduationCap className="w-6 h-6 text-emerald-400 absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2" />
+            </div>
+            <p className="text-zinc-400 mt-4">Loading TGEAPCET Predictor...</p>
+          </motion.div>
+        )}
+        
+        <iframe
+          src="https://future-campus-13.preview.emergentagent.com/"
+          className="w-full h-[calc(100vh-180px)] border-0"
+          title="TGEAPCET College Predictor"
+          onLoad={() => setLoading(false)}
+          data-testid="predictor-iframe"
+        />
+      </section>
+
+      <Footer />
+    </div>
+  );
+};
+
+export default TGEAPCETPage;
