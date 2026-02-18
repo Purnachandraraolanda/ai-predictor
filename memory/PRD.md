@@ -131,6 +131,8 @@ Build a Multi-Exam College Predictor Platform with exact format matching referen
 - Historical cutoff trends
 
 ## Testing Status
-- All 4 predictors: PASSED (100% backend, 100% frontend)
-- Test report: /app/test_reports/iteration_3.json
-- Backend tests: /app/backend/tests/test_api.py
+- All 4 predictors: PASSED
+- Last updated: Feb 2026
+- COMEDK uses real allotment data (325 records, 73 colleges, 39 branches)
+- TGEAPCET uses real allotment data (13,746 records, 179 colleges, 50 branches)
+- JEE uses real JoSAA data (12,131 records)
