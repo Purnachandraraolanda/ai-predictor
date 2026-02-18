@@ -291,7 +291,10 @@ class Edu9APITester:
         # Test order matters - start with basics
         tests = [
             self.test_root_api,
-            self.test_predictors_list, 
+            self.test_jee_metadata,
+            self.test_jee_prediction,
+            self.test_tgeapcet_metadata,
+            self.test_tgeapcet_prediction,
             self.test_apeapcet_metadata,
             self.test_apeapcet_prediction_basic,
             self.test_apeapcet_prediction_detailed,
