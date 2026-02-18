@@ -145,6 +145,21 @@ async def load_data():
         if f.exists():
             with open(f) as file:
                 await db.tgeapcet_metadata.insert_one(json.load(file))
+    
+    # Load COMEDK
+    if await db.comedk_cutoffs.count_documents({}) == 0:
+        f = ROOT_DIR / 'comedk_cutoffs.json'
+        if f.exists():
+            with open(f) as file:
+                data = json.load(file)
+                if data: await db.comedk_cutoffs.insert_many(data)
+                logging.info(f"Loaded {len(data)} COMEDK records")
+    
+    if await db.comedk_metadata.count_documents({}) == 0:
+        f = ROOT_DIR / 'comedk_metadata.json'
+        if f.exists():
+            with open(f) as file:
+                await db.comedk_metadata.insert_one(json.load(file))
 
 @api_router.get("/")
 async def root():
