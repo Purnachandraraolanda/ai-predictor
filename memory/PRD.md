@@ -21,7 +21,13 @@ Build a Multi-Exam College Predictor Platform with exact format matching referen
 4. APEAPCET predictor with real 43,806 cutoff records
 5. COMEDK predictor with mock data (2,888 records, 40 colleges)
 6. Dark theme (#0f1419 background), responsive design
-7. College card format results with Safe/Good Chance/Reach filter tabs
+7. College card format results matching reference design:
+   - Left accent border color (green=Safe, amber=Good, orange=Reach)
+   - Institute type badge (IIT/NIT/IIIT/GFTI)
+   - Full college name and branch with book icon
+   - Three rank boxes: Opening (Round 1), Closing (Round 6), Your Rank (purple gradient)
+   - Chance badge (SAFE/GOOD CHANCE/REACH) top-right
+   - Search bar to filter by college or branch name
 8. Complete course/branch names displayed (not truncated)
 
 ## What's Been Implemented
