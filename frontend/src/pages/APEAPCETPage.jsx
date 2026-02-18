@@ -325,14 +325,14 @@ const APEAPCETPage = () => {
                   <div className="space-y-2">
                     <Label className="text-zinc-300">Branch Preference</Label>
                     <Select
-                      value={formData.branch}
-                      onValueChange={(value) => setFormData({ ...formData, branch: value })}
+                      value={formData.branch || "all"}
+                      onValueChange={(value) => setFormData({ ...formData, branch: value === "all" ? "" : value })}
                     >
                       <SelectTrigger className="bg-zinc-950 border-zinc-800 focus:border-violet-600 text-zinc-100" data-testid="branch-select">
                         <SelectValue placeholder="All branches" />
                       </SelectTrigger>
                       <SelectContent className="bg-zinc-900 border-zinc-800 max-h-60">
-                        <SelectItem value="" className="text-zinc-100 focus:bg-zinc-800">All Branches</SelectItem>
+                        <SelectItem value="all" className="text-zinc-100 focus:bg-zinc-800">All Branches</SelectItem>
                         {metadata?.branches?.slice(0, 30).map((branch) => (
                           <SelectItem key={branch} value={branch} className="text-zinc-100 focus:bg-zinc-800 text-xs">
                             {branch}
