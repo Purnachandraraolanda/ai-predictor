@@ -284,15 +284,15 @@ const APEAPCETPage = () => {
                   <div className="space-y-2">
                     <Label className="text-zinc-300">College Type</Label>
                     <Select
-                      value={formData.college_type}
-                      onValueChange={(value) => setFormData({ ...formData, college_type: value })}
+                      value={formData.college_type || "all"}
+                      onValueChange={(value) => setFormData({ ...formData, college_type: value === "all" ? "" : value })}
                     >
                       <SelectTrigger className="bg-zinc-950 border-zinc-800 focus:border-violet-600 text-zinc-100" data-testid="college-type-select">
                         <SelectValue placeholder="All types" />
                       </SelectTrigger>
                       <SelectContent className="bg-zinc-900 border-zinc-800">
                         {collegeTypes.map((type) => (
-                          <SelectItem key={type.value || 'all'} value={type.value} className="text-zinc-100 focus:bg-zinc-800">
+                          <SelectItem key={type.value} value={type.value} className="text-zinc-100 focus:bg-zinc-800">
                             {type.label}
                           </SelectItem>
                         ))}
