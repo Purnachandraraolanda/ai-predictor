@@ -43,6 +43,13 @@ class APEAPCETPredictionRequest(BaseModel):
     district: Optional[str] = None
     branch: Optional[str] = None
 
+class COMEDKPredictionRequest(BaseModel):
+    rank: int
+    category: str
+    gender: str
+    district: Optional[str] = None
+    branch: Optional[str] = None
+
 class CollegePrediction(BaseModel):
     institute: str
     institute_code: Optional[str] = None
