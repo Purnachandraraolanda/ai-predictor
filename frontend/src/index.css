@@ -111,3 +111,14 @@ h1, h2, h3, h4, h5, h6 {
 .glow-green { box-shadow: 0 0 20px rgba(5, 150, 105, 0.3); }
 .glow-purple { box-shadow: 0 0 20px rgba(124, 58, 237, 0.3); }
 .glow-orange { box-shadow: 0 0 20px rgba(234, 88, 12, 0.3); }
+
+/* Animated gradient text */
+@keyframes gradient-shift {
+  0%, 100% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+}
+
+.animate-gradient {
+  background-size: 200% 200%;
+  animation: gradient-shift 4s ease infinite;
+}
