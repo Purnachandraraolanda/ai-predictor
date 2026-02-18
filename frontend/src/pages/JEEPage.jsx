@@ -101,17 +101,15 @@ const CollegeCard = ({ prediction, index, userRank }) => {
       {/* Rank Boxes */}
       <div className="px-5 pb-5">
         <div className="grid grid-cols-3 gap-2">
-          <div className="bg-[#1a1f28] rounded-lg p-3 text-center border border-zinc-800/40">
+          <div className="bg-[#151b28] rounded-lg p-3 text-center border border-[#2a3040]">
             <div className="text-zinc-500 text-[10px] font-medium uppercase tracking-wider mb-1">Opening</div>
             <div className="text-white font-bold text-base font-mono">{Math.max(0, prediction.opening_rank).toLocaleString()}</div>
-            <div className="text-zinc-600 text-[10px]">Round 1</div>
           </div>
-          <div className="bg-[#1a1f28] rounded-lg p-3 text-center border border-zinc-800/40">
+          <div className="bg-[#151b28] rounded-lg p-3 text-center border border-[#2a3040]">
             <div className="text-zinc-500 text-[10px] font-medium uppercase tracking-wider mb-1">Closing</div>
             <div className="text-white font-bold text-base font-mono">{Math.max(0, prediction.closing_rank).toLocaleString()}</div>
-            <div className="text-zinc-600 text-[10px]">Round 6</div>
           </div>
-          <div className="bg-gradient-to-br from-violet-900/60 to-blue-900/60 rounded-lg p-3 text-center border border-violet-500/20">
+          <div className="bg-gradient-to-br from-violet-900/50 to-blue-900/50 rounded-lg p-3 text-center border border-violet-500/20">
             <div className="text-violet-300 text-[10px] font-medium uppercase tracking-wider mb-1">Your Rank</div>
             <div className="text-violet-200 font-bold text-base font-mono">{Math.max(0, userRank).toLocaleString()}</div>
           </div>
