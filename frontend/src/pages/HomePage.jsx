@@ -18,6 +18,7 @@ import {
   ChevronRight,
 } from "lucide-react";
 import { Header, Footer } from "@/components/Layout";
+import ParticleBackground from "@/components/ParticleBackground";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 
