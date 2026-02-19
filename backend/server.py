@@ -344,7 +344,7 @@ async def get_comedk_metadata():
 async def predict_comedk(req: COMEDKPredictionRequest):
     query = {}
     if req.category: query["category"] = req.category
-    if req.gender: query["gender"] = req.gender
+    if req.gender and req.gender != "All": query["gender"] = req.gender
     if req.district: query["district"] = req.district
     if req.branch: query["branch"] = {"$regex": req.branch, "$options": "i"}
     
@@ -352,22 +352,26 @@ async def predict_comedk(req: COMEDKPredictionRequest):
     
     predictions = []
     for c in cutoffs:
-        chance, prob = calculate_chance(req.rank, c.get('opening_rank', 0), c.get('closing_rank', 0))
-        predictions.append(CollegePrediction(
-            institute=c.get('college', ''),
-            institute_code=c.get('college_code', ''),
-            branch=c.get('branch', ''),
-            category=c.get('category', ''),
-            gender=c.get('gender', ''),
-            district=c.get('district', ''),
-            opening_rank=c.get('opening_rank', 0),
-            closing_rank=c.get('closing_rank', 0),
-            user_rank=req.rank,
-            chance=chance,
-            probability=max(5, min(95, prob)),
-        ))
+        closing_rank = c.get('closing_rank', 0)
+        chance, prob = calculate_chance_state_exams(req.rank, closing_rank)
+        
+        # Only include if chance is not None (within 150% threshold)
+        if chance:
+            predictions.append(CollegePrediction(
+                institute=c.get('college', ''),
+                institute_code=c.get('college_code', ''),
+                branch=c.get('branch', ''),
+                category=c.get('category', ''),
+                gender=c.get('gender', ''),
+                district=c.get('district', ''),
+                opening_rank=c.get('opening_rank', 0),
+                closing_rank=closing_rank,
+                user_rank=req.rank,
+                chance=chance,
+                probability=max(5, min(95, prob)),
+            ))
     
-    predictions.sort(key=lambda x: ({"REACH": 0, "GOOD": 1, "SAFE": 2}[x.chance], x.closing_rank))
+    predictions.sort(key=lambda x: ({"SAFE": 0, "GOOD": 1, "REACH": 2}[x.chance], x.closing_rank))
     
     return PredictionResponse(
         total_colleges=len(predictions),
