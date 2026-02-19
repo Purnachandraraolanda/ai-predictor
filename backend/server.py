@@ -222,7 +222,7 @@ async def predict_jee(req: JEEPredictionRequest):
                 institute_type=c.get('institute_type', '')
             ))
     
-    predictions.sort(key=lambda x: ({"SAFE": 0, "GOOD": 1, "REACH": 2}[x.chance], x.closing_rank))
+    predictions.sort(key=lambda x: ({"REACH": 0, "GOOD": 1, "SAFE": 2}[x.chance], x.closing_rank))
     
     return PredictionResponse(
         total_colleges=len(predictions),
@@ -271,7 +271,7 @@ async def predict_tgeapcet(req: TGEAPCETPredictionRequest):
                 institute_type=c.get('institute_type', '')
             ))
     
-    predictions.sort(key=lambda x: ({"SAFE": 0, "GOOD": 1, "REACH": 2}[x.chance], x.closing_rank))
+    predictions.sort(key=lambda x: ({"REACH": 0, "GOOD": 1, "SAFE": 2}[x.chance], x.closing_rank))
     
     return PredictionResponse(
         total_colleges=len(predictions),
@@ -323,7 +323,7 @@ async def predict_apeapcet(req: APEAPCETPredictionRequest):
                 institute_type=c.get('institute_type', '')
             ))
     
-    predictions.sort(key=lambda x: ({"SAFE": 0, "GOOD": 1, "REACH": 2}[x.chance], x.closing_rank))
+    predictions.sort(key=lambda x: ({"REACH": 0, "GOOD": 1, "SAFE": 2}[x.chance], x.closing_rank))
     
     return PredictionResponse(
         total_colleges=len(predictions),
@@ -371,7 +371,7 @@ async def predict_comedk(req: COMEDKPredictionRequest):
                 probability=max(5, min(95, prob)),
             ))
     
-    predictions.sort(key=lambda x: ({"SAFE": 0, "GOOD": 1, "REACH": 2}[x.chance], x.closing_rank))
+    predictions.sort(key=lambda x: ({"REACH": 0, "GOOD": 1, "SAFE": 2}[x.chance], x.closing_rank))
     
     return PredictionResponse(
         total_colleges=len(predictions),
