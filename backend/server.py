@@ -74,33 +74,31 @@ class PredictionResponse(BaseModel):
     reach_count: int
     predictions: List[CollegePrediction]
 
-def calculate_chance(user_rank, opening_rank, closing_rank):
-    if closing_rank == 0 or opening_rank == 0:
-        return "REACH", 5
+def calculate_chance_state_exams(user_rank, closing_rank):
+    """
+    Calculate admission chance for state exams (APEAPCET, TGEAPCET)
+    - Safe: rank <= 80% of closing rank
+    - Good Chance: rank between 80% and 100% of closing (but less than closing)
+    - Reach: rank >= closing rank (up to 150%)
+    - Hidden: rank > 150% of closing
+    """
+    if closing_rank == 0:
+        return None, 0  # Skip invalid data
     
-    if user_rank <= opening_rank:
-        # User rank is better than the best admitted rank - very safe
-        return "SAFE", 95
-    elif user_rank <= closing_rank:
-        # User rank falls between opening and closing - good chance of admission
-        range_size = closing_rank - opening_rank
-        if range_size > 0:
-            position_ratio = (user_rank - opening_rank) / range_size
-            # Closer to opening = higher probability
-            prob = int(85 - (position_ratio * 25))
-        else:
-            prob = 75
-        return "GOOD", max(55, prob)
+    percent = (user_rank / closing_rank) * 100
+    
+    if user_rank <= closing_rank * 0.8:
+        # Safe: rank is 80% or better than closing
+        return "SAFE", 90
+    elif user_rank < closing_rank:
+        # Good Chance: between 80% and closing rank (but not at closing)
+        return "GOOD", 70
+    elif user_rank <= closing_rank * 1.5:
+        # Reach: at or beyond closing rank (up to 150%)
+        return "REACH", 35
     else:
-        # User rank is worse than the closing rank - reach
-        overshoot = (user_rank - closing_rank) / closing_rank
-        if overshoot < 0.1:
-            prob = 35
-        elif overshoot < 0.25:
-            prob = 20
-        else:
-            prob = 10
-        return "REACH", prob
+        # Too far beyond - don't show
+        return None, 0
 
 @app.on_event("startup")
 async def load_data():
