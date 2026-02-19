@@ -187,22 +187,44 @@ async def predict_jee(req: JEEPredictionRequest):
     
     predictions = []
     for c in cutoffs:
-        chance, prob = calculate_chance(req.rank, c.get('opening_rank', 0), c.get('closing_rank', 0))
-        predictions.append(CollegePrediction(
-            institute=c.get('institute', ''),
-            program=c.get('program', ''),
-            quota=c.get('quota', ''),
-            seat_type=c.get('seat_type', ''),
-            gender=c.get('gender', ''),
-            opening_rank=c.get('opening_rank', 0),
-            closing_rank=c.get('closing_rank', 0),
-            user_rank=req.rank,
-            chance=chance,
-            probability=max(5, min(95, prob)),
-            institute_type=c.get('institute_type', '')
-        ))
+        opening_rank = c.get('opening_rank', 0)
+        closing_rank = c.get('closing_rank', 0)
+        
+        # JEE Main: Only show colleges where user rank is between opening and closing ranks
+        if opening_rank <= req.rank <= closing_rank:
+            # Calculate probability based on position within the range
+            if closing_rank > opening_rank:
+                range_size = closing_rank - opening_rank
+                position_ratio = (req.rank - opening_rank) / range_size
+                # Closer to opening = higher probability (SAFE), closer to closing = lower (REACH)
+                if position_ratio <= 0.33:
+                    chance = "SAFE"
+                    prob = int(90 - (position_ratio * 30))
+                elif position_ratio <= 0.66:
+                    chance = "GOOD"
+                    prob = int(75 - ((position_ratio - 0.33) * 45))
+                else:
+                    chance = "REACH"
+                    prob = int(60 - ((position_ratio - 0.66) * 45))
+            else:
+                chance = "GOOD"
+                prob = 70
+            
+            predictions.append(CollegePrediction(
+                institute=c.get('institute', ''),
+                program=c.get('program', ''),
+                quota=c.get('quota', ''),
+                seat_type=c.get('seat_type', ''),
+                gender=c.get('gender', ''),
+                opening_rank=opening_rank,
+                closing_rank=closing_rank,
+                user_rank=req.rank,
+                chance=chance,
+                probability=max(5, min(95, prob)),
+                institute_type=c.get('institute_type', '')
+            ))
     
-    predictions.sort(key=lambda x: ({"REACH": 0, "GOOD": 1, "SAFE": 2}[x.chance], x.closing_rank))
+    predictions.sort(key=lambda x: ({"SAFE": 0, "GOOD": 1, "REACH": 2}[x.chance], x.closing_rank))
     
     return PredictionResponse(
         total_colleges=len(predictions),
