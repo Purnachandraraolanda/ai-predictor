@@ -1,5 +1,5 @@
 import { Link, useLocation } from "react-router-dom";
-import { GraduationCap, Menu, X } from "lucide-react";
+import { Menu, X } from "lucide-react";
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 
@@ -19,22 +19,23 @@ export const Header = () => {
     <header className="fixed top-0 left-0 right-0 z-50 glass border-b border-[#2a3040]">
       <div className="container mx-auto px-4 md:px-6 max-w-7xl">
         <div className="flex items-center justify-between h-16">
-          <Link to="/" className="flex items-center gap-2 group" data-testid="logo-link">
-            <motion.div
-              className="w-10 h-10 rounded-lg bg-gradient-to-br from-violet-600 to-blue-600 flex items-center justify-center"
-              whileHover={{ rotate: 10, scale: 1.1 }}
+          <Link to="/" className="flex items-center gap-3 group" data-testid="logo-link">
+            <motion.img
+              src="/edu9-logo.jpg"
+              alt="Edu9 Career Guidance"
+              className="h-10 w-auto rounded-lg"
+              whileHover={{ scale: 1.05 }}
               transition={{ type: "spring", stiffness: 300 }}
-            >
-              <GraduationCap className="w-6 h-6 text-white" />
-            </motion.div>
-            <motion.span
-              className="font-bold text-xl text-zinc-50 font-['Outfit']"
+            />
+            <motion.div
+              className="hidden sm:block"
               initial={{ opacity: 0, x: -10 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ delay: 0.2 }}
             >
-              Edu9
-            </motion.span>
+              <span className="font-bold text-lg text-[#f5c842] font-['Outfit']">edu9</span>
+              <span className="block text-xs text-zinc-400">Career Guidance</span>
+            </motion.div>
           </Link>
 
           <nav className="hidden md:flex items-center gap-1">
