@@ -173,51 +173,105 @@ const TGEAPCETPage = () => {
       {/* Hero Section */}
       <section className="pt-16 pb-8 relative">
         <div className="absolute inset-0 overflow-hidden pointer-events-none">
+          {/* Floating bubble particles */}
           {[
-            { t: 20, l: 10, s: 4, c: "bg-emerald-500/40", d: 0 },
-            { t: 40, l: 15, s: 6, c: "bg-violet-500/40", d: 0.5 },
-            { t: 32, l: 85, s: 4, c: "bg-rose-500/40", d: 1 },
-            { t: 60, l: 80, s: 4, c: "bg-cyan-500/40", d: 1.5 },
+            { t: 20, l: 10, s: 8, c: "bg-emerald-500/30", d: 0 },
+            { t: 40, l: 15, s: 12, c: "bg-violet-500/25", d: 0.5 },
+            { t: 32, l: 85, s: 6, c: "bg-rose-500/30", d: 1 },
+            { t: 60, l: 80, s: 10, c: "bg-cyan-500/25", d: 1.5 },
+            { t: 75, l: 20, s: 14, c: "bg-emerald-400/20", d: 2 },
+            { t: 15, l: 70, s: 8, c: "bg-teal-500/30", d: 0.8 },
+            { t: 50, l: 5, s: 16, c: "bg-blue-500/15", d: 1.2 },
           ].map((p, i) => (
-            <motion.div key={i} className={`absolute rounded-full ${p.c}`}
+            <motion.div key={i} className={`absolute rounded-full ${p.c} blur-sm`}
               style={{ top: `${p.t}%`, left: `${p.l}%`, width: p.s, height: p.s }}
-              animate={{ y: [-10, 10, -10], opacity: [0.3, 0.7, 0.3] }}
-              transition={{ duration: 3, repeat: Infinity, delay: p.d }} />
+              animate={{ 
+                y: [-15, 15, -15], 
+                x: [-5, 5, -5],
+                opacity: [0.3, 0.8, 0.3],
+                scale: [1, 1.2, 1] 
+              }}
+              transition={{ duration: 4 + i * 0.5, repeat: Infinity, delay: p.d, ease: "easeInOut" }} />
           ))}
         </div>
 
         <div className="container mx-auto px-4 md:px-6 max-w-6xl relative">
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="text-center mb-10">
-            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-emerald-500/10 border border-emerald-500/20 mb-6">
-              <Sparkles className="w-4 h-4 text-emerald-400" />
+            <motion.div 
+              className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-emerald-500/10 border border-emerald-500/20 mb-6"
+              whileHover={{ scale: 1.05 }}
+              transition={{ type: "spring", stiffness: 300 }}
+            >
+              <motion.div animate={{ rotate: [0, 360] }} transition={{ duration: 3, repeat: Infinity, ease: "linear" }}>
+                <Sparkles className="w-4 h-4 text-emerald-400" />
+              </motion.div>
               <span className="text-emerald-400 text-sm font-medium">Official TGEAPCET 2025 Data</span>
-            </div>
+            </motion.div>
 
-            <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-4 tracking-tight">
-              <span className="bg-gradient-to-r from-emerald-400 via-cyan-400 to-violet-400 bg-clip-text text-transparent">TGEAPCET College</span>
-              <br /><span className="text-white">Predictor</span>
+            <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-4 tracking-tight relative">
+              <motion.span 
+                className="bg-gradient-to-r from-emerald-400 via-cyan-400 to-violet-400 bg-clip-text text-transparent bg-[length:200%_auto]"
+                animate={{ backgroundPosition: ["0% center", "200% center"] }}
+                transition={{ duration: 5, repeat: Infinity, ease: "linear" }}
+              >
+                TGEAPCET College
+              </motion.span>
+              <br />
+              <motion.span 
+                className="text-white"
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.3 }}
+              >
+                Predictor
+              </motion.span>
+              {/* Bubble decorations around title */}
+              <motion.span 
+                className="absolute -top-2 -right-4 w-6 h-6 bg-emerald-500/30 rounded-full blur-sm"
+                animate={{ y: [-5, 5, -5], scale: [1, 1.3, 1] }}
+                transition={{ duration: 3, repeat: Infinity }}
+              />
+              <motion.span 
+                className="absolute top-1/2 -left-6 w-4 h-4 bg-cyan-500/40 rounded-full"
+                animate={{ y: [3, -3, 3], x: [-2, 2, -2] }}
+                transition={{ duration: 2.5, repeat: Infinity, delay: 0.5 }}
+              />
             </h1>
 
-            <p className="text-zinc-400 text-lg max-w-xl mx-auto">
+            <motion.p 
+              className="text-zinc-400 text-lg max-w-xl mx-auto"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.4 }}
+            >
               Discover your perfect college match from <span className="text-white font-semibold">183</span> top institutes across Telangana with <span className="text-white font-semibold">{stats.total_branches}</span> branches
-            </p>
+            </motion.p>
           </motion.div>
 
-          {/* Stats Cards */}
+          {/* Stats Cards with enhanced hover */}
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }}
             className="grid grid-cols-2 md:grid-cols-4 gap-4 max-w-4xl mx-auto mb-8">
             {[
-              { icon: Building, count: 22, label: "Universities", color: "bg-violet-500/20", iconColor: "text-violet-400" },
-              { icon: GraduationCap, count: 161, label: "Engineering Colleges", color: "bg-emerald-500/20", iconColor: "text-emerald-400" },
-              { icon: BookOpen, count: stats.total_branches, label: "Branches", color: "bg-blue-500/20", iconColor: "text-blue-400" },
-              { icon: MapPin, count: stats.total_districts, label: "Districts", color: "bg-rose-500/20", iconColor: "text-rose-400" },
+              { icon: Building, count: 22, label: "Universities", color: "bg-violet-500/20", iconColor: "text-violet-400", hoverGlow: "hover:shadow-violet-500/20" },
+              { icon: GraduationCap, count: 161, label: "Engineering Colleges", color: "bg-emerald-500/20", iconColor: "text-emerald-400", hoverGlow: "hover:shadow-emerald-500/20" },
+              { icon: BookOpen, count: stats.total_branches, label: "Branches", color: "bg-blue-500/20", iconColor: "text-blue-400", hoverGlow: "hover:shadow-blue-500/20" },
+              { icon: MapPin, count: stats.total_districts, label: "Districts", color: "bg-rose-500/20", iconColor: "text-rose-400", hoverGlow: "hover:shadow-rose-500/20" },
             ].map((s, i) => (
-              <motion.div key={s.label} initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }}
-                transition={{ delay: 0.3 + i * 0.1 }}
-                className="p-6 rounded-2xl bg-[#1a1f26] border border-zinc-800/50 text-center hover:border-zinc-700 transition-all group">
-                <div className={`w-12 h-12 mx-auto mb-3 rounded-xl ${s.color} flex items-center justify-center group-hover:scale-110 transition-transform`}>
+              <motion.div 
+                key={s.label} 
+                initial={{ opacity: 0, scale: 0.9, y: 20 }} 
+                animate={{ opacity: 1, scale: 1, y: 0 }}
+                transition={{ delay: 0.3 + i * 0.1, type: "spring", stiffness: 100 }}
+                whileHover={{ scale: 1.05, y: -5 }}
+                className={`p-6 rounded-2xl bg-[#1a1f26] border border-zinc-800/50 text-center hover:border-zinc-600 transition-all group cursor-pointer ${s.hoverGlow} hover:shadow-lg`}
+              >
+                <motion.div 
+                  className={`w-12 h-12 mx-auto mb-3 rounded-xl ${s.color} flex items-center justify-center`}
+                  whileHover={{ rotate: 10, scale: 1.2 }}
+                  transition={{ type: "spring", stiffness: 300 }}
+                >
                   <s.icon className={`w-6 h-6 ${s.iconColor}`} />
-                </div>
+                </motion.div>
                 <div className="text-3xl font-bold text-white mb-1"><AnimatedCounter end={s.count} /></div>
                 <div className="text-zinc-500 text-sm">{s.label}</div>
               </motion.div>
