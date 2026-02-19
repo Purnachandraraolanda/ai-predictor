@@ -126,9 +126,10 @@ const APEAPCETPage = () => {
     return filtered;
   };
 
-  const collegeCount = metadata?.colleges?.length || 254;
-  const branchCount = metadata?.branches?.length || 70;
-  const districtCount = metadata?.districts?.length || 14;
+  const stats = metadata?.stats || { total_colleges: 247, total_branches: 68, total_districts: 13, total_records: 42611 };
+  const collegeCount = stats.total_colleges;
+  const branchCount = stats.total_branches;
+  const districtCount = stats.total_districts;
   const filtered = getFilteredPredictions();
 
   return (
