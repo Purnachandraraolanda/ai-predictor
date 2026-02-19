@@ -199,7 +199,7 @@ const TGEAPCETPage = () => {
             </h1>
 
             <p className="text-zinc-400 text-lg max-w-xl mx-auto">
-              Discover your perfect college match from <span className="text-white font-semibold">{stats.total_colleges}</span> top institutes across Telangana with <span className="text-white font-semibold">{stats.total_branches}</span> branches
+              Discover your perfect college match from <span className="text-white font-semibold">183</span> top institutes across Telangana with <span className="text-white font-semibold">{stats.total_branches}</span> branches
             </p>
           </motion.div>
 
