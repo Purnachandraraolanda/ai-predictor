@@ -83,40 +83,75 @@ const PredictorCard = ({ id, name, description, tags, gradientFrom, gradientTo, 
     <Link
       to={`/${id}`}
       data-testid={`predictor-card-${id}`}
-      className="group relative block overflow-hidden rounded-2xl bg-[#1a1f26] border border-zinc-800/50 hover:border-zinc-600 transition-all duration-500 hover:shadow-2xl hover:-translate-y-2"
+      className="group relative block overflow-hidden rounded-2xl bg-[#1a1f26] border border-zinc-800/50 hover:border-zinc-600 transition-all duration-500 hover:shadow-2xl hover:-translate-y-3 card-hover-shine"
     >
-      <div className={`absolute top-0 left-0 w-full h-1 bg-gradient-to-r ${gradientFrom} ${gradientTo}`} />
+      {/* Top gradient bar with animation */}
+      <motion.div 
+        className={`absolute top-0 left-0 w-full h-1 bg-gradient-to-r ${gradientFrom} ${gradientTo}`}
+        whileHover={{ height: "4px" }}
+        transition={{ duration: 0.3 }}
+      />
+      
+      {/* Hover glow effect */}
       <div className={`absolute inset-0 bg-gradient-to-br ${gradientFrom}/5 ${gradientTo}/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500`} />
+      
+      {/* Animated corner accent */}
+      <motion.div 
+        className={`absolute -top-20 -right-20 w-40 h-40 bg-gradient-to-br ${gradientFrom}/20 ${gradientTo}/20 rounded-full blur-3xl opacity-0 group-hover:opacity-100`}
+        initial={{ scale: 0 }}
+        whileHover={{ scale: 1 }}
+        transition={{ duration: 0.5 }}
+      />
 
       <div className="relative p-6">
         <div className="flex items-start justify-between mb-5">
           <motion.div
-            className={`w-14 h-14 rounded-2xl bg-gradient-to-br ${gradientFrom} ${gradientTo} flex items-center justify-center shadow-lg`}
-            whileHover={{ rotate: 5, scale: 1.1 }}
-            transition={{ type: "spring", stiffness: 300 }}
+            className={`w-14 h-14 rounded-2xl bg-gradient-to-br ${gradientFrom} ${gradientTo} flex items-center justify-center shadow-lg relative overflow-hidden`}
+            whileHover={{ rotate: 5, scale: 1.15 }}
+            transition={{ type: "spring", stiffness: 400, damping: 10 }}
           >
-            <IconComp className="w-7 h-7 text-white" />
+            <IconComp className="w-7 h-7 text-white relative z-10" />
+            {/* Icon glow effect */}
+            <motion.div 
+              className="absolute inset-0 bg-white/20"
+              animate={{ opacity: [0, 0.3, 0] }}
+              transition={{ duration: 2, repeat: Infinity }}
+            />
           </motion.div>
           {status === "coming_soon" ? (
-            <Badge className="bg-amber-500/10 text-amber-400 border-amber-500/30 text-xs">Coming Soon</Badge>
+            <Badge className="bg-amber-500/10 text-amber-400 border-amber-500/30 text-xs animate-pulse">Coming Soon</Badge>
           ) : (
             <Badge className="bg-emerald-500/10 text-emerald-400 border-emerald-500/30 text-xs">
-              <span className="w-1.5 h-1.5 bg-emerald-400 rounded-full mr-1.5 inline-block animate-pulse" />
+              <motion.span 
+                className="w-1.5 h-1.5 bg-emerald-400 rounded-full mr-1.5 inline-block"
+                animate={{ scale: [1, 1.3, 1], opacity: [1, 0.7, 1] }}
+                transition={{ duration: 1.5, repeat: Infinity }}
+              />
               Live
             </Badge>
           )}
         </div>
 
-        <h3 className="text-xl font-bold text-white mb-2 group-hover:text-transparent group-hover:bg-clip-text group-hover:bg-gradient-to-r group-hover:from-white group-hover:to-zinc-300 transition-all">
+        <motion.h3 
+          className="text-xl font-bold text-white mb-2 group-hover:text-transparent group-hover:bg-clip-text group-hover:bg-gradient-to-r group-hover:from-white group-hover:to-zinc-300 transition-all"
+          whileHover={{ x: 3 }}
+          transition={{ duration: 0.2 }}
+        >
           {name}
-        </h3>
+        </motion.h3>
         <p className="text-zinc-400 text-sm mb-4 leading-relaxed">{description}</p>
 
         <div className="flex flex-wrap gap-2 mb-5">
-          {tags.map((tag) => (
-            <span key={tag} className="text-xs px-2.5 py-1 rounded-lg bg-zinc-800/80 text-zinc-400 border border-zinc-700/50">
+          {tags.map((tag, i) => (
+            <motion.span 
+              key={tag} 
+              className="text-xs px-2.5 py-1 rounded-lg bg-zinc-800/80 text-zinc-400 border border-zinc-700/50 group-hover:border-zinc-600 transition-colors"
+              initial={{ opacity: 0, scale: 0.8 }}
+              whileInView={{ opacity: 1, scale: 1 }}
+              transition={{ delay: 0.1 * i }}
+            >
               {tag}
-            </span>
+            </motion.span>
           ))}
         </div>
 
@@ -124,10 +159,18 @@ const PredictorCard = ({ id, name, description, tags, gradientFrom, gradientTo, 
           <div className="text-xs text-zinc-500 mb-4">{stats}</div>
         )}
 
-        <div className="flex items-center gap-2 text-sm font-semibold text-zinc-300 group-hover:text-white transition-colors">
+        <motion.div 
+          className="flex items-center gap-2 text-sm font-semibold text-zinc-300 group-hover:text-white transition-colors"
+          whileHover={{ x: 5 }}
+        >
           <span>{status === "coming_soon" ? "Coming Soon" : "Predict Now"}</span>
-          <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-        </div>
+          <motion.div
+            animate={{ x: [0, 5, 0] }}
+            transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
+          >
+            <ArrowRight className="w-4 h-4" />
+          </motion.div>
+        </motion.div>
       </div>
     </Link>
   </motion.div>
