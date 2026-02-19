@@ -117,7 +117,7 @@ const COMEDKPage = () => {
     return filtered;
   };
 
-  const stats = metadata?.stats || { college_count: 40, branch_count: 15, district_count: 6, total_records: 2888 };
+  const stats = metadata?.stats || { total_colleges: 73, total_branches: 39, total_districts: 17, total_records: 325 };
   const filtered = getFilteredPredictions();
 
   return (
