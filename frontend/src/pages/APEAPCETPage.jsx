@@ -263,7 +263,6 @@ const APEAPCETPage = () => {
                 >
                   <s.icon className={`w-6 h-6 ${s.iconColor}`} />
                 </motion.div>
-                </div>
                 <div className="text-3xl font-bold text-white mb-1"><AnimatedCounter end={s.count} /></div>
                 <div className="text-zinc-500 text-sm">{s.label}</div>
               </motion.div>
