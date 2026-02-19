@@ -55,6 +55,11 @@ Build a Multi-Exam College Predictor Platform with exact format matching referen
 - 12,122 real cutoff records from uploaded files
 - Form: Rank, Category (General/EWS/OBC-NCL/SC/ST), Gender, Institute Type toggles (IIT/NIT/IIIT/GFTI), Quota
 - Stats: 23 IITs, 32 NITs, 26 IIITs, 47 GFTIs, 12,122 Cutoff Records, 253 Programs
+- **Prediction Logic**: Only shows colleges where user's rank is BETWEEN opening and closing ranks (opening_rank <= user_rank <= closing_rank)
+- **Classification**: Within the valid range, colleges are classified as:
+  - SAFE: rank in first 33% of range (closer to opening rank)
+  - GOOD CHANCE: rank in middle 33% of range
+  - REACH: rank in last 33% of range (closer to closing rank)
 - College card results with complete program name, institute type badge, chance badge
 - Filter tabs: All, Safe, Good Chance, Reach
 - Services section (8 cards)
