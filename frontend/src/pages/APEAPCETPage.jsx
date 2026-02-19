@@ -201,7 +201,7 @@ const APEAPCETPage = () => {
               { icon: Building, count: collegeCount, label: "Colleges", color: "bg-violet-500/20", iconColor: "text-violet-400" },
               { icon: BookOpen, count: branchCount, label: "Branches", color: "bg-purple-500/20", iconColor: "text-purple-400" },
               { icon: MapPin, count: districtCount, label: "Districts", color: "bg-pink-500/20", iconColor: "text-pink-400" },
-              { icon: Database, count: 43806, label: "Cutoff Records", color: "bg-rose-500/20", iconColor: "text-rose-400" },
+              { icon: Database, count: stats.total_records, label: "Cutoff Records", color: "bg-rose-500/20", iconColor: "text-rose-400" },
             ].map((s, i) => (
               <motion.div key={s.label} initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }}
                 transition={{ delay: 0.3 + i * 0.1 }}
