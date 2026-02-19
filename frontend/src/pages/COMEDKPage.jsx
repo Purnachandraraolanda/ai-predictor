@@ -131,10 +131,13 @@ const COMEDKPage = () => {
                 <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" /></svg>
               </Link>
               <Link to="/" className="flex items-center gap-3">
-                <motion.div className="w-10 h-10 rounded-lg bg-gradient-to-br from-orange-600 to-orange-800 flex items-center justify-center"
-                  whileHover={{ rotate: 10, scale: 1.1 }} transition={{ type: "spring", stiffness: 300 }}>
-                  <GraduationCap className="w-5 h-5 text-white" />
-                </motion.div>
+                <motion.img
+                  src="/edu9-logo.jpg"
+                  alt="Edu9"
+                  className="h-10 w-auto rounded-lg"
+                  whileHover={{ scale: 1.05 }}
+                  transition={{ type: "spring", stiffness: 300 }}
+                />
                 <div>
                   <span className="font-bold text-white text-lg">COMEDK Predictor</span>
                   <span className="text-orange-400 text-xs block leading-tight">by edu9 Career Guidance</span>
