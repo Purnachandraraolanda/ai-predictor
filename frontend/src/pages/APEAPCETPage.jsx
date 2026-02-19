@@ -9,7 +9,7 @@ import {
 } from "@/components/ui/select";
 import {
   GraduationCap, Search, Loader2,
-  Building, BookOpen, Database,
+  Building, BookOpen, School,
   ArrowRight, Sparkles, MapPin
 } from "lucide-react";
 import { toast } from "sonner";
