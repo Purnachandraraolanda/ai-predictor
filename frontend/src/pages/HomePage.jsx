@@ -234,11 +234,40 @@ const HomePage = () => {
               className="text-5xl md:text-7xl font-bold text-white mb-6 tracking-tight leading-tight"
               data-testid="hero-title"
             >
-              Find Your
+              <motion.span
+                initial={{ opacity: 0, x: -20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: 0.4, duration: 0.5 }}
+              >
+                Find Your
+              </motion.span>
               <br />
-              <span className="bg-gradient-to-r from-violet-400 via-blue-400 to-cyan-400 bg-clip-text text-transparent animate-gradient">
-                Dream College
-              </span>
+              <motion.span 
+                className="relative inline-block"
+                initial={{ opacity: 0, scale: 0.8 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ delay: 0.6, duration: 0.7, type: "spring", stiffness: 100 }}
+              >
+                <span className="bg-gradient-to-r from-violet-400 via-blue-400 to-cyan-400 bg-clip-text text-transparent bg-[length:200%_auto] animate-gradient-x">
+                  Dream College
+                </span>
+                {/* Bubble decorations */}
+                <motion.span 
+                  className="absolute -top-4 -right-4 w-8 h-8 bg-gradient-to-br from-violet-500/30 to-blue-500/30 rounded-full blur-sm"
+                  animate={{ y: [-5, 5, -5], scale: [1, 1.2, 1] }}
+                  transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
+                />
+                <motion.span 
+                  className="absolute -bottom-2 -left-6 w-6 h-6 bg-gradient-to-br from-cyan-500/30 to-emerald-500/30 rounded-full blur-sm"
+                  animate={{ y: [5, -5, 5], scale: [1.1, 0.9, 1.1] }}
+                  transition={{ duration: 2.5, repeat: Infinity, ease: "easeInOut", delay: 0.5 }}
+                />
+                <motion.span 
+                  className="absolute top-1/2 -right-8 w-4 h-4 bg-gradient-to-br from-amber-500/40 to-orange-500/40 rounded-full"
+                  animate={{ y: [-8, 8, -8], x: [0, 5, 0], opacity: [0.5, 1, 0.5] }}
+                  transition={{ duration: 4, repeat: Infinity, ease: "easeInOut", delay: 1 }}
+                />
+              </motion.span>
             </motion.h1>
 
             <motion.p
