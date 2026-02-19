@@ -191,7 +191,7 @@ const APEAPCETPage = () => {
             </h1>
 
             <p className="text-zinc-400 text-lg max-w-xl mx-auto">
-              Discover your perfect college match from <span className="text-white font-semibold">{collegeCount}</span> institutes across Andhra Pradesh with <span className="text-white font-semibold">{branchCount}</span> branches
+              Discover your perfect college match from <span className="text-white font-semibold">254</span> institutes across Andhra Pradesh with <span className="text-white font-semibold">{branchCount}</span> branches
             </p>
           </motion.div>
 
