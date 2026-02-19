@@ -179,16 +179,16 @@ const COMEDKPage = () => {
             </h1>
 
             <p className="text-zinc-400 text-lg max-w-xl mx-auto">
-              Discover your perfect college match from <span className="text-white font-semibold">{stats.college_count}</span> top Karnataka private engineering colleges with <span className="text-white font-semibold">{stats.branch_count}</span> branches
+              Discover your perfect college match from <span className="text-white font-semibold">{stats.total_colleges}</span> top Karnataka private engineering colleges with <span className="text-white font-semibold">{stats.total_branches}</span> branches
             </p>
           </motion.div>
 
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }}
             className="grid grid-cols-2 md:grid-cols-4 gap-4 max-w-4xl mx-auto mb-8">
             {[
-              { icon: Building, count: stats.college_count, label: "Colleges", color: "bg-orange-500/20", iconColor: "text-orange-400" },
-              { icon: BookOpen, count: stats.branch_count, label: "Branches", color: "bg-amber-500/20", iconColor: "text-amber-400" },
-              { icon: MapPin, count: stats.district_count, label: "Cities", color: "bg-yellow-500/20", iconColor: "text-yellow-400" },
+              { icon: Building, count: stats.total_colleges, label: "Colleges", color: "bg-orange-500/20", iconColor: "text-orange-400" },
+              { icon: BookOpen, count: stats.total_branches, label: "Branches", color: "bg-amber-500/20", iconColor: "text-amber-400" },
+              { icon: MapPin, count: stats.total_districts, label: "Cities", color: "bg-yellow-500/20", iconColor: "text-yellow-400" },
               { icon: Database, count: stats.total_records, label: "Cutoff Records", color: "bg-rose-500/20", iconColor: "text-rose-400" },
             ].map((s, i) => (
               <motion.div key={s.label} initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }}
