@@ -207,10 +207,10 @@ const TGEAPCETPage = () => {
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }}
             className="grid grid-cols-2 md:grid-cols-4 gap-4 max-w-4xl mx-auto mb-8">
             {[
-              { icon: Building, count: 13, label: "Universities", color: "bg-violet-500/20", iconColor: "text-violet-400" },
-              { icon: GraduationCap, count: stats.total_colleges, label: "Engineering Colleges", color: "bg-emerald-500/20", iconColor: "text-emerald-400" },
+              { icon: Building, count: 22, label: "Universities", color: "bg-violet-500/20", iconColor: "text-violet-400" },
+              { icon: GraduationCap, count: 161, label: "Engineering Colleges", color: "bg-emerald-500/20", iconColor: "text-emerald-400" },
               { icon: BookOpen, count: stats.total_branches, label: "Branches", color: "bg-blue-500/20", iconColor: "text-blue-400" },
-              { icon: Users, count: stats.total_records, label: "Cutoff Records", color: "bg-rose-500/20", iconColor: "text-rose-400" },
+              { icon: MapPin, count: stats.total_districts, label: "Districts", color: "bg-rose-500/20", iconColor: "text-rose-400" },
             ].map((s, i) => (
               <motion.div key={s.label} initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }}
                 transition={{ delay: 0.3 + i * 0.1 }}
