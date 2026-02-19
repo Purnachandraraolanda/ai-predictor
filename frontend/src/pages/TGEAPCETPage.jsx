@@ -134,7 +134,7 @@ const TGEAPCETPage = () => {
     return filtered;
   };
 
-  const stats = metadata?.stats || { university_count: 13, college_count: 161, branch_count: 24, total_records: 32685 };
+  const stats = metadata?.stats || { total_colleges: 179, total_branches: 50, total_districts: 11, total_records: 29033 };
   const filtered = getFilteredPredictions();
 
   return (
