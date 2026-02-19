@@ -77,11 +77,12 @@ export const Footer = () => (
     <div className="container mx-auto px-4 md:px-6 max-w-7xl py-12">
       <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
         <div className="col-span-1 md:col-span-2">
-          <Link to="/" className="flex items-center gap-2 mb-4">
-            <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-violet-600 to-blue-600 flex items-center justify-center">
-              <GraduationCap className="w-6 h-6 text-white" />
+          <Link to="/" className="flex items-center gap-3 mb-4">
+            <img src="/edu9-logo.jpg" alt="Edu9 Career Guidance" className="h-12 w-auto rounded-lg" />
+            <div>
+              <span className="font-bold text-xl text-[#f5c842] font-['Outfit']">edu9</span>
+              <span className="block text-sm text-zinc-400">Career Guidance</span>
             </div>
-            <span className="font-bold text-xl text-zinc-50 font-['Outfit']">Edu9 Career Guidance</span>
           </Link>
           <p className="text-zinc-400 text-sm leading-relaxed max-w-md">AI-powered college predictions for JEE, TGEAPCET, APEAPCET & COMEDK. Find your dream college with accurate cutoff analysis.</p>
         </div>
