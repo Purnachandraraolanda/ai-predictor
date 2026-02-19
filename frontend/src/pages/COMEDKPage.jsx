@@ -206,7 +206,7 @@ const COMEDKPage = () => {
           <div className="flex items-center justify-center gap-6 text-sm mb-12">
             {[
               { color: "bg-emerald-500", label: "100% Free" },
-              { color: "bg-blue-500", label: "Mock Data" },
+              { color: "bg-blue-500", label: "Real Data" },
               { color: "bg-orange-500", label: "Instant Results" },
             ].map(s => (
               <div key={s.label} className="flex items-center gap-2">
