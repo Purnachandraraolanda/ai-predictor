@@ -320,7 +320,7 @@ const HomePage = () => {
               transition={{ delay: 0.5, duration: 0.6 }}
               className="text-lg md:text-xl text-zinc-400 mb-10 leading-relaxed max-w-2xl mx-auto"
             >
-              AI-powered college predictions for <span className="text-white font-medium">JEE, TGEAPCET, APEAPCET & COMEDK</span>.
+              College predictions for <span className="text-white font-medium">JEE, TGEAPCET, APEAPCET & COMEDK</span>.
               Get accurate cutoff analysis and find your perfect match instantly.
             </motion.p>
 

@@ -519,32 +519,7 @@ const JEEPage = () => {
         </section>
       )}
 
-      {/* Services */}
-      <section className="py-16 bg-[#0a0d11]/80">
-        <div className="container mx-auto px-4 md:px-6 max-w-6xl relative z-10">
-          <div className="text-center mb-10">
-            <p className="text-zinc-500 text-sm mb-2">Our Services</p>
-            <h2 className="text-2xl font-bold text-white mb-2">Edu9 Career Guidance Services</h2>
-            <p className="text-zinc-400">Comprehensive guidance for JEE Main aspirants</p>
-          </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-            {services.map((service, index) => (
-              <motion.div key={service.title} initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }} transition={{ delay: index * 0.05 }}
-                className="p-5 rounded-2xl bg-[#1a1f26] border border-zinc-800/50 hover:border-zinc-700 transition-all group hover:-translate-y-1">
-                <service.icon className="w-8 h-8 text-amber-500 mb-4 group-hover:scale-110 transition-transform" />
-                <h3 className="text-white font-semibold mb-2 text-sm">{service.title}</h3>
-                <p className="text-zinc-500 text-xs leading-relaxed">{service.desc}</p>
-              </motion.div>
-            ))}
-          </div>
-          <div className="text-center mt-10">
-            <Button className="bg-gradient-to-r from-amber-500 to-orange-500 text-white font-semibold px-6 py-3 rounded-xl shadow-lg">
-              Book Your Counselling Session<ArrowRight className="ml-2 h-4 w-4" />
-            </Button>
-          </div>
-        </div>
-      </section>
+    
 
       {/* Services Section */}
       <Services />

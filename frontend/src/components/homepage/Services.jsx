@@ -15,18 +15,18 @@ const services = [
   {
     icon: BarChart3,
     title: 'Rank Analysis & Performance Review',
-    description: 'JEE Main percentile & rank explanation, rank vs college prediction, category & quota based analysis',
+    description: 'JEE Main , Comedk , TG/AP EAPCET percentile & rank explanation, rank vs college prediction, category & quota based analysis',
     color: 'bg-blue-500'
   },
   {
     icon: GraduationCap,
     title: 'College & Branch Selection Guidance',
-    description: 'IIT/NIT/IIIT/GFTI options, branch comparison, top colleges vs safe colleges planning, career-based selection',
+    description: 'IIT/NIT/IIIT/GFTI , COMEDK , AP/TG EAPCET options , branch wise comparison, top colleges vs safe colleges planning, career-based selection',
     color: 'bg-amber-500'
   },
   {
     icon: FileText,
-    title: 'JoSAA & State Counselling Support',
+    title: 'JoSAA , TG/AP EAPCET , COMEDK & State wise Counselling Support',
     description: 'Step-by-step registration help, choice filling strategy, mock sessions, seat allotment round guidance',
     color: 'bg-green-500'
   },
