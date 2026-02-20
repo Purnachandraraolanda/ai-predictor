@@ -66,6 +66,8 @@ class CollegePrediction(BaseModel):
     probability: int
     institute_type: Optional[str] = None
     district: Optional[str] = None
+    quota_type: Optional[str] = None  # General or Special Quota type (PWD, CAP, NCC, Sports)
+    base_category: Optional[str] = None  # Base category (OC, BC_A, SC, ST, etc.)
 
 class PredictionResponse(BaseModel):
     total_colleges: int
@@ -73,6 +75,8 @@ class PredictionResponse(BaseModel):
     good_count: int
     reach_count: int
     predictions: List[CollegePrediction]
+    general_quota_count: Optional[int] = 0
+    special_quota_count: Optional[int] = 0
 
 def calculate_chance_state_exams(user_rank, closing_rank):
     """
