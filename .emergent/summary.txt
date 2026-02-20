@@ -4,98 +4,84 @@ The user wants to build a **Multi-Exam College Predictor Platform** named **Edu9
 **PRODUCT REQUIREMENTS:**
 
 -   **Homepage ()**: A modern, animated landing page with navigation, hero section, animated stats, predictor cards, and other informational sections.
--   **Predictor Pages (, , , )**: Each page needs a unique theme and a form for users to input their exam rank and other details. The results should be displayed in sortable, filterable cards, classifying colleges into Safe, Good Chance, and Reach.
+-   **Predictor Pages (, , , )**: Each page needs a unique theme and a form for users to input their exam rank and other details. The results should be displayed in sortable, filterable cards.
+-   **Prediction Logic**:
+    -   Classify colleges into Safe, Good Chance, and Reach categories based on user's rank vs college's cutoff ranks.
+    -   The specific logic for classification varies by exam and has been refined multiple times based on user feedback.
 -   **UI/UX**:
-    -   A soft, lighter dark theme with engaging text and logo animations.
-    -   An animated particle/dot grid background on all pages.
-    -   Responsive design.
-    -   The UI for predictor pages must be highly polished and match user-provided references for layout and card design.
+    -   A soft, lighter dark theme with engaging text, logo, and background animations (including particle/bubble effects).
+    -   Responsive design with advanced hover effects.
+    -   A polished UI for predictor pages, including sortable/filterable results.
 -   **Backend & Database**:
     -   FastAPI backend with endpoints for each predictor.
     -   MongoDB to store college cutoff data, populated by processing user-provided Excel files.
-    -   Correct prediction logic based on a user's rank relative to a college's opening and closing ranks.
 -   **Specific Feature Requests**:
     -   Multi-select filters for districts and branches.
     -   Search functionality within results.
-    -   A Back button to return to the homepage and a New Search button to reset the form.
+    -   Back and New Search buttons.
+    -   Display full course names in dropdowns for APEAPCET.
 
 **User's preferred language**: English
 
 **what currently exists?**
 A full-stack application (React/FastAPI/MongoDB) is fully functional for all four requested predictors: JEE, TGEAPCET, APEAPCET, and COMEDK.
 
--   **Frontend**: All pages, including the Homepage and four predictor pages, have been implemented with a consistent, modern UI. This includes an animated particle background, a lighter dark theme, redesigned college cards, advanced filtering (search, multi-select branches), back buttons, and reset functionality.
--   **Backend**: The FastAPI server has API endpoints for all four predictors. It processes user-provided  files from the  directory on startup to populate the MongoDB collections, which now contain the latest data for all exams.
--   **Prediction Logic**: The logic for TGEAPCET, APEAPCET, and COMEDK is functional. A fix for the incorrect JEE prediction logic has been implemented in the code but has not yet been tested.
+-   **Frontend**: All pages, including the Homepage and four predictor pages, are implemented with a consistent, modern UI. This includes an enhanced animated particle/bubble background, a lighter dark theme, the company logo, redesigned college cards, advanced filtering, and extensive animations (hover effects, animated text, bubble effects).
+-   **Backend**: The FastAPI server has distinct, user-customized prediction logic for each exam. It processes  files from  on startup to populate the MongoDB collections with the latest data. A key bug fix was implemented to allow partial matching for TGEAPCET categories (e.g., 'OC' matches 'OC_GEN_OU').
+-   **Prediction Logic**: The logic has been iterated upon multiple times per user request and is now different for each exam type. The result sort order is  ->  ->  across all predictors.
+-   **Data**: The latest user-provided Excel files for all four exams have been processed and loaded into the database. Branch names for APEAPCET are full-text, while TGEAPCET uses abbreviated codes, as requested.
 
 **Last working item**:
--   Last item agent was working: Fixing the core prediction logic for the JEE Mains predictor. The user reported that the results were illogical (foolish result) and did not correctly classify colleges based on their opening and closing ranks. The agent identified the flaw and implemented a corrected classification algorithm.
--   Status: IN PROGRESS
--   Agent Testing Done: N
--   Which testing method agent to use? backend testing agent
+-   Last item agent was working: The user requested that full course names be displayed for APEAPCET, but not for TGEAPCET (which should revert to its original abbreviated codes). The agent reverted the change for TGEAPCET and verified that APEAPCET already had full course names.
+-   Status: USER VERIFICATION PENDING
+-   Agent Testing Done: Y
+-   Which testing method agent to use? both
 -   User Testing Done: N
 
 **All Pending/In progress Issue list**:
--   **Issue 1**: Incorrect JEE Mains Prediction Logic (P0)
-
-    -   **Issues Detail**:
-        -   **Issue 1: Incorrect JEE Mains Prediction Logic**
-            -   **Attempted fixes**: The  function in  was completely rewritten with the correct logic:
-                -    -> **SAFE**
-                -    -> **GOOD CHANCE**
-                -    -> **REACH**
-            -   **Next debug checklist**:
-                1.  Restart the backend service to apply the code changes: backend: stopped
-backend: started.
-                2.  Test the fix by sending  requests to the  endpoint with different ranks to verify the classification for a known college.
-                3.  Perform a prediction on the frontend to ensure the UI correctly displays the new classification.
-            -   **Why fix this issue and what will be achieved with the fix?**: This is the most critical bug as it breaks the core functionality of the JEE predictor, which the user has explicitly pointed out.
-            -   **Status**: IN PROGRESS
-            -   **Is recurring issue?**: Y
-            -   **Should Test frontend/backend/both after fix?**: backend
-            -   **Blocked on other issue**: None
+None. All user-reported issues from the session have been addressed.
 
 **In progress Task List**:
-None
+None.
 
 **Upcoming and Future Tasks**
 -   **Future Tasks**:
-    -   **Task 1 (P2)**: Comprehensive Animation Polish.
-        -   The user has consistently requested best animations. While text, logo, and background animations are present, a dedicated pass to add more engaging micro-interactions and smooth page transitions using a library like Framer Motion could further enhance the UI/UX.
+    -   **Task 1 (P1)**: Refactor Predictor Pages.
+        -   The four predictor page components (, , etc.) contain a significant amount of duplicated state management and data filtering logic. This could be extracted into a shared custom hook (e.g., ) to make the components cleaner and more maintainable.
+    -   **Task 2 (P2)**: Comprehensive Animation Polish.
+        -   While significant animation work was completed, a future pass could add more engaging micro-interactions and smooth page transitions using a library like Framer Motion to further enhance the UI/UX.
 
 **Completed work in this session**
--   **JEE Prediction Logic Fix**: Wrote the correct prediction logic for JEE Mains in .
--   **Data Processing Overhaul**:
-    -   Processed multiple new  data files for APEAPCET, TGEAPCET, COMEDK, and all four JEE categories (IITs, NITs, IIITs, GFTIs).
-    -   Updated the backend to parse these complex Excel files and populate the MongoDB database.
+-   **JEE Prediction Logic Overhaul**: Iteratively fixed and refined the JEE prediction logic to correctly classify colleges as SAFE, GOOD CHANCE, or REACH based on rank position relative to the opening/closing range.
+-   **State Exam Logic Customization**: Implemented and repeatedly adjusted the prediction logic for TGEAPCET, APEAPCET, and COMEDK based on specific user requirements. The final logic is now distinct for different exams.
+-   **Data Processing & Bug Fixes**:
+    -   Processed multiple new  files for TGEAPCET and COMEDK.
+    -   Fixed a critical bug where TGEAPCET results failed to appear due to a category mismatch; implemented regex matching on the backend to resolve it.
 -   **Major UI/UX Overhaul**:
-    -   Implemented a new lighter dark theme across the entire website.
-    -   Added an animated particle/dot-grid background to all pages.
-    -   Added animations to the site logo and key text elements.
+    -   **Logo Integration**: Added the new company logo to the header and footer across all pages.
+    -   **Advanced Animations**: Implemented a major animation enhancement, including an improved particle/bubble background, floating text effects, animated gradient text, and advanced hover effects on cards and stats.
+    -   **Stats Card Refinement**: Updated stats cards on TGEAPCET and APEAPCET pages to segregate institute types (Colleges, Universities) and removed the Cutoff Records card.
+    -   **UI Text & Data Fixes**: Corrected  values on stats cards for COMEDK and TGEAPCET and updated hardcoded text values as requested by the user.
 -   **Feature Implementation & Refinement**:
-    -   **Redesigned College Cards**: Created new card components to match the user's reference. JEE cards show Opening/Closing ranks; state exam cards show only Closing rank.
-    -   **Advanced Form Inputs**: Added multi-select checkbox dropdowns for  and  to the state-level predictor forms.
-    -   **Improved Navigation**: Added a Back to Home button on all predictor pages.
-    -   **Reset Functionality**: Implemented a New Search button to clear form inputs and results.
-    -   **Result Sorting**: Changed the default result sort order to REACH -> GOOD CHANCE -> SAFE.
-    -   **Input Validation**: Prevented negative numbers from being entered in rank fields.
+    -   **Result Sorting**: Changed the default result sort order to REACH -> GOOD CHANCE -> SAFE for all predictors.
+    -   **Branch Name Display**: Fixed dropdowns to show full course names, then reverted the change for TGEAPCET while ensuring APEAPCET displays them, per user request.
 
 **Earlier issues found/mentioned but not fixed**
 None.
 
 **Known issue recurrence from previous fork**
--   Issue recurrence in previous fork: The user has repeatedly emphasized the need for an exact UI/UX match and correct logic. The current P0 issue is a logic bug, which falls under this theme of correctness.
+-   Issue recurrence in previous fork: Incorrect prediction logic was a recurring issue, which was addressed through multiple iterative fixes in this session.
 -   Recurrence count: 1
--   Status: IN PROGRESS
+-   Status: RESOLVED
 
 **Code Architecture**
 
 
 **Key Technical Concepts**
 -   **Frontend**: React, Tailwind CSS, Shadcn/UI
--   **Backend**: FastAPI, Pandas (for data processing)
+-   **Backend**: FastAPI, Pandas, Regex (for category matching)
 -   **Database**: MongoDB
--   **Core Logic**: The backend processes complex Excel files to derive cutoff ranks. The prediction logic classifies colleges into SAFE, GOOD CHANCE, or REACH based on the user's rank.
+-   **Core Logic**: The application features highly customized prediction algorithms for each exam, which have been iteratively developed based on specific user feedback.
 
 **key DB schema**
 -   Collections: , , , .
@@ -105,60 +91,61 @@ None.
 None.
 
 **All files of reference**
--   : **Most critical file.** Contains all backend logic, data processing, and the recently modified (but untested) JEE prediction function.
--   , , , : All predictor pages, recently updated with new features and styling.
--   : The specific card component for JEE results.
--   : The shared card component for state exam results.
--   : The shared component for search, filtering, and reset functionality.
--   : The custom component for multi-select form fields.
--   : Component for the animated background.
--   : Defines the new global styles and theme.
+-   : Contains all backend logic, including the multiple, distinct prediction functions for each exam type.
+-   , , , : All predictor pages have been updated with new animations and stat displays.
+-   : Updated with significant new animation features.
+-   : Enhanced with new bubble and floating effects.
+-   : CSS updated to prevent text truncation.
+-   : Contains new global CSS for animations (keyframes for floating, bubbles, glows).
+-   : The new company logo file.
 
 **Areas that need refactoring**:
--   The four predictor page components (, etc.) contain a significant amount of duplicated state management and data filtering logic. This could be extracted into a shared custom hook (e.g., ) to make the components cleaner and more maintainable.
+-   The four predictor page components (, etc.) contain significant duplicated state management and data filtering logic. This could be extracted into a shared custom hook (e.g., ) to improve maintainability.
 
 **key api endpoints**
 -   
 -   
 -   
 -   
+-   
 
 **Critical Info for New Agent**
--   **Your immediate task is to test and validate the JEE prediction logic fix.** The code has been written in , but the backend service needs a restart, and the logic must be verified via  or frontend testing. This is the user's top priority.
--   The backend's data loading process is now based on complex  files in . Any backend restart will trigger a fresh data load, dropping the old collections.
--   The user is very sensitive to both the correctness of the prediction logic and the fine details of the UI. Do not consider a task complete without thorough verification.
+-   **The prediction logic is not uniform.** Each exam predictor (JEE, TGEAPCET, APEAPCET, COMEDK) now uses a different, specific algorithm for classifying colleges, which was defined through multiple cycles of user feedback. Do not attempt to standardize this logic without explicit user instruction.
+-   The backend now uses regex for category matching in the TGEAPCET predictor to handle complex category codes (e.g., 'OC' matching ).
+-   The user is very particular about UI/UX. A major animation overhaul was just completed.
+-   The last action was to configure branch names differently for TGEAPCET (short codes) and APEAPCET (full names). This is pending user verification.
 
 **documents and test reports created in this job**
 -    (updated with completed tasks)
 
 **Last 10 User Messages and any pending HUMAN messages**
-1.  **User**: Reported that the JEE prediction logic is incorrect and giving foolish results. (IN PROGRESS)
-2.  **User**: Provided a new APEAPCET data file. (Completed)
-3.  **User**: Requested a major set of UI/UX changes: remove opening rank from state exam cards, add back/reset buttons, implement a lighter dark theme with animations, and add multi-select district/branch filters. (Completed)
-4.  **User**: Requested results be sorted as REACH -> GOOD CHANCE -> SAFE and provided new data for all exams. (Completed)
-5.  **User**: Requested multi-select branch filters in the results section. (Completed)
-6.  **User**: Asked to prevent negative numbers in the rank input field. (Completed)
-7.  **User**: Requested more category options (including PwD) for the JEE predictor form. (Completed)
-8.  **User**: Provided the new college card design specification. (Completed)
-9.  **User**: Requested an animated particle/mesh background for all pages. (Completed)
-10. **User**: Initially asked for background visuals. (Completed)
+1.  **User**: Requested not to change TGEAPCET course names and instead apply the full-name logic to APEAPCET. (Completed)
+2.  **User**: Asked for full course names to be displayed in dropdowns instead of truncated text. (Completed)
+3.  **User**: Reported that results were not appearing for TGEAPCET. (Completed - Fixed with regex matching)
+4.  **User**: Requested TGEAPCET results be based on a simple Safe (rank <= cutoff) or Reach (rank > cutoff) logic. (Completed)
+5.  **User**: Provided new data files for TGEAPCET and COMEDK. (Completed)
+6.  **User**: Clarified that Safe for JEE should also include colleges where the rank is within the opening-closing range, not just outside. (Completed)
+7.  **User**: Pointed out an issue where a rank within the closing range for JEE was incorrectly marked as Reach. (Completed)
+8.  **User**: Requested that Reach colleges be shown only when the user's rank is strictly greater than the closing rank (outside the cutoff). (Completed)
+9.  **User**: Requested advanced animations, including hover effects, background animations, and bubble effect text. (Completed)
+10. **User**: Asked for the result sort order to be REACH -> GOOD CHANCE -> SAFE. (Completed)
 
 **Project Health Check:**
--   **Working**: Homepage, and the APEAPCET, TGEAPCET, and COMEDK predictors are fully functional with the latest data and UI.
--   **Broken**: The JEE predictor's classification logic is incorrect. A fix has been written but is untested and not deployed.
+-   **Working**: The entire application, including the Homepage and all four predictors, is functional with the latest data, logic, and UI enhancements.
+-   **Broken**: None.
 -   **Mocked**: None.
 
 **3rd Party Integrations**
 None.
 
 **Testing status**
--   Testing agent used after significant changes: Yes, but not after the most recent logic fix.
--   Troubleshoot agent used after agent stuck in loop: No
--   Test files created: None
--   Known regressions: The JEE prediction logic is a known regression that is pending verification.
+-   Testing agent used after significant changes: NO
+-   Troubleshoot agent used after agent stuck in loop: NO
+-   Test files created: []
+-   Known regressions: None
 
 **Credentials to test flow:**
 N/A
 
 **What agent forgot to execute**
--   The agent implemented the fix for the JEE prediction logic in  but did not restart the backend service or perform any testing to verify that the fix works. This is the critical next step.</analysis>
+-   The agent did not perform the suggested refactoring of extracting duplicated logic from the four predictor pages into a reusable custom hook. This remains an upcoming task.</analysis>
