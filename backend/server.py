@@ -319,14 +319,13 @@ async def get_tgeapcet_metadata():
 async def predict_tgeapcet(req: TGEAPCETPredictionRequest):
     query = {}
     
-    # Gender pattern: GEN for male, GIRLS for female
-    gender_pattern = "GEN" if req.gender == "M" else "GIRLS"
+    # Filter by gender field directly
+    if req.gender:
+        query["gender"] = req.gender
     
-    # Build category regex based on category, gender, and special quota
+    # Build category regex based on category and special quota
     if req.category:
         # Special quota keywords to exclude for "General" or include for specific quota
-        special_quota_patterns = ["CAP", "NCC", "PHA", "PHH", "PHM", "PHV", "PWD", "SPORTS"]
-        
         if req.special_quota and req.special_quota not in ["General", None, ""]:
             # User selected a specific special quota - include ONLY those results
             quota_map = {
@@ -336,13 +335,13 @@ async def predict_tgeapcet(req: TGEAPCETPredictionRequest):
                 "Sports": "SPORTS"
             }
             if req.special_quota in quota_map:
-                # Match: category_SPECIALQUOTA_GENDER
-                query["category"] = {"$regex": f"^{req.category}.*{quota_map[req.special_quota]}.*{gender_pattern}", "$options": "i"}
+                # Match: category containing SPECIALQUOTA
+                query["category"] = {"$regex": f"^{req.category}.*{quota_map[req.special_quota]}", "$options": "i"}
+            else:
+                query["category"] = {"$regex": f"^{req.category}", "$options": "i"}
         else:
             # "General" selected - EXCLUDE all special quota results
-            # Match category_GENDER but NOT containing any special quota keywords
-            # Using negative lookahead to exclude special quotas
-            query["category"] = {"$regex": f"^{req.category}_(?!.*(?:CAP|NCC|PHA|PHH|PHM|PHV|PWD|SPORTS)){gender_pattern}", "$options": "i"}
+            query["category"] = {"$regex": f"^{req.category}(?!.*(CAP|NCC|PHA|PHH|PHM|PHV|PWD|SPORTS))", "$options": "i"}
     
     if req.district: 
         query["district"] = req.district
