@@ -91,7 +91,7 @@ export const StateCollegeCard = ({ prediction, index, userRank }) => {
 };
 
 // Results header with filters
-export const ResultsHeader = ({ predictions, formData, activeTab, setActiveTab, searchQuery, setSearchQuery, selectedBranches, setSelectedBranches, onReset, accentColor = "blue" }) => {
+export const ResultsHeader = ({ predictions, formData, activeTab, setActiveTab, searchQuery, setSearchQuery, selectedBranches, setSelectedBranches, onReset, accentColor = "blue", quotaFilter, setQuotaFilter }) => {
   const [branchDropdownOpen, setBranchDropdownOpen] = React.useState(false);
   const dropdownRef = React.useRef(null);
 
@@ -112,6 +112,8 @@ export const ResultsHeader = ({ predictions, formData, activeTab, setActiveTab, 
     setSelectedBranches(prev => prev.includes(branch) ? prev.filter(b => b !== branch) : [...prev, branch]);
   };
 
+  const hasSpecialQuota = predictions?.special_quota_count > 0;
+
   return (
     <div className="p-6 rounded-2xl bg-[#1a2030] border border-[#2a3040] mb-6">
       <div className="flex items-center justify-between mb-4">
@@ -130,6 +132,30 @@ export const ResultsHeader = ({ predictions, formData, activeTab, setActiveTab, 
           </button>
         )}
       </div>
+
+      {/* Quota Type Filter */}
+      {hasSpecialQuota && setQuotaFilter && (
+        <div className="flex items-center gap-3 mb-4 pb-4 border-b border-[#2a3040]">
+          <span className="text-zinc-500 text-sm">Quota Type:</span>
+          <div className="flex gap-2">
+            {[
+              { key: "all", label: "All", count: predictions.total_colleges },
+              { key: "general", label: "General", count: predictions.general_quota_count },
+              { key: "special", label: "Special Quota", count: predictions.special_quota_count },
+            ].map(q => (
+              <button key={q.key} onClick={() => setQuotaFilter(q.key)}
+                className={`px-3 py-1.5 text-xs font-medium rounded-lg flex items-center gap-1.5 transition-all ${
+                  quotaFilter === q.key 
+                    ? "bg-violet-500/20 text-violet-400 border border-violet-500/30" 
+                    : "bg-[#252d3d] text-zinc-400 border border-[#3a4050] hover:text-zinc-300"
+                }`} data-testid={`quota-filter-${q.key}`}>
+                {q.label}
+                <span className={`text-[10px] px-1.5 py-0.5 rounded ${quotaFilter === q.key ? "bg-violet-500/30" : "bg-[#1a2030]"}`}>{q.count}</span>
+              </button>
+            ))}
+          </div>
+        </div>
+      )}
 
       <div className="flex items-center gap-6 border-b border-[#2a3040] mb-5 overflow-x-auto" data-testid="results-tabs">
         {[
