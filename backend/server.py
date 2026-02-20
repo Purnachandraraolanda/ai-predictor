@@ -357,17 +357,10 @@ async def predict_tgeapcet(req: TGEAPCETPredictionRequest):
         if closing_rank == 0:
             continue
         
-        # TGEAPCET: Results based on cutoff rank only
-        # SAFE: rank <= closing_rank (you qualify)
-        # REACH: rank > closing_rank (outside cutoff, up to 150%)
+        # Use standard chance calculation with Good Chance
+        chance, prob = calculate_chance_state_exams(req.rank, closing_rank)
         
-        if req.rank <= closing_rank:
-            chance = "SAFE"
-            prob = 90
-        elif req.rank <= closing_rank * 1.5:
-            chance = "REACH"
-            prob = 35
-        else:
+        if not chance:
             continue  # Too far outside
         
         # Parse category to get quota type
@@ -393,8 +386,8 @@ async def predict_tgeapcet(req: TGEAPCETPredictionRequest):
     # Remove duplicates - keep unique college+branch combinations
     predictions = remove_duplicates_and_group(predictions)
     
-    # Sort: REACH -> SAFE, then by closing rank
-    predictions.sort(key=lambda x: ({"REACH": 0, "SAFE": 1}[x.chance], x.closing_rank))
+    # Sort: REACH -> GOOD -> SAFE, then by closing rank
+    predictions.sort(key=lambda x: ({"REACH": 0, "GOOD": 1, "SAFE": 2}[x.chance], x.closing_rank))
     
     # Count quotas
     general_count = len([p for p in predictions if p.quota_type == "General"])
