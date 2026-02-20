@@ -88,6 +88,12 @@ Build a Multi-Exam College Predictor Platform with exact format matching referen
 - COMEDK: 325 records
 
 ## Prioritized Backlog
+### P0 (Completed in this session)
+- ✅ Gender-based filtering (Male/Female categories)
+- ✅ Unique results (no duplicate college-branch combinations)
+- ✅ Quota type separation (General vs Special Quota)
+- ✅ Category and quota badges on college cards
+
 ### P1 (High)
 - Pagination for large result sets
 - Export results to PDF/Excel
@@ -96,8 +102,10 @@ Build a Multi-Exam College Predictor Platform with exact format matching referen
 - User accounts and saved predictions
 - College comparison feature
 - College detail pages
+- Refactor predictor pages into shared custom hook (usePredictionEngine)
 
 ### P3 (Low)
 - PWA support for mobile
 - Share predictions via URL
 - Historical cutoff trends
+- Animation polish with Framer Motion micro-interactions
