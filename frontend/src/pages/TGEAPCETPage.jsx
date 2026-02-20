@@ -84,7 +84,7 @@ const TGEAPCETPage = () => {
       const response = await axios.post(`${API}/tgeapcet/predict`, {
         rank: parseInt(formData.rank), category: formData.category,
         gender: formData.gender,
-        special_quota: formData.special_quota === "General" ? null : formData.special_quota,
+        special_quota: formData.special_category === "NO" ? "General" : formData.special_category,
         district: null, branch: null
       });
       // Client-side filter by selected districts/branches
