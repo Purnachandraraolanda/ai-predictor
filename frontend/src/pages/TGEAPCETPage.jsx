@@ -380,6 +380,7 @@ const TGEAPCETPage = () => {
                 activeTab={activeTab} setActiveTab={setActiveTab}
                 searchQuery={searchQuery} setSearchQuery={setSearchQuery}
                 selectedBranches={selectedBranches} setSelectedBranches={setSelectedBranches}
+                quotaFilter={quotaFilter} setQuotaFilter={setQuotaFilter}
                 onReset={handleReset} accentColor="emerald" />
 
               <p className="text-zinc-500 text-sm mb-4">
