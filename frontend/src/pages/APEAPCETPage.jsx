@@ -94,7 +94,7 @@ const APEAPCETPage = () => {
           reach_count: filtered.filter(p => p.chance === "REACH").length };
       }
       setPredictions(results);
-      setActiveTab("all"); setSearchQuery(""); setSelectedBranches([]);
+      setActiveTab("all"); setSearchQuery(""); setSelectedBranches([]); setQuotaFilter("all");
       toast.success(`Found ${results.total_colleges} college matches!`);
     } catch (error) {
       toast.error("Failed to get predictions. Please try again.");
