@@ -49,13 +49,12 @@ const COMEDKPage = () => {
   });
 
   const categories = [
-    { value: "GM", label: "GM (General Merit)" },
-    { value: "OBC", label: "OBC" },
-    { value: "SC", label: "SC" },
-    { value: "ST", label: "ST" }
+    { value: "GM", label: "GM (General Merit)" }
   ];
 
-  const genders = [{ value: "M", label: "Male" }, { value: "F", label: "Female" }];
+  const genders = [
+    { value: "All", label: "All (No Gender Restriction)" }
+  ];
 
   useEffect(() => {
     axios.get(`${API}/comedk/metadata`).then(r => setMetadata(r.data)).catch(console.error);
@@ -64,13 +63,12 @@ const COMEDKPage = () => {
   const handlePredict = async () => {
     if (!formData.rank) return toast.error("Please enter your COMEDK rank");
     if (!formData.category) return toast.error("Please select a category");
-    if (!formData.gender) return toast.error("Please select a gender");
 
     setLoading(true);
     setPredictions(null);
     try {
       const response = await axios.post(`${API}/comedk/predict`, {
-        rank: parseInt(formData.rank), category: formData.category, gender: formData.gender,
+        rank: parseInt(formData.rank), category: formData.category, gender: "All",
         district: null, branch: null
       });
       let results = response.data;
