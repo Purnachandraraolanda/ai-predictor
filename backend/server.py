@@ -39,7 +39,7 @@ class APEAPCETPredictionRequest(BaseModel):
     rank: int
     category: str
     gender: str
-    college_type: Optional[str] = None
+    special_quota: Optional[str] = None
     district: Optional[str] = None
     branch: Optional[str] = None
 
