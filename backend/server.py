@@ -396,7 +396,7 @@ async def predict_tgeapcet(req: TGEAPCETPredictionRequest):
     return PredictionResponse(
         total_colleges=len(predictions),
         safe_count=len([p for p in predictions if p.chance == "SAFE"]),
-        good_count=0,
+        good_count=len([p for p in predictions if p.chance == "GOOD"]),
         reach_count=len([p for p in predictions if p.chance == "REACH"]),
         predictions=predictions[:500],
         general_quota_count=general_count,
