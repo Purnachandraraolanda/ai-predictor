@@ -124,6 +124,9 @@ const TGEAPCETPage = () => {
     if (activeTab === "safe") filtered = filtered.filter(p => p.chance === "SAFE");
     else if (activeTab === "good") filtered = filtered.filter(p => p.chance === "GOOD");
     else if (activeTab === "reach") filtered = filtered.filter(p => p.chance === "REACH");
+    // Quota filter
+    if (quotaFilter === "general") filtered = filtered.filter(p => p.quota_type === "General");
+    else if (quotaFilter === "special") filtered = filtered.filter(p => p.quota_type !== "General");
     if (searchQuery.trim()) {
       const q = searchQuery.toLowerCase();
       filtered = filtered.filter(p =>
