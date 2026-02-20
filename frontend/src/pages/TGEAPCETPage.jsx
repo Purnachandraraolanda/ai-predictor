@@ -102,7 +102,6 @@ const TGEAPCETPage = () => {
       setActiveTab("all");
       setSearchQuery("");
       setSelectedBranches([]);
-      setQuotaFilter("all");
       toast.success(`Found ${results.total_colleges} college matches!`);
     } catch (error) {
       toast.error("Failed to get predictions. Please try again.");
