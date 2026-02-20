@@ -192,28 +192,22 @@ async def predict_jee(req: JEEPredictionRequest):
             continue
         
         # JEE Main Classification:
-        # SAFE: rank <= opening_rank (better than best admitted)
-        # GOOD CHANCE: opening_rank < rank <= closing_rank (within admitted range)
-        # REACH: closing_rank < rank <= closing_rank * 1.5 (outside but close)
+        # SAFE: rank <= closing_rank * 0.9 (within range with good margin - 90% of closing)
+        # GOOD CHANCE: closing_rank * 0.9 < rank <= closing_rank (within range but near edge)
+        # REACH: rank > closing_rank (outside closing rank)
         
-        if req.rank <= opening_rank:
-            # User rank is better than opening - very safe
+        if req.rank <= closing_rank * 0.9:
+            # User rank is well within the closing rank - safe
             chance = "SAFE"
-            prob = 95
+            prob = 90
         elif req.rank <= closing_rank:
-            # User rank is within the admitted range - good chance
+            # User rank is within range but close to closing - good chance
             chance = "GOOD"
-            # Calculate probability based on position within range
-            if closing_rank > opening_rank:
-                position_ratio = (req.rank - opening_rank) / (closing_rank - opening_rank)
-                prob = int(85 - (position_ratio * 30))  # 85% to 55%
-            else:
-                prob = 70
+            prob = 70
         elif req.rank <= closing_rank * 1.5:
             # User rank is outside closing but within 150% - reach
             chance = "REACH"
-            overshoot = (req.rank - closing_rank) / closing_rank
-            prob = max(10, int(40 - (overshoot * 60)))  # 40% down to 10%
+            prob = 35
         else:
             # Too far outside - skip this college
             continue
