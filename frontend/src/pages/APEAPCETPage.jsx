@@ -327,11 +327,11 @@ const APEAPCETPage = () => {
                 </Select>
               </div>
               <div>
-                <label className="text-zinc-400 text-xs font-medium uppercase tracking-wider mb-2 block">College Type (Optional)</label>
-                <Select value={formData.college_type} onValueChange={(v) => setFormData({ ...formData, college_type: v })}>
-                  <SelectTrigger className="bg-[#0f1419] border-zinc-800 text-white h-12 rounded-xl" data-testid="college-type-select"><SelectValue /></SelectTrigger>
+                <label className="text-zinc-400 text-xs font-medium uppercase tracking-wider mb-2 block">Special Category Quota</label>
+                <Select value={formData.special_category} onValueChange={(v) => setFormData({ ...formData, special_category: v })}>
+                  <SelectTrigger className="bg-[#0f1419] border-zinc-800 text-white h-12 rounded-xl" data-testid="special-category-select"><SelectValue /></SelectTrigger>
                   <SelectContent className="bg-[#1a1f26] border-zinc-800">
-                    {collegeTypes.map(t => <SelectItem key={t.value} value={t.value} className="text-white focus:bg-zinc-800">{t.label}</SelectItem>)}
+                    {specialCategoryQuotas.map(q => <SelectItem key={q.value} value={q.value} className="text-white focus:bg-zinc-800">{q.label}</SelectItem>)}
                   </SelectContent>
                 </Select>
               </div>
