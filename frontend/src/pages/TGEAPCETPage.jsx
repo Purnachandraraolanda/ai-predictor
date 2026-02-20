@@ -111,7 +111,7 @@ const TGEAPCETPage = () => {
   };
 
   const handleReset = () => {
-    setPredictions(null); setActiveTab("all"); setSearchQuery(""); setSelectedBranches([]); setQuotaFilter("all");
+    setPredictions(null); setActiveTab("all"); setSearchQuery(""); setSelectedBranches([]);
     setFormData({ rank: "", category: "", gender: "", special_quota: "General", districts: [], branches: [] });
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
