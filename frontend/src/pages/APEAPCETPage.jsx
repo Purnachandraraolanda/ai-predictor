@@ -81,7 +81,7 @@ const APEAPCETPage = () => {
     try {
       const response = await axios.post(`${API}/apeapcet/predict`, {
         rank: parseInt(formData.rank), category: formData.category, gender: formData.gender,
-        college_type: formData.college_type === "all" ? null : formData.college_type,
+        special_quota: formData.special_category === "NO" ? "General" : formData.special_category,
         district: null, branch: null
       });
       let results = response.data;
@@ -95,7 +95,7 @@ const APEAPCETPage = () => {
           reach_count: filtered.filter(p => p.chance === "REACH").length };
       }
       setPredictions(results);
-      setActiveTab("all"); setSearchQuery(""); setSelectedBranches([]); setQuotaFilter("all");
+      setActiveTab("all"); setSearchQuery(""); setSelectedBranches([]);
       toast.success(`Found ${results.total_colleges} college matches!`);
     } catch (error) {
       toast.error("Failed to get predictions. Please try again.");
@@ -105,8 +105,8 @@ const APEAPCETPage = () => {
   };
 
   const handleReset = () => {
-    setPredictions(null); setActiveTab("all"); setSearchQuery(""); setSelectedBranches([]); setQuotaFilter("all");
-    setFormData({ rank: "", category: "", gender: "", college_type: "all", districts: [], branches: [] });
+    setPredictions(null); setActiveTab("all"); setSearchQuery(""); setSelectedBranches([]);
+    setFormData({ rank: "", category: "", gender: "", special_category: "NO", districts: [], branches: [] });
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
