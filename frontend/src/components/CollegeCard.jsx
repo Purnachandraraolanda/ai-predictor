@@ -198,14 +198,14 @@ export const MultiSelectCheckbox = ({ label, options, selected, onChange, testId
         <svg className={`w-4 h-4 text-zinc-500 transition-transform flex-shrink-0 ${open ? "rotate-180" : ""}`} fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" /></svg>
       </button>
       {open && (
-        <div className="absolute top-full mt-2 left-0 w-full max-h-60 overflow-y-auto bg-[#1e2535] border border-[#3a4050] rounded-xl shadow-2xl z-50">
+        <div className="absolute top-full mt-2 left-0 w-max min-w-full max-w-[500px] max-h-72 overflow-y-auto bg-[#1e2535] border border-[#3a4050] rounded-xl shadow-2xl z-50">
           <div className="sticky top-0 bg-[#1e2535] p-2 border-b border-[#2a3040]">
             <button type="button" onClick={() => onChange([])} className="w-full text-left px-3 py-1.5 text-xs text-zinc-400 hover:text-white hover:bg-[#252d3d] rounded-lg">Clear All</button>
           </div>
           {options.map(opt => (
-            <label key={opt} className="flex items-center gap-3 px-4 py-2 hover:bg-[#252d3d] cursor-pointer text-sm">
-              <input type="checkbox" checked={selected.includes(opt)} onChange={() => toggle(opt)} className="w-4 h-4 rounded accent-blue-500" />
-              <span className="text-zinc-300 truncate">{opt}</span>
+            <label key={opt} className="flex items-center gap-3 px-4 py-2.5 hover:bg-[#252d3d] cursor-pointer text-sm">
+              <input type="checkbox" checked={selected.includes(opt)} onChange={() => toggle(opt)} className="w-4 h-4 rounded accent-blue-500 flex-shrink-0" />
+              <span className="text-zinc-300 whitespace-nowrap">{opt}</span>
             </label>
           ))}
         </div>
