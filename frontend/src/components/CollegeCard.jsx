@@ -1,6 +1,6 @@
 import React from "react";
 import { motion } from "framer-motion";
-import { GraduationCap, BookOpen, MapPin } from "lucide-react";
+import { GraduationCap, BookOpen, MapPin, Shield, Star } from "lucide-react";
 
 const ChanceBadge = ({ chance }) => {
   const config = {
@@ -12,6 +12,16 @@ const ChanceBadge = ({ chance }) => {
   return (
     <span className={`${c.bg} text-white text-xs font-bold px-3 py-1.5 rounded-lg`}>
       {c.label}
+    </span>
+  );
+};
+
+const QuotaBadge = ({ quotaType }) => {
+  if (!quotaType || quotaType === "General") return null;
+  return (
+    <span className="bg-violet-500/20 text-violet-400 text-[10px] font-medium px-2 py-1 rounded-md border border-violet-500/30 flex items-center gap-1">
+      <Star className="w-3 h-3" />
+      {quotaType}
     </span>
   );
 };
@@ -50,13 +60,19 @@ export const StateCollegeCard = ({ prediction, index, userRank }) => {
         </div>
       </div>
 
-      {prediction.district && (
-        <div className="px-5 pb-3">
+      <div className="px-5 pb-3 flex flex-wrap items-center gap-2">
+        {prediction.district && (
           <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg bg-[#1e2535] text-zinc-400 text-xs">
             <MapPin className="w-3 h-3" />{prediction.district}
           </span>
-        </div>
-      )}
+        )}
+        {prediction.category && (
+          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg bg-blue-500/10 text-blue-400 text-xs border border-blue-500/20">
+            <Shield className="w-3 h-3" />{prediction.base_category || prediction.category}
+          </span>
+        )}
+        <QuotaBadge quotaType={prediction.quota_type} />
+      </div>
 
       <div className="px-5 pb-5">
         <div className="grid grid-cols-2 gap-2">
