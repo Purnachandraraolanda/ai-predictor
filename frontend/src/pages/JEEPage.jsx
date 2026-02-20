@@ -146,9 +146,51 @@ const JEEPage = () => {
     { value: "Gender-Neutral", label: "Gender-Neutral" },
     { value: "Female-only (including Supernumerary)", label: "Female-only (including Supernumerary)" }
   ];
-  const quotas = [
-    { value: "AI", label: "All India" }, { value: "HS", label: "Home State" }, { value: "OS", label: "Other State" }
-  ];
+
+  // Get available quotas based on selected institute types
+  const getAvailableQuotas = () => {
+    const types = formData.institute_types;
+    const hasIIT = types.includes("IIT");
+    const hasIIIT = types.includes("IIIT");
+    const hasNIT = types.includes("NIT");
+    const hasGFTI = types.includes("GFTI");
+
+    // If only IIT and/or IIIT selected -> Only All India
+    if ((hasIIT || hasIIIT) && !hasNIT && !hasGFTI) {
+      return [{ value: "AI", label: "All India" }];
+    }
+    // If only NIT selected -> Home State and Other State
+    if (hasNIT && !hasIIT && !hasIIIT && !hasGFTI) {
+      return [
+        { value: "HS", label: "Home State" },
+        { value: "OS", label: "Other State" }
+      ];
+    }
+    // If only GFTI selected -> All India, Home State, Other State
+    if (hasGFTI && !hasIIT && !hasIIIT && !hasNIT) {
+      return [
+        { value: "AI", label: "All India" },
+        { value: "HS", label: "Home State" },
+        { value: "OS", label: "Other State" }
+      ];
+    }
+    // Mixed selection or multiple types -> Show all options
+    return [
+      { value: "AI", label: "All India" },
+      { value: "HS", label: "Home State" },
+      { value: "OS", label: "Other State" }
+    ];
+  };
+
+  const availableQuotas = getAvailableQuotas();
+
+  // Auto-update quota when institute types change
+  useEffect(() => {
+    const quotaValues = availableQuotas.map(q => q.value);
+    if (!quotaValues.includes(formData.quota)) {
+      setFormData(prev => ({ ...prev, quota: quotaValues[0] || "AI" }));
+    }
+  }, [formData.institute_types]);
 
   useEffect(() => {
     axios.get(`${API}/jee/metadata`).then(r => setMetadata(r.data)).catch(console.error);
