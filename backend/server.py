@@ -506,7 +506,8 @@ async def get_comedk_metadata():
 async def predict_comedk(req: COMEDKPredictionRequest):
     query = {}
     if req.category: query["category"] = req.category
-    if req.gender and req.gender != "All": query["gender"] = req.gender
+    # COMEDK has gender="All" in database, so don't filter by gender
+    # if req.gender and req.gender != "All": query["gender"] = req.gender
     if req.district: query["district"] = req.district
     if req.branch: query["branch"] = {"$regex": req.branch, "$options": "i"}
     
