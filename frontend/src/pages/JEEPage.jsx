@@ -429,7 +429,7 @@ const JEEPage = () => {
                 <Select value={formData.quota} onValueChange={(v) => setFormData({ ...formData, quota: v })}>
                   <SelectTrigger className="bg-[#0f1419] border-zinc-800 text-white h-12 rounded-xl" data-testid="quota-select"><SelectValue /></SelectTrigger>
                   <SelectContent className="bg-[#1a1f26] border-zinc-800">
-                    {quotas.map(q => <SelectItem key={q.value} value={q.value} className="text-white focus:bg-zinc-800">{q.label}</SelectItem>)}
+                    {availableQuotas.map(q => <SelectItem key={q.value} value={q.value} className="text-white focus:bg-zinc-800">{q.label}</SelectItem>)}
                   </SelectContent>
                 </Select>
               </div>
