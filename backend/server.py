@@ -104,6 +104,67 @@ def calculate_chance_state_exams(user_rank, closing_rank):
         # Too far beyond - don't show
         return None, 0
 
+def parse_category_info(category_str):
+    """
+    Parse category string to extract base category and quota type.
+    Example: BC_A_CAP_GEN_OU -> base_category='BC_A', quota_type='CAP'
+    Example: BC_A_GEN_OU -> base_category='BC_A', quota_type='General'
+    """
+    if not category_str:
+        return None, "General"
+    
+    category_upper = category_str.upper()
+    
+    # Special quota keywords to check
+    special_quotas = {
+        'CAP': 'CAP (Armed Personnel)',
+        'NCC': 'NCC',
+        'PWD': 'PWD',
+        'PHA': 'PWD (Hearing)',
+        'PHH': 'PWD (Hearing)',
+        'PHM': 'PWD (Mobility)',
+        'PHV': 'PWD (Visual)',
+        'SPORTS': 'Sports'
+    }
+    
+    # Find quota type
+    quota_type = "General"
+    for key, label in special_quotas.items():
+        if f"_{key}_" in category_upper or category_upper.endswith(f"_{key}"):
+            quota_type = label
+            break
+    
+    # Extract base category (OC, BC_A, BC_B, SC, ST, EWS, etc.)
+    base_categories = ['BC_A', 'BC_B', 'BC_C', 'BC_D', 'BC_E', 'OC', 'SC_I', 'SC_II', 'SC_III', 'SC', 'ST', 'EWS']
+    base_category = None
+    for bc in base_categories:
+        if category_upper.startswith(bc):
+            base_category = bc
+            break
+    
+    return base_category, quota_type
+
+def remove_duplicates_and_group(predictions):
+    """
+    Remove duplicate results and return unique college-branch combinations.
+    Keep the best chance for each unique combination.
+    """
+    seen = {}
+    chance_priority = {"SAFE": 0, "GOOD": 1, "REACH": 2}
+    
+    for p in predictions:
+        key = (p.institute, p.branch)
+        if key not in seen:
+            seen[key] = p
+        else:
+            # Keep the one with better chance (SAFE > GOOD > REACH)
+            existing_priority = chance_priority.get(seen[key].chance, 3)
+            new_priority = chance_priority.get(p.chance, 3)
+            if new_priority < existing_priority:
+                seen[key] = p
+    
+    return list(seen.values())
+
 @app.on_event("startup")
 async def load_data():
     # Load APEAPCET
