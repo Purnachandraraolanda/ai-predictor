@@ -489,6 +489,9 @@ async def predict_comedk(req: COMEDKPredictionRequest):
         
         # Only include if chance is not None (within 150% threshold)
         if chance:
+            # Parse category to get quota type
+            base_category, quota_type = parse_category_info(c.get('category', ''))
+            
             predictions.append(CollegePrediction(
                 institute=c.get('college', ''),
                 institute_code=c.get('college_code', ''),
@@ -501,16 +504,27 @@ async def predict_comedk(req: COMEDKPredictionRequest):
                 user_rank=req.rank,
                 chance=chance,
                 probability=max(5, min(95, prob)),
+                quota_type=quota_type,
+                base_category=base_category
             ))
     
+    # Remove duplicates - keep unique college+branch combinations
+    predictions = remove_duplicates_and_group(predictions)
+    
     predictions.sort(key=lambda x: ({"REACH": 0, "GOOD": 1, "SAFE": 2}[x.chance], x.closing_rank))
+    
+    # Count quotas
+    general_count = len([p for p in predictions if p.quota_type == "General"])
+    special_count = len([p for p in predictions if p.quota_type != "General"])
     
     return PredictionResponse(
         total_colleges=len(predictions),
         safe_count=len([p for p in predictions if p.chance == "SAFE"]),
         good_count=len([p for p in predictions if p.chance == "GOOD"]),
         reach_count=len([p for p in predictions if p.chance == "REACH"]),
-        predictions=predictions[:500]
+        predictions=predictions[:500],
+        general_quota_count=general_count,
+        special_quota_count=special_count
     )
 
 app.include_router(api_router)
