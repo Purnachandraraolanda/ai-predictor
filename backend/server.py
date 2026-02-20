@@ -76,10 +76,10 @@ class PredictionResponse(BaseModel):
 
 def calculate_chance_state_exams(user_rank, closing_rank):
     """
-    Calculate admission chance for state exams (APEAPCET, TGEAPCET)
+    Calculate admission chance for state exams (APEAPCET, TGEAPCET, COMEDK)
     - Safe: rank <= 80% of closing rank
-    - Good Chance: rank between 80% and 100% of closing (but less than closing)
-    - Reach: rank >= closing rank (up to 150%)
+    - Good Chance: rank between 80% and closing rank (including equal to closing)
+    - Reach: rank > closing rank (strictly outside/beyond closing rank, up to 150%)
     - Hidden: rank > 150% of closing
     """
     if closing_rank == 0:
@@ -90,11 +90,11 @@ def calculate_chance_state_exams(user_rank, closing_rank):
     if user_rank <= closing_rank * 0.8:
         # Safe: rank is 80% or better than closing
         return "SAFE", 90
-    elif user_rank < closing_rank:
-        # Good Chance: between 80% and closing rank (but not at closing)
+    elif user_rank <= closing_rank:
+        # Good Chance: between 80% and closing rank (including equal to closing)
         return "GOOD", 70
     elif user_rank <= closing_rank * 1.5:
-        # Reach: at or beyond closing rank (up to 150%)
+        # Reach: strictly beyond closing rank (up to 150%)
         return "REACH", 35
     else:
         # Too far beyond - don't show
