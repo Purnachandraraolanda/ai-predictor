@@ -246,10 +246,16 @@ async def get_tgeapcet_metadata():
 @api_router.post("/tgeapcet/predict", response_model=PredictionResponse)
 async def predict_tgeapcet(req: TGEAPCETPredictionRequest):
     query = {}
-    if req.category: query["category"] = req.category
-    if req.gender: query["gender"] = req.gender
-    if req.district: query["district"] = req.district
-    if req.branch: query["branch"] = {"$regex": req.branch, "$options": "i"}
+    # Category matching: frontend sends "OC", database has "OC_GEN_OU", etc.
+    if req.category: 
+        query["category"] = {"$regex": f"^{req.category}", "$options": "i"}
+    # Gender matching: frontend sends "M"/"F", database has same
+    if req.gender: 
+        query["gender"] = req.gender
+    if req.district: 
+        query["district"] = req.district
+    if req.branch: 
+        query["branch"] = {"$regex": req.branch, "$options": "i"}
     
     cutoffs = await db.tgeapcet_cutoffs.find(query, {"_id": 0}).to_list(10000)
     
