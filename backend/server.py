@@ -314,13 +314,26 @@ async def predict_tgeapcet(req: TGEAPCETPredictionRequest):
     # Category matching: frontend sends "OC", database has "OC_GEN_OU", etc.
     if req.category: 
         query["category"] = {"$regex": f"^{req.category}", "$options": "i"}
-    # Gender matching: frontend sends "M"/"F", database has same
+    # Gender matching: M for male (GEN), F for female (GIRLS)
     if req.gender: 
-        query["gender"] = req.gender
+        # Match gender in category string: GEN for male, GIRLS for female
+        gender_pattern = "GEN" if req.gender == "M" else "GIRLS"
+        query["category"] = {"$regex": f"^{req.category}.*{gender_pattern}", "$options": "i"}
     if req.district: 
         query["district"] = req.district
     if req.branch: 
         query["branch"] = {"$regex": req.branch, "$options": "i"}
+    
+    # Handle special quota filter
+    if req.special_quota and req.special_quota not in ["General", None, ""]:
+        quota_map = {
+            "PWD": "(PHA|PHH|PHM|PHV|PWD)",
+            "CAP": "CAP",
+            "NCC": "NCC",
+            "Sports": "SPORTS"
+        }
+        if req.special_quota in quota_map:
+            query["category"] = {"$regex": f"^{req.category}.*{quota_map[req.special_quota]}.*{gender_pattern}", "$options": "i"}
     
     cutoffs = await db.tgeapcet_cutoffs.find(query, {"_id": 0}).to_list(10000)
     
@@ -344,6 +357,9 @@ async def predict_tgeapcet(req: TGEAPCETPredictionRequest):
         else:
             continue  # Too far outside
         
+        # Parse category to get quota type
+        base_category, quota_type = parse_category_info(c.get('category', ''))
+        
         predictions.append(CollegePrediction(
             institute=c.get('institute', ''),
             institute_code=c.get('institute_code', ''),
@@ -356,17 +372,29 @@ async def predict_tgeapcet(req: TGEAPCETPredictionRequest):
             user_rank=req.rank,
             chance=chance,
             probability=max(5, min(95, prob)),
-            institute_type=c.get('institute_type', '')
+            institute_type=c.get('institute_type', ''),
+            quota_type=quota_type,
+            base_category=base_category
         ))
     
+    # Remove duplicates - keep unique college+branch combinations
+    predictions = remove_duplicates_and_group(predictions)
+    
+    # Sort: REACH -> SAFE, then by closing rank
     predictions.sort(key=lambda x: ({"REACH": 0, "SAFE": 1}[x.chance], x.closing_rank))
+    
+    # Count quotas
+    general_count = len([p for p in predictions if p.quota_type == "General"])
+    special_count = len([p for p in predictions if p.quota_type != "General"])
     
     return PredictionResponse(
         total_colleges=len(predictions),
         safe_count=len([p for p in predictions if p.chance == "SAFE"]),
         good_count=0,
         reach_count=len([p for p in predictions if p.chance == "REACH"]),
-        predictions=predictions[:500]
+        predictions=predictions[:500],
+        general_quota_count=general_count,
+        special_quota_count=special_count
     )
 
 # ==================== APEAPCET ====================
