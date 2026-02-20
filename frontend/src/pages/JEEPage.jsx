@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
+import { Facebook, Instagram, Youtube } from "lucide-react";
 import {
   Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
 } from "@/components/ui/select";
@@ -524,13 +525,120 @@ const JEEPage = () => {
       {/* Services Section */}
       <Services />
 
-      <footer className="py-6 border-t border-zinc-800/50 relative z-10">
-        <div className="container mx-auto px-4 text-center">
-          <p className="text-zinc-500 text-sm">&copy; 2025 Edu9 Career Guidance. All rights reserved.</p>
+     {/* ================= FULL EDU9 FOOTER ================= */}
+<footer className="border-t border-[#2a3040] bg-[#111720] relative z-10">
+  <div className="container mx-auto px-4 md:px-6 max-w-7xl py-12">
+    <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
+
+      {/* Company Info */}
+      <div className="md:col-span-2">
+        <Link to="/" className="flex items-center gap-3 mb-4">
+          <img
+            src="/edu9-logo.jpg"
+            alt="Edu9 Career Guidance"
+            className="h-12 w-auto rounded-lg"
+          />
+          <div>
+            <span className="font-bold text-xl text-[#f5c842]">Edu9</span>
+            <span className="block text-sm text-zinc-400">
+              Career Guidance
+            </span>
+          </div>
+        </Link>
+
+        <p className="text-zinc-400 text-sm leading-relaxed mb-4 max-w-md">
+          College predictions for JEE, TGEAPCET, APEAPCET & COMEDK.
+          Find your dream college with accurate cutoff analysis.
+        </p>
+
+        <p className="text-zinc-400 text-sm leading-relaxed">
+          Unit No 1312, 12th Floor,<br />
+          Vasavi MPM Grand,<br />
+          Ameerpet, Hyderabad – 500073
+        </p>
+
+        {/* Social Icons */}
+        <div className="flex gap-4 mt-4">
+          <a href="#" className="text-zinc-400 hover:text-white transition">
+            <Facebook size={18} />
+          </a>
+          <a href="#" className="text-zinc-400 hover:text-white transition">
+            <Instagram size={18} />
+          </a>
+          <a href="#" className="text-zinc-400 hover:text-white transition">
+            <Youtube size={18} />
+          </a>
         </div>
-      </footer>
+      </div>
+
+      {/* Predictors */}
+      <div>
+        <h4 className="font-semibold text-white mb-4">Predictors</h4>
+        <ul className="space-y-2 text-sm">
+          <li>
+            <Link to="/jee" className="text-zinc-400 hover:text-white transition">
+              JEE Main
+            </Link>
+          </li>
+          <li>
+            <Link to="/tgeapcet" className="text-zinc-400 hover:text-white transition">
+              TGEAPCET
+            </Link>
+          </li>
+          <li>
+            <Link to="/apeapcet" className="text-zinc-400 hover:text-white transition">
+              APEAPCET
+            </Link>
+          </li>
+          <li>
+            <Link to="/comedk" className="text-zinc-400 hover:text-white transition">
+              COMEDK
+            </Link>
+          </li>
+        </ul>
+      </div>
+
+      {/* Contact + CTA */}
+      <div>
+        <h4 className="font-semibold text-white mb-4">Contact</h4>
+        <ul className="space-y-2 text-sm text-zinc-400 mb-6">
+          <li>
+            <a href="tel:9133311450" className="hover:text-white transition">
+              9133311450
+            </a>
+          </li>
+          <li>
+            <a href="mailto:info@edu9.in" className="hover:text-white transition">
+              info@edu9.in
+            </a>
+          </li>
+        </ul>
+
+        {/* CTA Section */}
+        <div>
+          <h3 className="text-lg font-bold mb-3 text-white">
+            Get Counselling
+          </h3>
+          <p className="text-zinc-400 text-sm mb-4">
+            Book your expert counselling session and secure your dream college.
+          </p>
+          <button
+            onClick={() =>
+              window.open("https://bookings.edu9.in/#/2026", "_blank")
+            }
+            className="w-full bg-[#ffc107] hover:bg-[#ffca2c] text-[#1a237e] font-semibold py-3 px-6 rounded-xl transition-all duration-300 hover:shadow-lg text-sm"
+          >
+            Book Counselling
+          </button>
+        </div>
+      </div>
     </div>
-  );
-};
+
+    {/* Bottom Line */}
+    <div className="border-t border-[#2a3040] mt-8 pt-8 text-center text-zinc-500 text-sm">
+      &copy; {new Date().getFullYear()} Edu9 Career Guidance. All rights reserved.
+    </div>
+  </div>
+</footer>
 
 export default JEEPage;
