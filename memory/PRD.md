@@ -78,9 +78,12 @@ Build a Multi-Exam College Predictor Platform with exact format matching referen
 - GET /api/comedk/metadata | POST /api/comedk/predict
 
 ## Testing Status
-- All 4 predictors: PASSED (Feb 19, 2026)
+- All 4 predictors: PASSED (Dec 2025)
+- Quota deduplication features: PASSED (27/27 backend tests)
+- Gender-based filtering: PASSED
+- Quota type filter (All/General/Special): PASSED
 - JEE: 12,131 records
-- TGEAPCET: 29,033 records
+- TGEAPCET: 29,033 records  
 - APEAPCET: 42,611 records
 - COMEDK: 325 records
 
