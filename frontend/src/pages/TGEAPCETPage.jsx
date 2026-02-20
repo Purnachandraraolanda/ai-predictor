@@ -61,12 +61,12 @@ const TGEAPCETPage = () => {
     { value: "M", label: "Male" }, { value: "F", label: "Female" }
   ];
 
-  const specialQuotas = [
-    { value: "General", label: "General (No Special Quota)" },
+  const specialCategoryQuotas = [
+    { value: "NO", label: "NO (General - No Special Category)" },
     { value: "PWD", label: "PWD (Persons with Disabilities)" },
     { value: "CAP", label: "CAP (Children of Armed Personnel)" },
     { value: "NCC", label: "NCC (National Cadet Corps)" },
-    { value: "Sports", label: "Sports Quota" }
+    { value: "Sports", label: "SPORTS (Sports Quota)" }
   ];
 
   useEffect(() => {
