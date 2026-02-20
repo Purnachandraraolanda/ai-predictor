@@ -143,13 +143,13 @@ const COMEDKPage = () => {
                 />
                 <div>
                   <span className="font-bold text-white text-lg">COMEDK Predictor</span>
-                  <span className="text-orange-400 text-xs block leading-tight">by edu9 Career Guidance</span>
+                  <span className="text-orange-400 text-xs block leading-tight">by Edu9 Career Guidance</span>
                 </div>
               </Link>
             </div>
             <Badge className="bg-transparent border border-orange-500/50 text-orange-400 px-4 py-1.5 rounded-full">
               <Sparkles className="w-3.5 h-3.5 mr-1.5" />
-              COMEDK 2025 Data
+              COMEDK 2026
             </Badge>
           </div>
         </div>

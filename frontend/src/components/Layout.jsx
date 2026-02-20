@@ -33,7 +33,7 @@ export const Header = () => {
               animate={{ opacity: 1, x: 0 }}
               transition={{ delay: 0.2 }}
             >
-              <span className="font-bold text-lg text-[#f5c842] font-['Outfit']">edu9</span>
+              <span className="font-bold text-lg text-[#f5c842] font-['Outfit']">Edu9</span>
               <span className="block text-xs text-zinc-400">Career Guidance</span>
             </motion.div>
           </Link>
@@ -80,11 +80,11 @@ export const Footer = () => (
           <Link to="/" className="flex items-center gap-3 mb-4">
             <img src="/edu9-logo.jpg" alt="Edu9 Career Guidance" className="h-12 w-auto rounded-lg" />
             <div>
-              <span className="font-bold text-xl text-[#f5c842] font-['Outfit']">edu9</span>
+              <span className="font-bold text-xl text-[#f5c842] font-['Outfit']">Edu9</span>
               <span className="block text-sm text-zinc-400">Career Guidance</span>
             </div>
           </Link>
-          <p className="text-zinc-400 text-sm leading-relaxed max-w-md">AI-powered college predictions for JEE, TGEAPCET, APEAPCET & COMEDK. Find your dream college with accurate cutoff analysis.</p>
+          <p className="text-zinc-400 text-sm leading-relaxed max-w-md">College predictions for JEE, TGEAPCET, APEAPCET & COMEDK. Find your dream college with accurate cutoff analysis.</p>
         </div>
         <div>
           <h4 className="font-semibold text-zinc-50 mb-4 font-['Outfit']">Predictors</h4>

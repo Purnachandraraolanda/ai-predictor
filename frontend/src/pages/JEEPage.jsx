@@ -318,13 +318,13 @@ const JEEPage = () => {
                 />
                 <div>
                   <span className="font-bold text-white text-lg">JEE Predictor</span>
-                  <span className="text-amber-500 text-xs block leading-tight">by edu9 Career Guidance</span>
+                  <span className="text-amber-500 text-xs block leading-tight">by Edu9 Career Guidance</span>
                 </div>
               </Link>
             </div>
             <Badge className="bg-transparent border border-amber-500/50 text-amber-400 px-4 py-1.5 rounded-full">
               <Sparkles className="w-3.5 h-3.5 mr-1.5" />
-              Official JoSAA 2025 Data
+              JoSAA 2026
             </Badge>
           </div>
         </div>

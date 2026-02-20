@@ -42,7 +42,7 @@ Build a Multi-Exam College Predictor Platform with exact format matching referen
   - District information
 
 ### Feb 2026 - Previous Updates
-- **New Company Logo**: Updated to edu9 Career Guidance official logo (lighthouse/yellow theme)
+- **New Company Logo**: Updated to Edu9 Career Guidance official logo (lighthouse/yellow theme)
 - **New Data Files Processed**:
   - APEAPCET 2025: 42,611 cutoff records (247 colleges, 68 branches, 13 districts)
   - TGEAPCET 2025: 29,033 cutoff records (179 colleges, 50 branches, 11 districts)
