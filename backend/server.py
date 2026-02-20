@@ -421,14 +421,29 @@ async def get_apeapcet_metadata():
 @api_router.post("/apeapcet/predict", response_model=PredictionResponse)
 async def predict_apeapcet(req: APEAPCETPredictionRequest):
     query = {}
-    # Build category regex based on category and gender
+    
+    # Gender pattern: GEN for male, GIRLS for female
     gender_pattern = "GEN" if req.gender and req.gender.upper() in ["M", "MALE"] else "GIRLS"
     
+    # Build category regex based on category, gender, and special quota
     if req.category:
-        query["category"] = {"$regex": f"^{req.category}.*{gender_pattern}", "$options": "i"}
+        # Special quota keywords to exclude for "General" or include for specific quota
+        if req.special_quota and req.special_quota not in ["General", None, ""]:
+            # User selected a specific special quota - include ONLY those results
+            quota_map = {
+                "PWD": "(PHA|PHH|PHM|PHV|PWD)",
+                "CAP": "CAP",
+                "NCC": "NCC",
+                "Sports": "SPORTS"
+            }
+            if req.special_quota in quota_map:
+                # Match: category_SPECIALQUOTA_GENDER
+                query["category"] = {"$regex": f"^{req.category}.*{quota_map[req.special_quota]}.*{gender_pattern}", "$options": "i"}
+        else:
+            # "General" selected - EXCLUDE all special quota results
+            query["category"] = {"$regex": f"^{req.category}_(?!.*(?:CAP|NCC|PHA|PHH|PHM|PHV|PWD|SPORTS)){gender_pattern}", "$options": "i"}
     
     if req.district: query["district"] = req.district
-    if req.college_type: query["institute_type"] = {"$regex": req.college_type, "$options": "i"}
     if req.branch: query["branch"] = {"$regex": req.branch, "$options": "i"}
     
     cutoffs = await db.apeapcet_cutoffs.find(query, {"_id": 0}).to_list(5000)
