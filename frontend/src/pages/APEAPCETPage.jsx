@@ -104,7 +104,7 @@ const APEAPCETPage = () => {
   };
 
   const handleReset = () => {
-    setPredictions(null); setActiveTab("all"); setSearchQuery(""); setSelectedBranches([]);
+    setPredictions(null); setActiveTab("all"); setSearchQuery(""); setSelectedBranches([]); setQuotaFilter("all");
     setFormData({ rank: "", category: "", gender: "", college_type: "all", districts: [], branches: [] });
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
@@ -115,6 +115,9 @@ const APEAPCETPage = () => {
     if (activeTab === "safe") filtered = filtered.filter(p => p.chance === "SAFE");
     else if (activeTab === "good") filtered = filtered.filter(p => p.chance === "GOOD");
     else if (activeTab === "reach") filtered = filtered.filter(p => p.chance === "REACH");
+    // Quota filter
+    if (quotaFilter === "general") filtered = filtered.filter(p => p.quota_type === "General");
+    else if (quotaFilter === "special") filtered = filtered.filter(p => p.quota_type !== "General");
     if (searchQuery.trim()) {
       const q = searchQuery.toLowerCase();
       filtered = filtered.filter(p =>
