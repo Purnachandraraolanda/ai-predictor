@@ -46,7 +46,7 @@ const APEAPCETPage = () => {
 
   const [formData, setFormData] = useState({
     rank: "", category: "", gender: "",
-    college_type: "all", districts: [], branches: []
+    special_category: "NO", districts: [], branches: []
   });
 
   const categories = [
@@ -60,10 +60,12 @@ const APEAPCETPage = () => {
 
   const genders = [{ value: "M", label: "Male" }, { value: "F", label: "Female" }];
 
-  const collegeTypes = [
-    { value: "all", label: "All Types" },
-    { value: "College", label: "Engineering College" },
-    { value: "University", label: "University" }
+  const specialCategoryQuotas = [
+    { value: "NO", label: "NO (General - No Special Category)" },
+    { value: "PWD", label: "PWD (Persons with Disabilities)" },
+    { value: "CAP", label: "CAP (Children of Armed Personnel)" },
+    { value: "NCC", label: "NCC (National Cadet Corps)" },
+    { value: "Sports", label: "SPORTS (Sports Quota)" }
   ];
 
   useEffect(() => {
