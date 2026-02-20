@@ -318,29 +318,36 @@ async def get_tgeapcet_metadata():
 @api_router.post("/tgeapcet/predict", response_model=PredictionResponse)
 async def predict_tgeapcet(req: TGEAPCETPredictionRequest):
     query = {}
-    # Category matching: frontend sends "OC", database has "OC_GEN_OU", etc.
-    if req.category: 
-        query["category"] = {"$regex": f"^{req.category}", "$options": "i"}
-    # Gender matching: M for male (GEN), F for female (GIRLS)
-    if req.gender: 
-        # Match gender in category string: GEN for male, GIRLS for female
-        gender_pattern = "GEN" if req.gender == "M" else "GIRLS"
-        query["category"] = {"$regex": f"^{req.category}.*{gender_pattern}", "$options": "i"}
+    
+    # Gender pattern: GEN for male, GIRLS for female
+    gender_pattern = "GEN" if req.gender == "M" else "GIRLS"
+    
+    # Build category regex based on category, gender, and special quota
+    if req.category:
+        # Special quota keywords to exclude for "General" or include for specific quota
+        special_quota_patterns = ["CAP", "NCC", "PHA", "PHH", "PHM", "PHV", "PWD", "SPORTS"]
+        
+        if req.special_quota and req.special_quota not in ["General", None, ""]:
+            # User selected a specific special quota - include ONLY those results
+            quota_map = {
+                "PWD": "(PHA|PHH|PHM|PHV|PWD)",
+                "CAP": "CAP",
+                "NCC": "NCC",
+                "Sports": "SPORTS"
+            }
+            if req.special_quota in quota_map:
+                # Match: category_SPECIALQUOTA_GENDER
+                query["category"] = {"$regex": f"^{req.category}.*{quota_map[req.special_quota]}.*{gender_pattern}", "$options": "i"}
+        else:
+            # "General" selected - EXCLUDE all special quota results
+            # Match category_GENDER but NOT containing any special quota keywords
+            # Using negative lookahead to exclude special quotas
+            query["category"] = {"$regex": f"^{req.category}_(?!.*(?:CAP|NCC|PHA|PHH|PHM|PHV|PWD|SPORTS)){gender_pattern}", "$options": "i"}
+    
     if req.district: 
         query["district"] = req.district
     if req.branch: 
         query["branch"] = {"$regex": req.branch, "$options": "i"}
-    
-    # Handle special quota filter
-    if req.special_quota and req.special_quota not in ["General", None, ""]:
-        quota_map = {
-            "PWD": "(PHA|PHH|PHM|PHV|PWD)",
-            "CAP": "CAP",
-            "NCC": "NCC",
-            "Sports": "SPORTS"
-        }
-        if req.special_quota in quota_map:
-            query["category"] = {"$regex": f"^{req.category}.*{quota_map[req.special_quota]}.*{gender_pattern}", "$options": "i"}
     
     cutoffs = await db.tgeapcet_cutoffs.find(query, {"_id": 0}).to_list(10000)
     
