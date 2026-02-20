@@ -558,6 +558,9 @@ const HomePage = () => {
         </div>
       </section>
 
+      {/* Services Section */}
+      <Services />
+
       <Footer />
     </div>
   );
