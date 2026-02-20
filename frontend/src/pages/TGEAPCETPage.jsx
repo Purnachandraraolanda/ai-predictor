@@ -113,7 +113,7 @@ const TGEAPCETPage = () => {
   };
 
   const handleReset = () => {
-    setPredictions(null); setActiveTab("all"); setSearchQuery(""); setSelectedBranches([]);
+    setPredictions(null); setActiveTab("all"); setSearchQuery(""); setSelectedBranches([]); setQuotaFilter("all");
     setFormData({ rank: "", category: "", gender: "", special_quota: "General", districts: [], branches: [] });
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
