@@ -426,6 +426,9 @@ const APEAPCETPage = () => {
         </section>
       )}
 
+      {/* Services Section */}
+      <Services />
+
       <footer className="py-6 border-t border-zinc-800/50">
         <div className="container mx-auto px-4 text-center">
           <p className="text-zinc-500 text-sm">&copy; 2025 Edu9 Career Guidance. All rights reserved.</p>
