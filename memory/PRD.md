@@ -24,7 +24,24 @@ Build a Multi-Exam College Predictor Platform with exact format matching referen
 7. College card format results matching reference design
 8. Complete course/branch names displayed (not truncated)
 
-## Latest Updates (Feb 19, 2026)
+## Latest Updates (Dec 2025)
+
+### Dec 2025 - Gender & Quota Based Filtering
+- **Gender-based filtering**: Results now filtered based on user's gender selection (Male → GEN categories, Female → GIRLS categories)
+- **Unique Results (No Duplicates)**: Backend deduplication removes duplicate college-branch combinations, keeping best chance
+- **Quota Type Classification**: Categories parsed to extract:
+  - Base Category: OC, BC_A, BC_B, SC, ST, EWS, etc.
+  - Quota Type: General, PWD, CAP (Armed Personnel), NCC, Sports
+- **Quota Filter in Results**: Users can filter results by:
+  - All (shows everything)
+  - General (regular quota only)
+  - Special Quota (PWD, CAP, NCC, Sports only)
+- **Enhanced College Cards**: Now display:
+  - Category badge (blue) showing base category
+  - Special quota badge (purple with star) when applicable
+  - District information
+
+### Feb 2026 - Previous Updates
 - **New Company Logo**: Updated to edu9 Career Guidance official logo (lighthouse/yellow theme)
 - **New Data Files Processed**:
   - APEAPCET 2025: 42,611 cutoff records (247 colleges, 68 branches, 13 districts)
