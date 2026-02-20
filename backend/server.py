@@ -288,8 +288,13 @@ async def predict_jee(req: JEEPredictionRequest):
             user_rank=req.rank,
             chance=chance,
             probability=max(5, min(95, prob)),
-            institute_type=c.get('institute_type', '')
+            institute_type=c.get('institute_type', ''),
+            quota_type="General",
+            base_category=c.get('seat_type', '')
         ))
+    
+    # Remove duplicates - keep unique college+program combinations
+    predictions = remove_duplicates_and_group(predictions)
     
     predictions.sort(key=lambda x: ({"REACH": 0, "GOOD": 1, "SAFE": 2}[x.chance], x.closing_rank))
     
@@ -298,7 +303,9 @@ async def predict_jee(req: JEEPredictionRequest):
         safe_count=len([p for p in predictions if p.chance == "SAFE"]),
         good_count=len([p for p in predictions if p.chance == "GOOD"]),
         reach_count=len([p for p in predictions if p.chance == "REACH"]),
-        predictions=predictions[:500]
+        predictions=predictions[:500],
+        general_quota_count=len(predictions),
+        special_quota_count=0
     )
 
 # ==================== TGEAPCET ====================
