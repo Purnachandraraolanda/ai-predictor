@@ -246,17 +246,6 @@ const COMEDKPage = () => {
                 </Select>
               </div>
               <div>
-                <label className="text-zinc-400 text-xs font-medium uppercase tracking-wider mb-2 block">Gender *</label>
-                <Select value={formData.gender} onValueChange={(v) => setFormData({ ...formData, gender: v })}>
-                  <SelectTrigger className="bg-[#0f1419] border-zinc-800 text-white h-12 rounded-xl" data-testid="gender-select">
-                    <SelectValue placeholder="Select gender" />
-                  </SelectTrigger>
-                  <SelectContent className="bg-[#1a1f26] border-zinc-800">
-                    {genders.map(g => <SelectItem key={g.value} value={g.value} className="text-white focus:bg-zinc-800">{g.label}</SelectItem>)}
-                  </SelectContent>
-                </Select>
-              </div>
-              <div>
                 <MultiSelectCheckbox label="City (Optional)" options={metadata?.districts || []}
                   selected={formData.districts} onChange={(v) => setFormData({ ...formData, districts: v })} testId="district-select" />
               </div>
@@ -266,7 +255,7 @@ const COMEDKPage = () => {
               </div>
             </div>
 
-            <Button onClick={handlePredict} disabled={loading || !formData.rank}
+            <Button onClick={handlePredict} disabled={loading || !formData.rank || !formData.category}
               className="w-full h-14 rounded-xl bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 text-white font-semibold text-base shadow-lg shadow-orange-500/20"
               data-testid="predict-button">
               {loading ? <><Loader2 className="mr-2 h-5 w-5 animate-spin" />Predicting...</>
