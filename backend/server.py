@@ -256,31 +256,44 @@ async def predict_tgeapcet(req: TGEAPCETPredictionRequest):
     predictions = []
     for c in cutoffs:
         closing_rank = c.get('closing_rank', 0)
-        chance, prob = calculate_chance_state_exams(req.rank, closing_rank)
         
-        # Only include if chance is not None (within 150% threshold)
-        if chance:
-            predictions.append(CollegePrediction(
-                institute=c.get('institute', ''),
-                institute_code=c.get('institute_code', ''),
-                branch=c.get('branch', ''),
-                category=c.get('category', ''),
-                gender=c.get('gender', ''),
-                district=c.get('district', ''),
-                opening_rank=c.get('opening_rank', 0),
-                closing_rank=closing_rank,
-                user_rank=req.rank,
-                chance=chance,
-                probability=max(5, min(95, prob)),
-                institute_type=c.get('institute_type', '')
-            ))
+        if closing_rank == 0:
+            continue
+        
+        # TGEAPCET: Results based on cutoff rank only
+        # SAFE: rank <= closing_rank (you qualify)
+        # REACH: rank > closing_rank (outside cutoff, up to 150%)
+        
+        if req.rank <= closing_rank:
+            chance = "SAFE"
+            prob = 90
+        elif req.rank <= closing_rank * 1.5:
+            chance = "REACH"
+            prob = 35
+        else:
+            continue  # Too far outside
+        
+        predictions.append(CollegePrediction(
+            institute=c.get('institute', ''),
+            institute_code=c.get('institute_code', ''),
+            branch=c.get('branch', ''),
+            category=c.get('category', ''),
+            gender=c.get('gender', ''),
+            district=c.get('district', ''),
+            opening_rank=c.get('opening_rank', 0),
+            closing_rank=closing_rank,
+            user_rank=req.rank,
+            chance=chance,
+            probability=max(5, min(95, prob)),
+            institute_type=c.get('institute_type', '')
+        ))
     
-    predictions.sort(key=lambda x: ({"REACH": 0, "GOOD": 1, "SAFE": 2}[x.chance], x.closing_rank))
+    predictions.sort(key=lambda x: ({"REACH": 0, "SAFE": 1}[x.chance], x.closing_rank))
     
     return PredictionResponse(
         total_colleges=len(predictions),
         safe_count=len([p for p in predictions if p.chance == "SAFE"]),
-        good_count=len([p for p in predictions if p.chance == "GOOD"]),
+        good_count=0,
         reach_count=len([p for p in predictions if p.chance == "REACH"]),
         predictions=predictions[:500]
     )
