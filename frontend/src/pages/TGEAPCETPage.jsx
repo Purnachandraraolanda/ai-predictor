@@ -336,13 +336,13 @@ const TGEAPCETPage = () => {
                 </Select>
               </div>
               <div>
-                <label className="text-zinc-400 text-xs font-medium uppercase tracking-wider mb-2 block">Special Quota (Optional)</label>
-                <Select value={formData.special_quota} onValueChange={(v) => setFormData({ ...formData, special_quota: v })}>
-                  <SelectTrigger className="bg-[#0f1419] border-zinc-800 text-white h-12 rounded-xl" data-testid="special-quota-select">
+                <label className="text-zinc-400 text-xs font-medium uppercase tracking-wider mb-2 block">Special Category Quota</label>
+                <Select value={formData.special_category} onValueChange={(v) => setFormData({ ...formData, special_category: v })}>
+                  <SelectTrigger className="bg-[#0f1419] border-zinc-800 text-white h-12 rounded-xl" data-testid="special-category-select">
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent className="bg-[#1a1f26] border-zinc-800">
-                    {specialQuotas.map(q => <SelectItem key={q.value} value={q.value} className="text-white focus:bg-zinc-800">{q.label}</SelectItem>)}
+                    {specialCategoryQuotas.map(q => <SelectItem key={q.value} value={q.value} className="text-white focus:bg-zinc-800">{q.label}</SelectItem>)}
                   </SelectContent>
                 </Select>
               </div>
