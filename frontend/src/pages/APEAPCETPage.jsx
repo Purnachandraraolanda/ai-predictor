@@ -363,7 +363,6 @@ const APEAPCETPage = () => {
                 activeTab={activeTab} setActiveTab={setActiveTab}
                 searchQuery={searchQuery} setSearchQuery={setSearchQuery}
                 selectedBranches={selectedBranches} setSelectedBranches={setSelectedBranches}
-                quotaFilter={quotaFilter} setQuotaFilter={setQuotaFilter}
                 onReset={handleReset} accentColor="violet" />
 
               <p className="text-zinc-500 text-sm mb-4">
