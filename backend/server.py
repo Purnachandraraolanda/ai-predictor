@@ -249,6 +249,14 @@ async def predict_jee(req: JEEPredictionRequest):
     
     cutoffs = await db.jee_cutoffs.find(query, {"_id": 0}).to_list(15000)
     
+    # If Home State (HS) quota is selected and NIT is in institute types, also fetch from NIT Home State collection
+    if req.quota and "HS" in req.quota and req.institute_types and "NIT" in req.institute_types:
+        hs_query = {}
+        if req.seat_type: hs_query["seat_type"] = req.seat_type
+        if req.gender: hs_query["gender"] = req.gender
+        hs_cutoffs = await db.nit_home_state_cutoffs.find(hs_query, {"_id": 0}).to_list(5000)
+        cutoffs.extend(hs_cutoffs)
+    
     predictions = []
     for c in cutoffs:
         opening_rank = c.get('opening_rank', 0)

@@ -4,7 +4,6 @@ import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
-import { Footer } from "@/components/common/Footer"
 import { Facebook, Instagram, Youtube } from "lucide-react";
 import {
   Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
@@ -20,6 +19,7 @@ import axios from "axios";
 import ParticleBackground from "@/components/ParticleBackground";
 import { ResultsHeader } from "@/components/CollegeCard";
 import Services from "@/components/homepage/Services";
+import Footer from "@/components/common/Footer";
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const API = `${BACKEND_URL}/api`;
@@ -511,19 +511,19 @@ onClick={() => {
                 onReset={handleReset} accentColor="blue" />
 
               <p className="text-zinc-500 text-sm mb-4">
-                Showing <span className="text-white font-semibold">{Math.min(filtered.length, 100)}</span> of {filtered.length} colleges
+                Showing <span className="text-white font-semibold">{Math.min(filtered.length, 10)}</span> of {filtered.length} colleges
               </p>
 
               {/* College Cards */}
               <div className="space-y-4">
-                {filtered.slice(0, 100).map((prediction, index) => (
+                {filtered.slice(0, 10).map((prediction, index) => (
                   <CollegeCard key={`${prediction.institute}-${prediction.program}-${index}`}
                     prediction={prediction} index={index} userRank={parseInt(formData.rank)} />
                 ))}
               </div>
-              {filtered.length > 100 && (
+              {filtered.length > 10 && (
                 <div className="mt-4 p-4 text-center text-zinc-500 text-sm rounded-xl bg-[#141922] border border-zinc-800/50">
-                  Showing top 100 results out of {filtered.length}
+                  Showing top 10 results out of {filtered.length}. <button onClick={() => window.open('https://bookings.edu9.in/#/2026', '_blank')} className="text-amber-400 hover:underline">Book counselling</button> for complete list.
                 </div>
               )}
               {filtered.length === 0 && (
@@ -577,12 +577,14 @@ onClick={() => {
 
       {/* Services Section */}
       <Services />
+      
+      {/* Footer */}
       <Footer />
-    
-      <footer className="py-6 border-t border-zinc-800/50 relative z-10"> <div className="container mx-auto px-4 text-center"> <p className="text-zinc-500 text-sm">&copy; 2026 Edu9 Career Guidance. All rights reserved.</p> </div> </footer> </div> 
-      ); 
-    }; 
-      export default JEEPage;
+    </div>
+  );
+};
+
+export default JEEPage;
 
       
 

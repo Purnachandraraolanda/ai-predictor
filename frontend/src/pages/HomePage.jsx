@@ -17,9 +17,10 @@ import {
   Star,
   ChevronRight,
 } from "lucide-react";
-import { Header, Footer } from "@/components/Layout";
+import { Header } from "@/components/Layout";
 import ParticleBackground from "@/components/ParticleBackground";
 import Services from "@/components/homepage/Services";
+import Footer from "@/components/common/Footer";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 
