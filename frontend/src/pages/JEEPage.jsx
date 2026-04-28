@@ -135,7 +135,7 @@ const JEEPage = () => {
 
   const [formData, setFormData] = useState({
     rank: "", seat_type: "OPEN", gender: "Gender-Neutral",
-    institute_types: ["IIT", "NIT", "IIIT", "GFTI"], quota: ["AI"]
+    institute_types: ["IIT", "NIT", "IIIT", "GFTI"], quota: "AI"
   });
 
   const seatTypes = [
@@ -187,28 +187,27 @@ const JEEPage = () => {
 
   const availableQuotas = getAvailableQuotas();
 
-  // Auto-update quota when institute types change
-  // USE THIS NEW BLOCK:
-// REPLACE your old useEffect with this one:
-useEffect(() => {
-  const allowedQuotaValues = availableQuotas.map(q => q.value);
-  
-  // 1. DEFENSE: Convert to array if it's currently a string to avoid crash
-  const currentQuotas = Array.isArray(formData.quota) ? formData.quota : [formData.quota];
+  // Handle quota change - auto-select only NIT when Home State is selected
+  const handleQuotaChange = (quotaValue) => {
+    if (quotaValue === "HS") {
+      // When Home State is selected, auto-select only NIT
+      setFormData(prev => ({
+        ...prev,
+        quota: quotaValue,
+        institute_types: ["NIT"]
+      }));
+    } else {
+      setFormData(prev => ({ ...prev, quota: quotaValue }));
+    }
+  };
 
-  // 2. Keep only the quotas that are valid for the selected institute types
-  const validQuotas = currentQuotas.filter(q => allowedQuotaValues.includes(q));
-  
-  if (validQuotas.length === 0 && allowedQuotaValues.length > 0) {
-    // 3. FIX: Reset to a clean array [ "AI" ], NOT a nested array [[ "AI", "HS" ]]
-    // FIXED LINE (picks the first string, not the whole list):
-setFormData(prev => ({ ...prev, quota: [allowedQuotaValues[0]] }));
-  } 
-  // 4. Update the state if some (but not all) quotas were removed
-  else if (validQuotas.length !== currentQuotas.length) {
-    setFormData(prev => ({ ...prev, quota: validQuotas }));
-  }
-}, [formData.institute_types, availableQuotas]);
+  // Auto-update quota when institute types change
+  useEffect(() => {
+    const quotaValues = availableQuotas.map(q => q.value);
+    if (!quotaValues.includes(formData.quota)) {
+      setFormData(prev => ({ ...prev, quota: quotaValues[0] || "AI" }));
+    }
+  }, [formData.institute_types]);
 
   useEffect(() => {
     axios.get(`${API}/jee/metadata`).then(r => setMetadata(r.data)).catch(console.error);
