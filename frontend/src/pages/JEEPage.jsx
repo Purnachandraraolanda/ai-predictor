@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
+import { Footer } from "@/components/common/Footer"
 import { Facebook, Instagram, Youtube } from "lucide-react";
 import {
   Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
@@ -134,7 +135,7 @@ const JEEPage = () => {
 
   const [formData, setFormData] = useState({
     rank: "", seat_type: "OPEN", gender: "Gender-Neutral",
-    institute_types: ["IIT", "NIT", "IIIT", "GFTI"], quota: "AI"
+    institute_types: ["IIT", "NIT", "IIIT", "GFTI"], quota: ["AI"]
   });
 
   const seatTypes = [
@@ -187,12 +188,27 @@ const JEEPage = () => {
   const availableQuotas = getAvailableQuotas();
 
   // Auto-update quota when institute types change
-  useEffect(() => {
-    const quotaValues = availableQuotas.map(q => q.value);
-    if (!quotaValues.includes(formData.quota)) {
-      setFormData(prev => ({ ...prev, quota: quotaValues[0] || "AI" }));
-    }
-  }, [formData.institute_types]);
+  // USE THIS NEW BLOCK:
+// REPLACE your old useEffect with this one:
+useEffect(() => {
+  const allowedQuotaValues = availableQuotas.map(q => q.value);
+  
+  // 1. DEFENSE: Convert to array if it's currently a string to avoid crash
+  const currentQuotas = Array.isArray(formData.quota) ? formData.quota : [formData.quota];
+
+  // 2. Keep only the quotas that are valid for the selected institute types
+  const validQuotas = currentQuotas.filter(q => allowedQuotaValues.includes(q));
+  
+  if (validQuotas.length === 0 && allowedQuotaValues.length > 0) {
+    // 3. FIX: Reset to a clean array [ "AI" ], NOT a nested array [[ "AI", "HS" ]]
+    // FIXED LINE (picks the first string, not the whole list):
+setFormData(prev => ({ ...prev, quota: [allowedQuotaValues[0]] }));
+  } 
+  // 4. Update the state if some (but not all) quotas were removed
+  else if (validQuotas.length !== currentQuotas.length) {
+    setFormData(prev => ({ ...prev, quota: validQuotas }));
+  }
+}, [formData.institute_types, availableQuotas]);
 
   useEffect(() => {
     axios.get(`${API}/jee/metadata`).then(r => setMetadata(r.data)).catch(console.error);
@@ -208,28 +224,38 @@ const JEEPage = () => {
   };
 
   const handlePredict = async () => {
-    if (!formData.rank) return toast.error("Please enter your JEE rank");
-    if (formData.institute_types.length === 0) return toast.error("Please select at least one institute type");
+  console.log("BUTTON CLICKED");   // 👈 ADD THIS LINE
 
-    setLoading(true);
-    setPredictions(null);
-    try {
-      const response = await axios.post(`${API}/jee/predict`, {
-        rank: parseInt(formData.rank), seat_type: formData.seat_type,
-        gender: formData.gender, institute_types: formData.institute_types, quota: formData.quota
-      });
-      setPredictions(response.data);
-      setActiveTab("all");
-      setSearchQuery("");
-      setSelectedBranches([]);
-      toast.success(`Found ${response.data.total_colleges} college matches!`);
-    } catch (error) {
-      toast.error("Failed to get predictions. Please try again.");
-    } finally {
-      setLoading(false);
-    }
-  };
+  if (!formData.rank) return toast.error("Please enter your JEE rank");
+  if (formData.institute_types.length === 0) return toast.error("Please select at least one institute type");
 
+  setLoading(true);
+  setPredictions(null);
+
+  try {
+    console.log("API URL:", API);   // 👈 ADD THIS ALSO
+    console.log("FORM DATA:", formData);  // 👈 VERY IMPORTANT
+
+    const response = await axios.post(`${API}/jee/predict`, {
+      rank: parseInt(formData.rank),
+      seat_type: formData.seat_type,
+      gender: formData.gender,
+      institute_types: formData.institute_types,
+      quota: formData.quota
+    });
+
+    setPredictions(response.data);
+    toast.success("Success!");
+  } catch (error) {
+    console.log("ERROR:", error);
+    console.log("RESPONSE:", error.response);
+    console.log("DATA:", error.response?.data);
+
+    toast.error("Failed to get predictions");
+  } finally {
+    setLoading(false);
+  }
+};
   const getFilteredPredictions = () => {
     if (!predictions) return [];
     let filtered = predictions.predictions;
@@ -297,7 +323,9 @@ const JEEPage = () => {
   const totalRecords = metadata?.stats?.total_records || 12122;
   const totalPrograms = metadata?.stats?.total_programs || 253;
   const filtered = getFilteredPredictions();
-  const quotaLabel = { AI: "All India", HS: "Home State", OS: "Other State" }[formData.quota] || formData.quota;
+  const quotaLabel = Array.isArray(formData.quota) 
+    ? formData.quota.map(q => ({ AI: "All India", HS: "Home State", OS: "Other State" }[q] || q)).join(", ")
+    : formData.quota;
 
   return (
     <div className="min-h-screen bg-[#131820] relative">
@@ -428,12 +456,37 @@ const JEEPage = () => {
               </div>
               <div>
                 <label className="text-zinc-400 text-xs font-medium uppercase tracking-wider mb-2 block">Quota *</label>
-                <Select value={formData.quota} onValueChange={(v) => setFormData({ ...formData, quota: v })}>
-                  <SelectTrigger className="bg-[#0f1419] border-zinc-800 text-white h-12 rounded-xl" data-testid="quota-select"><SelectValue /></SelectTrigger>
-                  <SelectContent className="bg-[#1a1f26] border-zinc-800">
-                    {availableQuotas.map(q => <SelectItem key={q.value} value={q.value} className="text-white focus:bg-zinc-800">{q.label}</SelectItem>)}
-                  </SelectContent>
-                </Select>
+                <div className="flex gap-2 flex-wrap">
+  {availableQuotas.map(q => (
+    <button
+      key={q.value}
+      // FIXED MULTI-SELECT CODE:
+onClick={() => {
+  setFormData(prev => {
+    const current = Array.isArray(prev.quota) ? prev.quota : [prev.quota];
+    const isSelected = current.includes(q.value);
+    
+    // Prevent deselecting if it's the last one
+    if (isSelected && current.length === 1) return prev; 
+
+    return {
+      ...prev,
+      quota: isSelected
+        ? current.filter(v => v !== q.value) // Remove if already there
+        : [...current, q.value]             // Add if not there
+    };
+  });
+}}
+      className={`px-4 py-2 rounded-xl text-sm font-medium transition-all ${
+        (Array.isArray(formData.quota) ? formData.quota : [formData.quota]).includes(q.value)
+          ? "bg-blue-600 text-white"
+          : "bg-[#0f1419] text-zinc-500 border border-zinc-800"
+      }`}
+    >
+      {q.label}
+    </button>
+  ))}
+</div>
               </div>
               <Button onClick={handlePredict} disabled={loading || !formData.rank || formData.institute_types.length === 0}
                 className="h-12 rounded-xl bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white font-semibold text-base shadow-lg shadow-amber-500/20"
@@ -524,121 +577,14 @@ const JEEPage = () => {
 
       {/* Services Section */}
       <Services />
+      <Footer />
+    
+      <footer className="py-6 border-t border-zinc-800/50 relative z-10"> <div className="container mx-auto px-4 text-center"> <p className="text-zinc-500 text-sm">&copy; 2026 Edu9 Career Guidance. All rights reserved.</p> </div> </footer> </div> 
+      ); 
+    }; 
+      export default JEEPage;
 
-     {/* ================= FULL EDU9 FOOTER ================= */}
-<footer className="border-t border-[#2a3040] bg-[#111720] relative z-10">
-  <div className="container mx-auto px-4 md:px-6 max-w-7xl py-12">
-    <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
+      
 
-      {/* Company Info */}
-      <div className="md:col-span-2">
-        <Link to="/" className="flex items-center gap-3 mb-4">
-          <img
-            src="/edu9-logo.jpg"
-            alt="Edu9 Career Guidance"
-            className="h-12 w-auto rounded-lg"
-          />
-          <div>
-            <span className="font-bold text-xl text-[#f5c842]">Edu9</span>
-            <span className="block text-sm text-zinc-400">
-              Career Guidance
-            </span>
-          </div>
-        </Link>
+    
 
-        <p className="text-zinc-400 text-sm leading-relaxed mb-4 max-w-md">
-          College predictions for JEE, TGEAPCET, APEAPCET & COMEDK.
-          Find your dream college with accurate cutoff analysis.
-        </p>
-
-        <p className="text-zinc-400 text-sm leading-relaxed">
-          Unit No 1312, 12th Floor,<br />
-          Vasavi MPM Grand,<br />
-          Ameerpet, Hyderabad – 500073
-        </p>
-
-        {/* Social Icons */}
-        <div className="flex gap-4 mt-4">
-          <a href="#" className="text-zinc-400 hover:text-white transition">
-            <Facebook size={18} />
-          </a>
-          <a href="#" className="text-zinc-400 hover:text-white transition">
-            <Instagram size={18} />
-          </a>
-          <a href="#" className="text-zinc-400 hover:text-white transition">
-            <Youtube size={18} />
-          </a>
-        </div>
-      </div>
-
-      {/* Predictors */}
-      <div>
-        <h4 className="font-semibold text-white mb-4">Predictors</h4>
-        <ul className="space-y-2 text-sm">
-          <li>
-            <Link to="/jee" className="text-zinc-400 hover:text-white transition">
-              JEE Main
-            </Link>
-          </li>
-          <li>
-            <Link to="/tgeapcet" className="text-zinc-400 hover:text-white transition">
-              TGEAPCET
-            </Link>
-          </li>
-          <li>
-            <Link to="/apeapcet" className="text-zinc-400 hover:text-white transition">
-              APEAPCET
-            </Link>
-          </li>
-          <li>
-            <Link to="/comedk" className="text-zinc-400 hover:text-white transition">
-              COMEDK
-            </Link>
-          </li>
-        </ul>
-      </div>
-
-      {/* Contact + CTA */}
-      <div>
-        <h4 className="font-semibold text-white mb-4">Contact</h4>
-        <ul className="space-y-2 text-sm text-zinc-400 mb-6">
-          <li>
-            <a href="tel:9133311450" className="hover:text-white transition">
-              9133311450
-            </a>
-          </li>
-          <li>
-            <a href="mailto:info@edu9.in" className="hover:text-white transition">
-              info@edu9.in
-            </a>
-          </li>
-        </ul>
-
-        {/* CTA Section */}
-        <div>
-          <h3 className="text-lg font-bold mb-3 text-white">
-            Get Counselling
-          </h3>
-          <p className="text-zinc-400 text-sm mb-4">
-            Book your expert counselling session and secure your dream college.
-          </p>
-          <button
-            onClick={() =>
-              window.open("https://bookings.edu9.in/#/2026", "_blank")
-            }
-            className="w-full bg-[#ffc107] hover:bg-[#ffca2c] text-[#1a237e] font-semibold py-3 px-6 rounded-xl transition-all duration-300 hover:shadow-lg text-sm"
-          >
-            Book Counselling
-          </button>
-        </div>
-      </div>
-    </div>
-
-    {/* Bottom Line */}
-    <div className="border-t border-[#2a3040] mt-8 pt-8 text-center text-zinc-500 text-sm">
-      &copy; {new Date().getFullYear()} Edu9 Career Guidance. All rights reserved.
-    </div>
-  </div>
-</footer>
-
-export default JEEPage;

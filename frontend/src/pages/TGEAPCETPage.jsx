@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
+
 import {
   Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
 } from "@/components/ui/select";
@@ -442,10 +443,11 @@ const TGEAPCETPage = () => {
 
       {/* Services Section */}
       <Services />
+      <Footer/>
 
       <footer className="py-6 border-t border-zinc-800/50">
         <div className="container mx-auto px-4 text-center">
-          <p className="text-zinc-500 text-sm">&copy; 2025 Edu9 Career Guidance. All rights reserved.</p>
+          <p className="text-zinc-500 text-sm">&copy; 2026 Edu9 Career Guidance. All rights reserved.</p>
         </div>
       </footer>
     </div>

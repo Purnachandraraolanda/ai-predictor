@@ -25,7 +25,7 @@ class JEEPredictionRequest(BaseModel):
     seat_type: str
     gender: str
     institute_types: Optional[List[str]] = None
-    quota: Optional[str] = None
+    quota: Optional[List[str]] = None # <--- Now it accepts multiple values
 
 class TGEAPCETPredictionRequest(BaseModel):
     rank: int
@@ -244,7 +244,8 @@ async def predict_jee(req: JEEPredictionRequest):
     if req.seat_type: query["seat_type"] = req.seat_type
     if req.gender: query["gender"] = req.gender
     if req.institute_types: query["institute_type"] = {"$in": req.institute_types}
-    if req.quota and req.quota != "all": query["quota"] = req.quota
+    if req.quota:
+        query["quota"] = {"$in": req.quota}
     
     cutoffs = await db.jee_cutoffs.find(query, {"_id": 0}).to_list(15000)
     
