@@ -190,6 +190,17 @@ const HomePage = () => {
       icon: GraduationCap, stats: "12,122 cutoff records | 253 programs", status: "active"
     },
     {
+  id: "jee-closing",
+  name: "JEE 2025 Closing Ranks",
+  description: "View detailed 2025 closing ranks for IITs, NITs, IIITs & GFTIs",
+  tags: ["JoSAA 2025", "Closing Ranks", "Closing ranks 2025","All India","JEE MAINS"],
+  gradientFrom: "from-red-600",
+  gradientTo: "to-teal-500",
+  icon: GraduationCap,
+  stats: "Latest closing rank data",
+  status: "active"
+},
+    {
       id: "tgeapcet", name: "TGEAPCET Predictor", description: "Find your match from Telangana Engineering Colleges with official data",
       tags: ["TS EAMCET", "Telangana", "183 Institutes"], gradientFrom: "from-emerald-600", gradientTo: "to-teal-500",
       icon: GraduationCap, stats: "32,685 cutoff records | 24 branches", status: "active"

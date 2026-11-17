@@ -240,11 +240,13 @@ const JEEPage = () => {
       seat_type: formData.seat_type,
       gender: formData.gender,
       institute_types: formData.institute_types,
-      quota: formData.quota
+    quota: Array.isArray(formData.quota)
+  ? formData.quota
+  : [formData.quota]
     });
 
     setPredictions(response.data);
-    toast.success("Success!");
+    toast.success(`Found ${response.data.total_colleges} college matches!`);
   } catch (error) {
     console.log("ERROR:", error);
     console.log("RESPONSE:", error.response);
