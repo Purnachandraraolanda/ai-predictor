@@ -119,3 +119,6 @@ credentials.json
 *.pem
 *.key
 .credentials
+MONGO_URL=mongodb://localhost:27017
+DB_NAME=test_database
+NEXT_PUBLIC_BASE_URL=https://college-rank-ai.preview.emergentagent.com
